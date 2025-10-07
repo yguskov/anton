@@ -1,0 +1,58 @@
+# Flutter
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+*.iws
+
+# Web
+web/**/PWA
+
+# Environment
+.env
+.env.*
+
+android
+# Android - not need now
+
+android/**/gradle-wrapper.jar
+android/**/.gradle
+android/**/captures/
+android/**/local.properties
+android/**/GeneratedPluginRegistrant.java
+
+ios
+# iOS - not need now
+
+ios/**/*.mode1v3
+ios/**/*.mode2v3
+ios/**/*.moved-aside
+ios/**/*.pbxuser
+ios/**/*.perspectivev3
+ios/**/*.sync/
+ios/**/*.xcuserstate
+ios/**/.generated/
+ios/**/Flutter/App.framework
+ios/**/Flutter/Flutter.framework
+ios/**/Flutter/Flutter.podspec
+ios/**/Flutter/Generated.xcconfig
+ios/**/ServiceDefinitions.json
+ios/**/Runner/GeneratedPluginRegistrant.*
+
+macos
+# macOS - not need now
+macos/Flutter/GeneratedPluginRegistrant.swift
+
+windows
+# Windows - not need now
+windows/flutter/generated_plugin_registrant.cc
+windows/flutter/generated_plugins.cmake
+
+# OS
+.DS_Store
+Thumbs.db
