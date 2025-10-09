@@ -108,12 +108,18 @@ class ProviderExamplePage extends StatelessWidget {
                         context,
                       ),
                       Container(
-                        width: 1200,
-                        constraints: ,
-                        height: constraints.maxHeight,
+                        // width: 800,
+                        constraints: BoxConstraints(
+                            minWidth: 800,
+                            maxWidth: 1000,
+                            minHeight: 500,
+                            maxHeight: 700),
                         child: Column(
+                          mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            const ActionBar(),
                             Expanded(
                               child: _buildWizard(
                                 context,
@@ -163,10 +169,7 @@ class ProviderExamplePage extends StatelessWidget {
     );
     final narrow = constraints.maxWidth <= 500;
     if (narrow) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: wizard,
-      );
+      return wizard;
     }
     return Row(
       children: [
@@ -176,7 +179,7 @@ class ProviderExamplePage extends StatelessWidget {
         ),
         Expanded(
             child: Padding(
-          padding: const EdgeInsets.all(19.0),
+          padding: const EdgeInsets.all(8.0),
           child: wizard,
         ))
       ],
