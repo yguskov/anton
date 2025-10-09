@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../example.dart';
+// import '../widgets/raw_autocomplete.dart';
+import '../widgets/raw_autocomplete_example.dart';
+// import '../widgets/custom_autocomplete.dart';
+import '../widgets/text_field_complete.dart';
 
 class StepOne extends StatefulWidget {
   StepOne({
@@ -24,6 +28,18 @@ class _StepOneState extends State<StepOne> {
     PopupDropdownItem(value: 'sports', label: 'Спорт'),
   ];
 
+  static const List<String> _options = [
+    'Apple',
+    'Banana',
+    'Cherry',
+    'Date',
+    'Fig',
+    'Grape',
+    'Lemon',
+    'Orange',
+    'Strawberry',
+  ];
+
   @override
   Widget build(
     BuildContext context,
@@ -40,9 +56,27 @@ class _StepOneState extends State<StepOne> {
           fieldName: 'category',
           items: categories,
           hint: 'Выберите категорию'),
+      Autocomplete<String>(
+        optionsBuilder: (TextEditingValue textEditingValue) {
+          if (textEditingValue.text == '') {
+            return const Iterable<String>.empty();
+          }
+          return _options.where((String option) {
+            return option.toLowerCase().contains(
+                  textEditingValue.text.toLowerCase(),
+                );
+          });
+        },
+        onSelected: (String selection) {
+          debugPrint('You just selected $selection');
+        },
+      ),
     ];
 
-    return Column(children: textFields);
+    return Column(
+        children: textFields,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min);
 
     /*
     return InputField(
@@ -91,8 +125,38 @@ class _StepOneState extends State<StepOne> {
         // Отступ между описанием и текстовым полем
         const SizedBox(height: 4), // ← ДОБАВЛЕН ОТСТУП ЗДЕСЬ
 
-        // Текстовое поле
-        TextField(
+        RawAutocompleteExample(
+          hint: hint,
+          controller: widget.provider.controllerByName(fieldName),
+        ),
+/* 
+        TextFieldComplete(
+          controller: widget.provider.controllerByName(fieldName),
+          hint: hint,
+
+          // onChanged: (_) => widget.provider.updateValue(
+          //     fieldName, widget.provider.controllerByName(fieldName).text),
+        ),
+ */
+        /* Обычный autocomplete 
+        Autocomplete<String>(
+          optionsBuilder: (TextEditingValue textEditingValue) {
+            if (textEditingValue.text == '') {
+              return const Iterable<String>.empty();
+            }
+            return _options.where((String option) {
+              return option.toLowerCase().contains(
+                    textEditingValue.text.toLowerCase(),
+                  );
+            });
+          },
+          onSelected: (String selection) {
+            debugPrint('You just selected $selection');
+          },
+        ),
+        */
+        /*
+        CustomAutocomplete(
           controller: widget.provider.controllerByName(fieldName),
           onChanged: (_) => widget.provider.updateValue(
               fieldName, widget.provider.controllerByName(fieldName).text),
@@ -120,7 +184,7 @@ class _StepOneState extends State<StepOne> {
             color: Colors.grey[800],
             fontSize: 16,
           ),
-        ),
+        ),*/
       ],
     );
   }
