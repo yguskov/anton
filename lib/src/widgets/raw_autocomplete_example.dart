@@ -5,10 +5,19 @@ class RawAutocompleteExample extends StatefulWidget {
   final controller;
   final focusNode;
 
+  final String? label;
+
+  final String fieldName;
+
+  final provider;
+
   const RawAutocompleteExample({
     super.key,
+    required this.fieldName,
+    this.label,
     this.hint,
     // TextField parameters
+    required this.provider,
     this.controller,
     this.focusNode,
   });
@@ -18,7 +27,7 @@ class RawAutocompleteExample extends StatefulWidget {
 }
 
 class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
-  final TextEditingController _controller = TextEditingController();
+  late final TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
   final List<String> _options = [
     'Apple',
@@ -34,10 +43,17 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
   Iterable<String> _currentOptions = const Iterable<String>.empty();
   bool _isOptionsVisible = false;
 
+  var onValueChanged;
+
   @override
   void initState() {
     super.initState();
+    _controller = widget.provider.controllerByName(widget.fieldName);
     _controller.addListener(_onTextChanged);
+    onValueChanged = (_) {
+      print(_controller.text);
+      widget.provider.updateDescription(_controller.text);
+    };
   }
 
   void _onTextChanged() {
@@ -75,82 +91,113 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
 
   @override
   Widget build(BuildContext context) {
-    return RawAutocomplete<String>(
-      focusNode: _focusNode,
-      textEditingController: _controller,
-      optionsBuilder: (TextEditingValue textEditingValue) {
-        return _currentOptions;
-      },
-      onSelected: (String selection) {
-        _handleOptionSelected(selection);
-      },
-      optionsViewBuilder: (BuildContext context,
-          AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
-        if (!_isOptionsVisible || options.isEmpty) {
-          return const SizedBox.shrink();
-        }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Описание
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          decoration: BoxDecoration(
+            color: Color.fromRGBO(37, 46, 63, 1),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(3),
+              topRight: Radius.circular(3),
+              bottomLeft: Radius.circular(1),
+              bottomRight: Radius.circular(1),
+            ),
+          ),
+          child: Text(
+            widget.label ?? '',
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+            ),
+          ),
+        ),
 
-        return Align(
-          alignment: Alignment.topLeft,
-          child: Material(
-            elevation: 4.0,
-            child: SizedBox(
-              height: 200.0,
-              child: ListView.builder(
-                padding: EdgeInsets.zero,
-                itemCount: options.length,
-                itemBuilder: (BuildContext context, int index) {
-                  final String option = options.elementAt(index);
-                  return ListTile(
-                    title: Text(option),
-                    onTap: () {
-                      onSelected(option);
-                    },
-                  );
-                },
-              ),
-            ),
-          ),
-        );
-      },
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController textEditingController,
-          FocusNode focusNode,
-          VoidCallback onFieldSubmitted) {
-        return TextField(
-          controller: textEditingController,
-          focusNode: focusNode,
-          maxLines: 1,
-          decoration: InputDecoration(
-            hintText: widget.hint,
-            filled: true,
-            fillColor: Colors.grey[200],
-            enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
-              borderRadius: const BorderRadius.all(
-                Radius.circular(4),
-              ),
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.circular(6),
-                bottomRight: Radius.circular(6),
-              ),
-            ),
-            contentPadding: const EdgeInsets.all(16),
-          ),
-          onSubmitted: (String value) {
-            _handleEnterPressed();
+        // Отступ между описанием и текстовым полем
+        const SizedBox(height: 4), // ← ДОБАВЛЕН ОТСТУП ЗДЕСЬ
+        RawAutocomplete<String>(
+          focusNode: _focusNode,
+          textEditingController: _controller,
+          optionsBuilder: (TextEditingValue textEditingValue) {
+            return _currentOptions;
           },
-        );
-      },
+          onSelected: (String selection) {
+            _handleOptionSelected(selection);
+          },
+          optionsViewBuilder: (BuildContext context,
+              AutocompleteOnSelected<String> onSelected,
+              Iterable<String> options) {
+            if (!_isOptionsVisible || options.isEmpty) {
+              return const SizedBox.shrink();
+            }
+
+            return Align(
+              alignment: Alignment.topLeft,
+              child: Material(
+                elevation: 4.0,
+                child: SizedBox(
+                  height: 200.0,
+                  child: ListView.builder(
+                    padding: EdgeInsets.zero,
+                    itemCount: options.length,
+                    itemBuilder: (BuildContext context, int index) {
+                      final String option = options.elementAt(index);
+                      return ListTile(
+                        title: Text(option),
+                        onTap: () {
+                          onSelected(option);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            );
+          },
+          fieldViewBuilder: (BuildContext context,
+              TextEditingController textEditingController,
+              FocusNode focusNode,
+              VoidCallback onFieldSubmitted) {
+            return TextField(
+              controller: textEditingController,
+              focusNode: focusNode,
+              maxLines: 1,
+              decoration: InputDecoration(
+                hintText: widget.hint,
+                filled: true,
+                fillColor: Colors.grey[200],
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(4),
+                  ),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+                  borderRadius: const BorderRadius.only(
+                    bottomLeft: Radius.circular(6),
+                    bottomRight: Radius.circular(6),
+                  ),
+                ),
+                contentPadding: const EdgeInsets.all(16),
+              ),
+              onSubmitted: (String value) {
+                _handleEnterPressed();
+              },
+              onChanged: onValueChanged,
+            );
+          },
+        )
+      ],
     );
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    // _controller.dispose();
     _focusNode.dispose();
     super.dispose();
   }
