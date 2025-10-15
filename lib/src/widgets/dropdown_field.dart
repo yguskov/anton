@@ -2,11 +2,10 @@ import 'package:flutter/material.dart';
 
 class DropdownField extends StatefulWidget {
   final String fieldName;
+  final String label;
   final items;
   final String? hint;
   final provider;
-
-  final String label;
 
   const DropdownField({
     super.key,
@@ -45,8 +44,6 @@ class _DropdownFieldState extends State<DropdownField> {
             onSelected: (value) {
               setState(() {
                 widget.provider.updateValue(widget.fieldName, value);
-                print(value);
-                print(widget.provider.getValue(widget.fieldName));
               });
             });
 
@@ -55,7 +52,7 @@ class _DropdownFieldState extends State<DropdownField> {
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
           decoration: BoxDecoration(
             color: Color.fromRGBO(37, 46, 63, 1),
             borderRadius: const BorderRadius.only(

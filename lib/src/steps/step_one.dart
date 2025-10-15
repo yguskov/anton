@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../example.dart';
 // import '../widgets/raw_autocomplete.dart';
 import '../widgets/dropdown_field.dart';
+import '../widgets/radio_list_field.dart';
 import '../widgets/raw_autocomplete_example.dart';
 // import '../widgets/custom_autocomplete.dart';
 import '../widgets/text_field_complete.dart';
@@ -41,6 +42,13 @@ class _StepOneState extends State<StepOne> {
     'Strawberry',
   ];
 
+  static const List<String> aimList = [
+    'Повышения зарплаты',
+    'Профессионального роста',
+    'Продвижения по карьере',
+    'Сменить направление'
+  ];
+
   @override
   Widget build(
     BuildContext context,
@@ -54,7 +62,7 @@ class _StepOneState extends State<StepOne> {
       const SizedBox(height: 16),
       _buildDropdownSection('Категория', 'Выберите', 'category', categories),
       const SizedBox(height: 16),
-      _buildRadioList(),
+      _buildRadioList('Какая у вас цель?', 'Я хочу', 'aim', aimList),
 /*
       Autocomplete<String>(
         optionsBuilder: (TextEditingValue textEditingValue) {
@@ -128,26 +136,14 @@ class _StepOneState extends State<StepOne> {
 
   String? _selectedValue;
 
-  Widget _buildRadioList() {
-    return SizedBox(
-      height: 100,
-      width: 600,
-      child: ListView.builder(
-        itemCount: _options2.length,
-        itemBuilder: (context, index) {
-          return RadioListTile<String>(
-            title: Text(_options2[index]),
-            value: _options2[index],
-            groupValue: _selectedValue,
-            onChanged: (value) {
-              setState(() {
-                _selectedValue = value;
-              });
-            },
-          );
-        },
-      ),
-    );
+  Widget _buildRadioList(
+      String label, String hint, String fieldName, List<String> items) {
+    return DynamicRadioList(
+        fieldName: fieldName,
+        label: label,
+        hint: hint,
+        items: items,
+        provider: widget.provider);
   }
 }
 

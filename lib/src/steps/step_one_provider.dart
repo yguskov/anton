@@ -19,6 +19,7 @@ class StepOneProvider with WizardStep {
     'email': BehaviorSubject<String>.seeded(''),
     'password': BehaviorSubject<String>.seeded(''),
     'category': BehaviorSubject<String>.seeded(''),
+    'aim': BehaviorSubject<String>.seeded(''),
   };
 
   final descriptionFocusNode = FocusNode();
