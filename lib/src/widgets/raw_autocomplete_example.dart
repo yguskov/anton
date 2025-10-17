@@ -4,11 +4,9 @@ class RawAutocompleteExample extends StatefulWidget {
   final String? hint;
   final controller;
   final focusNode;
-
   final String? label;
-
   final String fieldName;
-
+  final List<String>? options;
   final provider;
 
   const RawAutocompleteExample({
@@ -16,6 +14,7 @@ class RawAutocompleteExample extends StatefulWidget {
     required this.fieldName,
     this.label,
     this.hint,
+    this.options,
     // TextField parameters
     required this.provider,
     this.controller,
@@ -29,16 +28,7 @@ class RawAutocompleteExample extends StatefulWidget {
 class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
   late final TextEditingController _controller;
   final FocusNode _focusNode = FocusNode();
-  final List<String> _options = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Elderberry',
-    'Fig',
-    'Grape',
-    'Honeydew'
-  ];
+  List<String> _options = [];
 
   Iterable<String> _currentOptions = const Iterable<String>.empty();
   bool _isOptionsVisible = false;
@@ -50,6 +40,7 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
     super.initState();
     _controller = widget.provider.controllerByName(widget.fieldName);
     _controller.addListener(_onTextChanged);
+    _options = widget.options ?? [];
     onValueChanged = (_) {
       print(_controller.text);
       widget.provider.updateDescription(_controller.text);
