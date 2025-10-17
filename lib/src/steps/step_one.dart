@@ -30,23 +30,20 @@ class _StepOneState extends State<StepOne> {
     PopupDropdownItem(value: 'sports', label: 'Спорт'),
   ];
 
-  static const List<String> _options = [
-    'Apple',
-    'Banana',
-    'Cherry',
-    'Date',
-    'Fig',
-    'Grape',
-    'Lemon',
-    'Orange',
-    'Strawberry',
+  static const List<String> _positionOptions = [
+    'Аналитик',
+    'Джуниор фронтэнд программист',
+    'Менеджер по работе с клиентами',
+    'Системный администратор',
+    'Строитель-монтажник',
   ];
 
-  static const List<String> aimList = [
-    'Повышения зарплаты',
-    'Профессионального роста',
-    'Продвижения по карьере',
-    'Сменить направление'
+  static const List<String> _sectorOptions = [
+    'Аналитик',
+    'Джуниор фронтэнд программист',
+    'Менеджер по работе с клиентами',
+    'Системный администратор',
+    'Строитель-монтажник',
   ];
 
   @override
@@ -54,15 +51,19 @@ class _StepOneState extends State<StepOne> {
     BuildContext context,
   ) {
     List<Widget> textFields = [
-      _buildTextFieldWithLabel('Имя пользователя', 'Введите ваше имя', 'fio'),
+      _buildTextFieldWithLabel('Представьтесь', 'Михайлов Петр', 'fio'),
       const SizedBox(height: 16),
-      _buildTextFieldWithLabel('Email', 'Введите ваш email', 'email'),
+      _buildTextFieldWithLabel('Какая у вас [должность/профессия]?',
+          'Джуниор фронтэнд программист', 'position', _positionOptions),
       const SizedBox(height: 16),
-      _buildTextFieldWithLabel('Пароль', 'Введите пароль', 'password'),
+      _buildTextFieldWithLabel(
+          'В какой [индустрии] работаете?', 'ИТ', 'sector', _sectorOptions),
       const SizedBox(height: 16),
-      _buildDropdownSection('Категория', 'Выберите', 'category', categories),
-      const SizedBox(height: 16),
-      _buildRadioList('Какая у вас цель?', 'Я хочу', 'aim', aimList),
+      _buildTextFieldWithLabel(
+          'Как вы обращаетесь к начальнику?', 'Петров Михаил', 'boss_fio'),
+      // _buildDropdownSection('Как вы обращаетесь к начальнику?', 'Петров Михаил', 'boss_fio', categories),
+      // const SizedBox(height: 16),
+      // _buildRadioList('Какая у вас цель?', 'Я хочу', 'aim', aimList),
 /*
       Autocomplete<String>(
         optionsBuilder: (TextEditingValue textEditingValue) {
@@ -106,12 +107,14 @@ class _StepOneState extends State<StepOne> {
   }
 
   // Метод для создания поля с описанием
-  Widget _buildTextFieldWithLabel(String label, String hint, String fieldName) {
+  Widget _buildTextFieldWithLabel(String label, String hint, String fieldName,
+      [List<String>? options]) {
     return RawAutocompleteExample(
       fieldName: fieldName,
       label: label,
       hint: hint,
       provider: widget.provider,
+      options: options,
     );
   }
 
