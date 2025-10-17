@@ -17,8 +17,12 @@ class NextButton extends StatelessWidget {
         }
         final enabled = snapshot.data!;
         return ElevatedButton(
-          child: const Text("Next"),
+          child: const Text("Сохранить >"),
           onPressed: enabled ? context.wizardController.goNext : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFFF76D12), // Основной цвет фона
+            foregroundColor: Colors.white, // Цвет текста и иконки
+          ),
         );
       },
     );

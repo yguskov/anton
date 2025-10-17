@@ -22,16 +22,16 @@ class StepsOverview extends StatelessWidget {
             String title;
             switch (step.runtimeType) {
               case StepOneProvider:
-                title = "Step one";
+                title = "Представление";
                 break;
               case StepTwoProvider:
-                title = "Step two";
+                title = "Цели";
                 break;
               case StepThreeProvider:
-                title = "Step Three";
+                title = "Зарплата";
                 break;
               default:
-                title = "Unknown step description";
+                title = "Еще";
                 break;
             }
             return StreamBuilder<int>(

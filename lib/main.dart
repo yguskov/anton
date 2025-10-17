@@ -16,12 +16,13 @@ class MyApp extends StatelessWidget {
     BuildContext context,
   ) {
     return MaterialApp(
-      title: 'Flutter Wizard Example',
+      title: 'Анкета',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         colorScheme: ColorScheme(
           brightness: Brightness.light,
-          primary: Colors.deepPurple,
+          // primary: Colors.deepPurple,
+          primary: Color(0xFF5801fd),
           onPrimary: Colors.white,
           secondary: Colors.orange,
           onSecondary: Colors.white,
@@ -84,7 +85,7 @@ class ProviderExamplePage extends StatelessWidget {
                 stream: context.wizardController.indexStream,
                 initialData: context.wizardController.index,
                 builder: (context, snapshot) {
-                  return Text("Wizard Examine - Step ${snapshot.data! + 1}");
+                  return Text("Анкета - шаг ${snapshot.data! + 1}");
                 },
               ),
             ),

@@ -17,8 +17,14 @@ class PreviousButton extends StatelessWidget {
         }
         final enabled = snapshot.data!;
         return OutlinedButton(
-          child: const Text("Previous"),
+          child: const Text("< Назад"),
           onPressed: enabled ? context.wizardController.goBack : null,
+          style: OutlinedButton.styleFrom(
+            // backgroundColor: Color(0xFF5801fd), // Цвет фона
+            foregroundColor: Color(0xFF5801fd), // Цвет текста
+            // foregroundColor: Colors.white, // Цвет текста
+            side: BorderSide(color: Colors.black54), // Цвет границы
+          ),
         );
       },
     );
