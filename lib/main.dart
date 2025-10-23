@@ -70,15 +70,15 @@ class ProviderExamplePage extends StatelessWidget {
         ),
         WizardStepController(
           step: provider.stepTwoProvider,
-          isNextEnabled: false,
+          isNextEnabled: true,
         ),
         WizardStepController(
           step: provider.stepThreeProvider,
         ),
       ],
       // Wrapping with a builder so the context contains the [WizardController]
-      child: Builder(
-        builder: (context) {
+      child: OrientationBuilder(
+        builder: (context, orientation) {
           return Scaffold(
             appBar: AppBar(
               title: StreamBuilder<int>(
@@ -99,6 +99,10 @@ class ProviderExamplePage extends StatelessWidget {
                     ),
                     dismissDirection: DismissDirection.horizontal,
                   ));
+                } else if (event is WizardGoBackEvent) {
+                  // print('!!! ${context.wizardController.index}');
+                  // context.wizardController.goTo(index: 0);
+                  // context.wizardController.goBack();
                 }
               },
               child: LayoutBuilder(
@@ -113,8 +117,8 @@ class ProviderExamplePage extends StatelessWidget {
                         constraints: BoxConstraints(
                             minWidth: 800,
                             maxWidth: 1000,
-                            minHeight: 800,
-                            maxHeight: 800),
+                            minHeight: 600,
+                            maxHeight: 600),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
@@ -126,6 +130,7 @@ class ProviderExamplePage extends StatelessWidget {
                                 context,
                                 provider: provider,
                                 constraints: constraints,
+                                orientation: orientation,
                               ),
                             ),
                             const ActionBar(),
@@ -140,6 +145,9 @@ class ProviderExamplePage extends StatelessWidget {
           );
         },
       ),
+      onStepChanged: (prev, next) {
+        // print('$prev =========================> $next');
+      },
     );
   }
 
@@ -147,27 +155,37 @@ class ProviderExamplePage extends StatelessWidget {
     BuildContext context, {
     required ProviderExamplePageProvider provider,
     required BoxConstraints constraints,
+    required Orientation orientation,
   }) {
-    final wizard = Wizard(
-      stepBuilder: (context, state) {
-        if (state is StepOneProvider) {
-          return StepOne(
-            provider: state,
+    final wizard = StreamBuilder<int>(
+        stream: context.wizardController.indexStream,
+        initialData: context.wizardController.index,
+        builder: (context, snapshot) {
+          final index = snapshot.data!;
+          return Wizard(
+            stepBuilder: (context, state) {
+              switch (index) {
+                case 0:
+                  return StepOne(
+                    provider: provider.stepOneProvider,
+                  );
+
+                case 1:
+                  return StepTwo(
+                    provider: provider.stepTwoProvider,
+                  );
+
+                case 2:
+                  return StepThree(
+                    provider: provider.stepThreeProvider,
+                  );
+
+                default:
+                  return Container();
+              }
+            },
           );
-        }
-        if (state is StepTwoProvider) {
-          return StepTwo(
-            provider: state,
-          );
-        }
-        if (state is StepThreeProvider) {
-          return StepThree(
-            provider: state,
-          );
-        }
-        return Container();
-      },
-    );
+        });
     final narrow = constraints.maxWidth <= 500;
     if (narrow) {
       return wizard;
