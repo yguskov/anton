@@ -1,61 +1,36 @@
 import 'dart:async';
 
+import 'package:example/src/steps/my_wizard_step.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../example.dart';
-
-class StepTwoProvider with WizardStep, DisposableMixin {
+class StepTwoProvider extends MyWizardStep with WizardStep {
   StepTwoProvider()
-      : _options = BehaviorSubject<List<String>>.seeded(['A', 'B']),
-        _selection = BehaviorSubject<String?>.seeded(null) {
-    _selection.takeUntil(dispose$).listen((selection) {
-      final index = wizardController.getStepIndex(this);
-      if (selection != null) {
-        wizardController.enableGoNext(index);
-      } else {
-        wizardController.disableGoNext(index);
-      }
-    });
+      : super({
+          'aim': BehaviorSubject<String>.seeded(''),
+          'why': BehaviorSubject<String>.seeded(''),
+        }, {});
 
-    Stream.periodic(
-      const Duration(seconds: 3),
-    ).listen((_) {
-      if (selection == 'B') {
-        select(selection!);
-      }
-    });
-  }
+  final descriptionFocusNode = FocusNode();
 
-  final BehaviorSubject<List<String>> _options;
-  final BehaviorSubject<String?> _selection;
+  final descriptionTextController = TextEditingController();
 
-  List<String> get options {
-    return _options.value;
-  }
-
-  Stream<List<String>> get optionsStream {
-    return _options.stream.asBroadcastStream();
-  }
-
-  String? get selection {
-    return _selection.value;
-  }
-
-  Stream<String?> get selectionStream {
-    return _selection.stream.asBroadcastStream().distinct();
-  }
-
-  void select(
-    String option,
-  ) {
-    _selection.add(_selection.value != option ? option : null);
+  @override
+  Future<void> onShowing() async {
+    // if (getValue('fio').isEmpty) {
+    //   descriptionFocusNode.requestFocus();
+    // }
   }
 
   @override
+  Future<void> onHiding() async {
+    if (descriptionFocusNode.hasFocus) {
+      descriptionFocusNode.unfocus();
+    }
+  }
+
   void dispose() {
-    _selection.close();
-    _options.close();
-    super.dispose();
+    descriptionTextController.dispose();
   }
 }
