@@ -43,8 +43,15 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
     _options = widget.options ?? [];
     onValueChanged = (_) {
       print(_controller.text);
-      widget.provider.updateDescription(_controller.text);
+      widget.provider.updateValue(widget.fieldName, _controller.text);
     };
+  }
+
+  @override
+  void setState(fn) {
+    if (mounted) {
+      super.setState(fn);
+    }
   }
 
   void _onTextChanged() {
