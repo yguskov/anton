@@ -1,32 +1,19 @@
 import 'package:flutter/material.dart';
 
 import '../../example.dart';
-import '../widgets/dropdown_field.dart';
-import '../widgets/radio_list_field.dart';
-import '../widgets/raw_autocomplete_example.dart';
+import 'my_wizard_step.dart';
 
-class StepOne extends StatefulWidget {
+class StepOne extends StatefulWidgetStep {
   StepOne({
-    required this.provider,
+    required StepOneProvider provider,
     Key? key,
-  }) : super(key: key);
-
-  final StepOneProvider provider;
+  }) : super(key: key, provider: provider);
 
   @override
-  State<StepOne> createState() => _StepOneState();
+  StateStep<StepOne> createState() => _StepOneState();
 }
 
-class _StepOneState extends State<StepOne> {
-  // Данные для dropdown'ов
-  final List<PopupDropdownItem<String>> categories = [
-    PopupDropdownItem(value: 'electronics', label: 'Электроника'),
-    PopupDropdownItem(value: 'clothing', label: 'Одежда'),
-    PopupDropdownItem(value: 'books', label: 'Книги'),
-    PopupDropdownItem(value: 'home', label: 'Дом и сад'),
-    PopupDropdownItem(value: 'sports', label: 'Спорт'),
-  ];
-
+class _StepOneState extends StateStep<StepOne> {
   static const List<String> _positionOptions = [
     'Аналитик',
     'Джуниор фронтэнд программист',
@@ -49,37 +36,19 @@ class _StepOneState extends State<StepOne> {
     BuildContext context,
   ) {
     List<Widget> textFields = [
-      _buildTextFieldWithLabel('Представьтесь', 'Михайлов Петр', 'fio'),
+      buildTextFieldWithLabel('Представьтесь', 'Михайлов Петр', 'fio'),
       const SizedBox(height: 16),
-      _buildTextFieldWithLabel('Какая у вас [должность/профессия]?',
+      buildTextFieldWithLabel('Какая у вас [должность/профессия]?',
           'Джуниор фронтэнд программист', 'position', _positionOptions),
       const SizedBox(height: 16),
-      _buildTextFieldWithLabel(
+      buildTextFieldWithLabel(
           'В какой [индустрии] работаете?', 'ИТ', 'sector', _sectorOptions),
       const SizedBox(height: 16),
-      _buildTextFieldWithLabel(
+      buildTextFieldWithLabel(
           'Как вы обращаетесь к начальнику?', 'Петров Михаил', 'boss_fio'),
       // _buildDropdownSection('Как вы обращаетесь к начальнику?', 'Петров Михаил', 'boss_fio', categories),
       // const SizedBox(height: 16),
       // _buildRadioList('Какая у вас цель?', 'Я хочу', 'aim', aimList),
-/*
-      Autocomplete<String>(
-        optionsBuilder: (TextEditingValue textEditingValue) {
-          if (textEditingValue.text == '') {
-            return const Iterable<String>.empty();
-          }
-          return _options.where((String option) {
-            return option.toLowerCase().contains(
-                  textEditingValue.text.toLowerCase(),
-                );
-          });
-        },
-        onSelected: (String selection) {
-          debugPrint('You just selected $selection');
-        },
-      ),
-
-*/
     ];
 
     return Column(
@@ -102,49 +71,6 @@ class _StepOneState extends State<StepOne> {
       ),
     );
     */
-  }
-
-  // Метод для создания поля с описанием
-  Widget _buildTextFieldWithLabel(String label, String hint, String fieldName,
-      [List<String>? options]) {
-    return RawAutocompleteExample(
-      fieldName: fieldName,
-      label: label,
-      hint: hint,
-      provider: widget.provider,
-      options: options,
-    );
-  }
-
-// Виджет секции dropdown
-  Widget _buildDropdownSection(String label, String hint, String fieldName,
-      List<PopupDropdownItem<String>> items) {
-    return DropdownField(
-      fieldName: fieldName,
-      label: label,
-      items: items,
-      provider: widget.provider,
-    );
-  }
-
-  final List<String> _options2 = [
-    'Apple',
-    'Banana',
-    'Orange',
-    'Grapes',
-    'Mango'
-  ];
-
-  String? _selectedValue;
-
-  Widget _buildRadioList(
-      String label, String hint, String fieldName, List<String> items) {
-    return DynamicRadioList(
-        fieldName: fieldName,
-        label: label,
-        hint: hint,
-        items: items,
-        provider: widget.provider);
   }
 }
 
