@@ -118,7 +118,7 @@ class ProviderExamplePage extends StatelessWidget {
                             minWidth: 800,
                             maxWidth: 1000,
                             minHeight: 600,
-                            maxHeight: 600),
+                            maxHeight: 660),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.center,
