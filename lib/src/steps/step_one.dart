@@ -1,3 +1,4 @@
+import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
 
 import '../../example.dart';
@@ -36,7 +37,9 @@ class _StepOneState extends StateStep<StepOne> {
     BuildContext context,
   ) {
     List<Widget> textFields = [
-      buildTextFieldWithLabel('Представьтесь', 'Михайлов Петр', 'fio'),
+      Text('Представьтесь', style: headerStyle),
+      const SizedBox(height: 20),
+      buildTextFieldWithLabel('Ваши Фамилия и Имя', 'Михайлов Петр', 'fio'),
       const SizedBox(height: 16),
       buildTextFieldWithLabel('Какая у вас [должность/профессия]?',
           'Джуниор фронтэнд программист', 'position', _positionOptions),
@@ -44,17 +47,35 @@ class _StepOneState extends StateStep<StepOne> {
       buildTextFieldWithLabel(
           'В какой [индустрии] работаете?', 'ИТ', 'sector', _sectorOptions),
       const SizedBox(height: 16),
-      buildTextFieldWithLabel(
-          'Как вы обращаетесь к начальнику?', 'Петров Михаил', 'boss_fio'),
+      TextBar('Как вы обращаетесь к начальнику? Какая у него почта?'),
+      const SizedBox(height: 5),
+      Row(
+        children: [
+          Expanded(
+            flex: 6,
+            child: buildJustTextField('Петров Михаил', 'boss_fio'),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Expanded(
+            flex: 5,
+            child: buildJustTextField('petrovWork@mail.com', 'boss_email'),
+          ),
+        ],
+      ),
+
       // _buildDropdownSection('Как вы обращаетесь к начальнику?', 'Петров Михаил', 'boss_fio', categories),
       // const SizedBox(height: 16),
       // _buildRadioList('Какая у вас цель?', 'Я хочу', 'aim', aimList),
     ];
 
     return Column(
-        children: textFields,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min);
+      children: textFields,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    );
 
     /*
     return InputField(

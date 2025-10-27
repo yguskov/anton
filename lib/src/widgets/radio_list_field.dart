@@ -6,7 +6,6 @@ import 'package:provider/provider.dart';
 class DynamicRadioList extends StatefulWidget {
   final String fieldName;
   final String label;
-  final String hint;
   final List<String> items;
 
   final provider;
@@ -16,7 +15,6 @@ class DynamicRadioList extends StatefulWidget {
       required this.fieldName,
       required this.label,
       required this.items,
-      this.hint = '',
       this.provider});
 
   @override
@@ -55,7 +53,7 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
 
   @override
   Widget build(BuildContext context) {
-    const leftPadding = 100.0;
+    const leftPadding = 80.0;
 
     Widget radioList = ListView.builder(
       padding: EdgeInsets.only(left: leftPadding, top: 0, bottom: 0),
@@ -109,14 +107,10 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
             ),
           ),
         ),
-        SizedBox(height: 0),
-        Padding(
-          padding: const EdgeInsets.only(left: 6.0, top: 8, bottom: 0),
-          child: Text(widget.hint),
-        ),
+        SizedBox(height: 2),
         radioList,
         Padding(
-          padding: const EdgeInsets.only(left: leftPadding + 50, top: 10),
+          padding: const EdgeInsets.only(left: leftPadding, top: 15),
           child: TextField(
             // autofillHints: ['fix', 'other'],
             controller: _otherController,

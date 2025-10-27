@@ -17,8 +17,12 @@ class FinishedButton extends StatelessWidget {
         }
         final enabled = snapshot.data!;
         return ElevatedButton(
-          child: const Text("Finish"),
+          child: const Text("Сохранить"),
           onPressed: enabled ? _onPressed : null,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFFF76D12), // Основной цвет фона
+            foregroundColor: Colors.white, // Цвет текста и иконки
+          ),
         );
       },
     );

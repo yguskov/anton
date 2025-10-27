@@ -33,16 +33,26 @@ class _StepTwoState extends StateStep<StepTwo> {
     BuildContext context,
   ) {
     List<Widget> textFields = [
-      buildRadioList('Какая у вас цель?', 'Я хочу', 'aim', aimList),
+      Text('Какая у вас цель?', style: headerStyle),
+      const SizedBox(height: 6),
+      Text(
+        'Почему вы этого заслуживаете?',
+        style: headerStyle2,
+      ),
       const SizedBox(height: 16),
-      buildRadioList('', 'Я заслуживаю (Цель) потому, что я:', 'why', whyList),
+      buildRadioList('Я хочу:', 'aim', aimList),
+      const SizedBox(height: 16),
+      buildRadioList(
+          'Я этого заслуживаю (Цель) потому, что я:', 'why', whyList),
       const SizedBox(height: 16),
     ];
 
     return Column(
-        children: textFields,
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min);
+      children: textFields,
+      mainAxisAlignment: MainAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+    );
   }
 }
 
