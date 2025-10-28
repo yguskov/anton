@@ -47,11 +47,21 @@ class _StepTwoState extends StateStep<StepTwo> {
       const SizedBox(height: 16),
     ];
 
-    return Column(
-      children: textFields,
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+    // return ListView(
+    //   children: textFields,
+    //   // controller: ScrollController(),
+    //   physics: AlwaysScrollableScrollPhysics(),
+    //   // scrollDirection: Axis.vertical,
+    // );
+
+    return SingleChildScrollView(
+      physics: ClampingScrollPhysics(),
+      child: Column(
+        children: textFields,
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+      ),
     );
   }
 }

@@ -82,11 +82,11 @@ class _StepThreeState extends StateStep<StepThree> {
           'want_info')
     ];
 
-    return Column(
+    return ListView(
       children: textFields,
-      mainAxisAlignment: MainAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
+      // mainAxisAlignment: MainAxisAlignment.start,
+      // mainAxisSize: MainAxisSize.min,
+      // crossAxisAlignment: CrossAxisAlignment.start,
     );
   }
 }

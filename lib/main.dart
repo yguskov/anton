@@ -112,31 +112,25 @@ class ProviderExamplePage extends StatelessWidget {
                       _buildProgressIndicator(
                         context,
                       ),
-                      Container(
-                        // width: 800,
-                        constraints: BoxConstraints(
-                            minWidth: 800,
-                            maxWidth: 1000,
-                            minHeight: 600,
-                            maxHeight: 660),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            const ActionBar(),
-                            Expanded(
-                              child: _buildWizard(
-                                context,
-                                provider: provider,
-                                constraints: constraints,
-                                orientation: orientation,
-                              ),
+                      const ActionBar(),
+                      Expanded(
+                        child: ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: constraints.maxHeight,
+                          ),
+                          child: Container(
+                            color: Colors.grey[200],
+                            padding: const EdgeInsets.all(20),
+                            child: _buildWizard(
+                              context,
+                              provider: provider,
+                              constraints: constraints,
+                              orientation: orientation,
                             ),
-                            const ActionBar(),
-                          ],
+                          ),
                         ),
                       ),
+                      const ActionBar(),
                     ],
                   );
                 },
