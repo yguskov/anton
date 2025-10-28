@@ -70,6 +70,8 @@ class _StepOneState extends StateStep<StepOne> {
       // _buildRadioList('Какая у вас цель?', 'Я хочу', 'aim', aimList),
     ];
 
+    return ListView(children: textFields);
+
     return Column(
       children: textFields,
       mainAxisAlignment: MainAxisAlignment.start,
