@@ -18,3 +18,6 @@ samples, guidance on mobile development, and a full API reference.
 export CHROME_EXECUTABLE="/usr/bin/chromium-browser"
 flutter doctor -v
 flutter run -d chrome --web-renderer html --verbose
+flutter build web --release --base-href /anketa/
+rsync -avz --delete build/web/ root@5.187.2.205:/var/www/html/anketa
+
