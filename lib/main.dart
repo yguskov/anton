@@ -112,11 +112,11 @@ class ProviderExamplePage extends StatelessWidget {
                       _buildProgressIndicator(
                         context,
                       ),
-                      const ActionBar(),
                       Expanded(
                         child: ConstrainedBox(
                           constraints: BoxConstraints(
                             maxHeight: constraints.maxHeight,
+                            maxWidth: 1024,
                           ),
                           child: Container(
                             color: Colors.grey[200],
@@ -130,7 +130,12 @@ class ProviderExamplePage extends StatelessWidget {
                           ),
                         ),
                       ),
-                      const ActionBar(),
+                      ConstrainedBox(
+                          constraints: BoxConstraints(
+                            maxHeight: constraints.maxHeight,
+                            maxWidth: 1024,
+                          ),
+                          child: const ActionBar()),
                     ],
                   );
                 },

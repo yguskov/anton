@@ -52,12 +52,16 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     );
   }
 
-  Widget buildRadioList(String label, String fieldName, List<String> items) {
+  Widget buildRadioList(String label, String fieldName, List<String> items,
+      [optionHeight, optionFontSize]) {
     return DynamicRadioList(
-        fieldName: fieldName,
-        label: label,
-        items: items,
-        provider: widget.provider);
+      fieldName: fieldName,
+      label: label,
+      items: items,
+      provider: widget.provider,
+      optionHeight: optionHeight,
+      optionFontSize: optionFontSize,
+    );
   }
 
   Widget buildCheckBox(String label, String fieldName) {

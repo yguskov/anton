@@ -1,20 +1,21 @@
-import 'dart:js_interop';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class DynamicRadioList extends StatefulWidget {
   final String fieldName;
   final String label;
   final List<String> items;
+  late final double? optionFontSize;
+  late final double? optionHeight;
 
   final provider;
 
-  const DynamicRadioList(
+  DynamicRadioList(
       {super.key,
       required this.fieldName,
       required this.label,
       required this.items,
+      this.optionHeight,
+      this.optionFontSize,
       this.provider});
 
   @override
@@ -53,7 +54,7 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
 
   @override
   Widget build(BuildContext context) {
-    const leftPadding = 80.0;
+    const leftPadding = 20.0;
 
     Widget radioList = ListView.builder(
       padding: EdgeInsets.only(left: leftPadding, top: 0, bottom: 0),
@@ -62,10 +63,15 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
       itemCount: _options.length,
       itemBuilder: (context, index) {
         return Container(
-          height: 27,
+          height: widget.optionHeight,
           child: RadioListTile<String>(
-            title: Text(_options[index]),
-            contentPadding: EdgeInsets.zero,
+            title: Text(_options[index],
+                style: TextStyle(height: widget.optionFontSize),
+                textHeightBehavior: TextHeightBehavior(
+                    applyHeightToFirstAscent: false,
+                    applyHeightToLastDescent: false,
+                    leadingDistribution: TextLeadingDistribution.even)),
+            // contentPadding: EdgeInsets.zero,
             visualDensity: VisualDensity.compact,
             dense: true,
             // materialTapTargetSize: ,
