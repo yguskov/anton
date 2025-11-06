@@ -14,7 +14,8 @@ class ActionBar extends StatelessWidget {
       builder: (context, constraints) {
         final narrow = constraints.maxWidth <= 500;
         return Padding(
-          padding: const EdgeInsets.all(kRegularPadding),
+          padding: const EdgeInsets.only(
+              top: kSmallPadding, right: 10, bottom: kSmallPadding, left: 10),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [

@@ -21,17 +21,21 @@ class DropdownField extends StatefulWidget {
 }
 
 class _DropdownFieldState extends State<DropdownField> {
-  // late final _controller;
+  late final TextEditingController _controller;
 
   @override
   void initState() {
     super.initState();
-    // _controller = widget.provider.controllerByName(widget.fieldName);
-    // _controller.addListener(_onTextChanged);
+    _controller = widget.provider.controllerByName(widget.fieldName);
+    _controller.addListener(_onTextChanged);
     // onValueChanged = (_) {
     //   print(_controller.text);
     //   widget.provider.updateDescription(_controller.text);
     // };
+  }
+
+  void _onTextChanged() {
+    setState(() {});
   }
 
   @override
@@ -44,6 +48,7 @@ class _DropdownFieldState extends State<DropdownField> {
             onSelected: (value) {
               setState(() {
                 widget.provider.updateValue(widget.fieldName, value);
+                widget.provider.controllerByName(widget.fieldName).text = value;
               });
             });
 

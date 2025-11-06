@@ -75,6 +75,9 @@ class ProviderExamplePage extends StatelessWidget {
         WizardStepController(
           step: provider.stepThreeProvider,
         ),
+        WizardStepController(
+          step: provider.stepFourProvider,
+        ),
       ],
       // Wrapping with a builder so the context contains the [WizardController]
       child: OrientationBuilder(
@@ -120,7 +123,7 @@ class ProviderExamplePage extends StatelessWidget {
                           ),
                           child: Container(
                             color: Colors.grey[200],
-                            padding: const EdgeInsets.all(20),
+                            padding: const EdgeInsets.all(10),
                             child: _buildWizard(
                               context,
                               provider: provider,
@@ -179,6 +182,11 @@ class ProviderExamplePage extends StatelessWidget {
                     provider: provider.stepThreeProvider,
                   );
 
+                case 3:
+                  return StepFour(
+                    provider: provider.stepFourProvider,
+                  );
+
                 default:
                   return Container();
               }
@@ -192,12 +200,13 @@ class ProviderExamplePage extends StatelessWidget {
     return Row(
       children: [
         const SizedBox(
-          width: 200,
+          width: 150,
           child: StepsOverview(),
         ),
         Expanded(
             child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding:
+              const EdgeInsets.only(top: 6.0, bottom: 6, left: 0, right: 0),
           child: wizard,
         ))
       ],
@@ -228,11 +237,13 @@ class ProviderExamplePageProvider {
   ProviderExamplePageProvider()
       : stepOneProvider = StepOneProvider(),
         stepTwoProvider = StepTwoProvider(),
-        stepThreeProvider = StepThreeProvider();
+        stepThreeProvider = StepThreeProvider(),
+        stepFourProvider = StepFourProvider();
 
   final StepOneProvider stepOneProvider;
   final StepTwoProvider stepTwoProvider;
   final StepThreeProvider stepThreeProvider;
+  final StepFourProvider stepFourProvider;
 
   Future<void> reportIssue() async {
     debugPrint('Finished!');
@@ -241,5 +252,7 @@ class ProviderExamplePageProvider {
   Future<void> dispose() async {
     stepOneProvider.dispose();
     stepTwoProvider.dispose();
+    stepThreeProvider.dispose();
+    stepFourProvider.dispose();
   }
 }

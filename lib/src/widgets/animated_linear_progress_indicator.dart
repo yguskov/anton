@@ -95,6 +95,7 @@ class _AnimatedLinearProgressIndicatorState
       builder: (_, __) {
         return LinearProgressIndicator(
           value: _value.value,
+          minHeight: 5,
         );
       },
     );

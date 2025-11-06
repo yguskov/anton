@@ -78,15 +78,9 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                 widget.provider.updateValue(fieldName, value! ? '1' : '');
               });
             }),
-        const SizedBox(
-          width: 25,
-        ),
         Expanded(
-            child: Text(
-                'Я хочу обмениваться с сообществом и получать информирование об уровне зарплат в моём регионе',
-                maxLines: 2,
-                overflow: TextOverflow.visible,
-                softWrap: true))
+            child: Text(label,
+                maxLines: 2, overflow: TextOverflow.visible, softWrap: true))
       ],
     );
   }

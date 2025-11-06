@@ -30,6 +30,9 @@ class StepsOverview extends StatelessWidget {
               case StepThreeProvider:
                 title = "Зарплата";
                 break;
+              case StepFourProvider:
+                title = "Обязанности";
+                break;
               default:
                 title = "Еще";
                 break;

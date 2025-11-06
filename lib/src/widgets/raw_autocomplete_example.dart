@@ -78,8 +78,8 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
       _controller.text = option;
       _isOptionsVisible = false;
     });
+    widget.provider.updateValue(widget.fieldName, option);
     _focusNode.unfocus();
-    print('Выбрано: $option');
   }
 
   void _handleEnterPressed() {
