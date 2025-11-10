@@ -47,6 +47,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     return DropdownField(
       fieldName: fieldName,
       label: label,
+      hint: hint,
       items: items,
       provider: widget.provider,
     );

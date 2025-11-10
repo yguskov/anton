@@ -193,7 +193,7 @@ class ProviderExamplePage extends StatelessWidget {
             },
           );
         });
-    final narrow = constraints.maxWidth <= 500;
+    final narrow = constraints.maxWidth <= 800;
     if (narrow) {
       return wizard;
     }

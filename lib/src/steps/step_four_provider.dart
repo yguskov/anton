@@ -11,14 +11,12 @@ class StepFourProvider extends MyWizardStep with WizardStep {
           'duty_name': BehaviorSubject<String>.seeded(''),
           'duty_period': BehaviorSubject<String>.seeded(''),
           'duty_attitude': BehaviorSubject<String>.seeded(''),
-          'duty_additional': BehaviorSubject<String>.seeded(''),
-          'duty_new': BehaviorSubject<String>.seeded(''),
+          'duty_type': BehaviorSubject<String>.seeded(''),
         }, {
           'duty_name': TextEditingController(),
           'duty_period': TextEditingController(),
           'duty_attitude': TextEditingController(),
-          'duty_additional': TextEditingController(),
-          'duty_new': TextEditingController(),
+          'duty_type': TextEditingController(),
         });
 
   final descriptionFocusNode = FocusNode();
