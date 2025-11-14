@@ -151,7 +151,7 @@ class _StepFiveState extends StateStep<StepFive> {
   ) {
     return LayoutBuilder(builder: (context, constraints) {
       List<Widget> textFields = [
-        Text('Навыки', style: headerStyle),
+        Text('Чем вы сильны?', style: headerStyle),
         const SizedBox(height: 6),
         Text(
             'Какие навыки позволят использовать ваши умения в максимально эффективных позициях.',
@@ -160,15 +160,15 @@ class _StepFiveState extends StateStep<StepFive> {
         buildTextFieldWithLabel(
             'Мои навыки', 'Управление метлой', 'skill_name', skills),
         const SizedBox(height: 16),
-        buildDropdownSection('Какой у вас уровень навыка?', '1-5| не знаю',
-            'skill_level', levels),
-        const SizedBox(height: 16),
-        buildTextFieldWithLabel('К какому типу относится навык?',
-            'hard|soft|другое', 'skill_type', ['hard', 'soft']),
+        buildDropdownSection('Какой у вас уровень мастерства навыка',
+            '1-5| не знаю', 'skill_level', levels),
         const SizedBox(height: 16),
         // power
         buildRadioList('Я считаю это своим:', 'skill_power',
-            ['Не знаю', 'Сильным навыком', 'Слабым навыком'], null, 1.3),
+            ['Сильным навыком', 'Слабым навыком', 'Не знаю'], null, 1.3),
+        const SizedBox(height: 16),
+        buildTextFieldWithLabel('К какому типу относится навык?',
+            'hard|soft|другое', 'skill_type', ['hard', 'soft']),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -242,7 +242,7 @@ class _StepFiveState extends StateStep<StepFive> {
                 leftText: powerShortText(skillList.elementAt(index)['power']!),
                 leftColor: powerColor(skillList.elementAt(index)['power']!),
                 rightText: 'Уровень: ${skillList[index]['level']}',
-                rightColor: Color(0xFF5801fd), // Colors.green.shade800
+                rightColor: Color(0xFF5B32332), // Colors.green.shade800
                 selected: _selectedSkill == index,
               ),
             ),
@@ -283,9 +283,9 @@ class _StepFiveState extends StateStep<StepFive> {
   Color powerColor(String value) {
     switch (value) {
       case 'Сильным навыком':
-        return Colors.orange;
+        return Color(0xFF3EAC5D); //Color.fromARGB(a, r, g, b); 3EAC5D
       case 'Слабым навыком':
-        return Color.fromARGB(255, 147, 139, 79);
+        return Color(0xFFF76D12); // Colors.orange;
     }
     return Colors.grey;
   }
