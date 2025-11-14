@@ -54,7 +54,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   }
 
   Widget buildRadioList(String label, String fieldName, List<String> items,
-      [optionHeight, optionFontSize]) {
+      [optionHeight, optionFontSize, optionOtherText]) {
     return DynamicRadioList(
       fieldName: fieldName,
       label: label,
@@ -62,6 +62,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
       provider: widget.provider,
       optionHeight: optionHeight,
       optionFontSize: optionFontSize,
+      otherText: optionOtherText,
     );
   }
 
@@ -89,13 +90,15 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
 class MyWizardStep {
   var _controller;
-  var _field;
+  Map<String, dynamic> _field;
 
   MyWizardStep(this._field, this._controller);
 
   String getValue(name) {
+    if (!_field.containsKey(name))
+      throw Exception('Field $name was not defined in step provider!!!!!!');
+
     return _field[name]!.value;
-    // return _description.value;
   }
 
   void updateValue(String name, String value) {

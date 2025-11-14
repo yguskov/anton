@@ -78,6 +78,9 @@ class ProviderExamplePage extends StatelessWidget {
         WizardStepController(
           step: provider.stepFourProvider,
         ),
+        WizardStepController(
+          step: provider.stepFiveProvider,
+        ),
       ],
       // Wrapping with a builder so the context contains the [WizardController]
       child: OrientationBuilder(
@@ -187,6 +190,11 @@ class ProviderExamplePage extends StatelessWidget {
                     provider: provider.stepFourProvider,
                   );
 
+                case 4:
+                  return StepFive(
+                    provider: provider.stepFiveProvider,
+                  );
+
                 default:
                   return Container();
               }
@@ -238,12 +246,14 @@ class ProviderExamplePageProvider {
       : stepOneProvider = StepOneProvider(),
         stepTwoProvider = StepTwoProvider(),
         stepThreeProvider = StepThreeProvider(),
-        stepFourProvider = StepFourProvider();
+        stepFourProvider = StepFourProvider(),
+        stepFiveProvider = StepFiveProvider();
 
   final StepOneProvider stepOneProvider;
   final StepTwoProvider stepTwoProvider;
   final StepThreeProvider stepThreeProvider;
   final StepFourProvider stepFourProvider;
+  final StepFiveProvider stepFiveProvider;
 
   Future<void> reportIssue() async {
     debugPrint('Finished!');
@@ -254,5 +264,6 @@ class ProviderExamplePageProvider {
     stepTwoProvider.dispose();
     stepThreeProvider.dispose();
     stepFourProvider.dispose();
+    stepFiveProvider.dispose();
   }
 }

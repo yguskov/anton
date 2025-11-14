@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:flutter/material.dart';
 
 class DynamicRadioList extends StatefulWidget {
@@ -6,8 +8,9 @@ class DynamicRadioList extends StatefulWidget {
   final List<String> items;
   late final double? optionFontSize;
   late final double? optionHeight;
+  late final String? otherText;
 
-  final provider;
+  late final provider;
 
   DynamicRadioList(
       {super.key,
@@ -16,6 +19,7 @@ class DynamicRadioList extends StatefulWidget {
       required this.items,
       this.optionHeight,
       this.optionFontSize,
+      this.otherText,
       this.provider});
 
   @override
@@ -26,6 +30,12 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
   late List<String> _options;
   String? _selectedValue;
   late final TextEditingController _otherController;
+
+  void _onChanged() {
+    setState(() {
+      _initValue(widget.provider.controllerByName(widget.fieldName).text);
+    });
+  }
 
   void _initValue(String? value) {
     if (widget.items.contains(value ?? '')) {
@@ -40,9 +50,11 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
   void initState() {
     super.initState();
     _otherController = new TextEditingController();
+    // _otherController = widget.provider.controllerByName(widget.fieldName);
     _options = widget.items;
 
     _initValue(widget.provider.getValue(widget.fieldName));
+    widget.provider.controllerByName(widget.fieldName).addListener(_onChanged);
 
     // _controller = widget.provider.controllerByName(widget.fieldName);
     // _controller.addListener(_onTextChanged);
@@ -77,6 +89,7 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
             // materialTapTargetSize: ,
             value: _options[index],
             groupValue: _selectedValue,
+            selected: _findSelectedOption(_selectedValue) == index,
             onChanged: (value) {
               setState(() {
                 _otherController.text = '';
@@ -115,44 +128,53 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
         ),
         SizedBox(height: 2),
         radioList,
-        Padding(
-          padding: const EdgeInsets.only(left: leftPadding, top: 15),
-          child: TextField(
-            // autofillHints: ['fix', 'other'],
-            controller: _otherController,
-            // focusNode: focusNode,
-            maxLines: 1,
-            // style: TextStyle(height: 10, fontSize: 8),
-            decoration: InputDecoration(
-              hintText: 'Другое',
-              filled: true,
-              fillColor: Colors.grey[200],
-              enabledBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(4),
+        widget.otherText.isNull
+            ? Container()
+            : Padding(
+                padding: const EdgeInsets.only(left: leftPadding, top: 15),
+                child: TextField(
+                  // autofillHints: ['fix', 'other'],
+                  controller: _otherController,
+                  // focusNode: focusNode,
+                  maxLines: 1,
+                  // style: TextStyle(height: 10, fontSize: 8),
+                  decoration: InputDecoration(
+                    hintText: 'Другое',
+                    filled: true,
+                    fillColor: Colors.grey[200],
+                    enabledBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.grey[600]!, width: 1.5),
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(4),
+                      ),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:
+                          BorderSide(color: Colors.grey[800]!, width: 2.0),
+                      borderRadius: const BorderRadius.all(Radius.circular(6)),
+                    ),
+                    isDense: true,
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 15, vertical: 15),
+                  ),
+                  // onSubmitted: (String value) {
+                  //   _handleEnterPressed();
+                  // },
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedValue = value;
+                      widget.provider.updateValue(widget.fieldName, value);
+                    });
+                  },
                 ),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
-                borderRadius: const BorderRadius.all(Radius.circular(6)),
-              ),
-              isDense: true,
-              contentPadding:
-                  const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
-            ),
-            // onSubmitted: (String value) {
-            //   _handleEnterPressed();
-            // },
-            onChanged: (value) {
-              setState(() {
-                _selectedValue = value;
-                widget.provider.updateValue(widget.fieldName, value);
-              });
-            },
-          ),
-        )
+              )
       ],
     );
+  }
+
+  _findSelectedOption(String? value) {
+    String? val = value;
+    return _options.indexWhere((element) => element == val);
   }
 }

@@ -179,6 +179,7 @@ class _StepFourState extends StateStep<StepFour> {
             'Основной|Дополнительной|Новой(Готов взять на себя)',
             'duty_type',
             types),
+        const SizedBox(height: 16),
         Row(
           children: [
             Expanded(
@@ -187,10 +188,9 @@ class _StepFourState extends StateStep<StepFour> {
                 child: const Text("Удалить"),
                 onPressed: removeEnabled ? _remove : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: removeEnabled
-                      ? Color(0xFFF76D12)
-                      : Colors.black87, // Основной цвет фона
-                  foregroundColor: Colors.white, // Цвет текста и иконки
+                  backgroundColor:
+                      removeEnabled ? Color(0xFFF76D12) : Colors.black87,
+                  foregroundColor: Colors.white,
                 ),
               ),
             ),

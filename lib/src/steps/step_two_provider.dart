@@ -10,7 +10,10 @@ class StepTwoProvider extends MyWizardStep with WizardStep {
       : super({
           'aim': BehaviorSubject<String>.seeded(''),
           'why': BehaviorSubject<String>.seeded(''),
-        }, {});
+        }, {
+          'aim': TextEditingController(),
+          'why': TextEditingController(),
+        });
 
   final descriptionFocusNode = FocusNode();
 
