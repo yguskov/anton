@@ -10,3 +10,5 @@ export 'step_five.dart';
 export 'step_five_provider.dart';
 export 'step_six.dart';
 export 'step_six_provider.dart';
+export 'step_seven.dart';
+export 'step_seven_provider.dart';
