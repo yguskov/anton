@@ -3,6 +3,7 @@ import 'dart:js_interop';
 
 import 'package:example/src/widgets/just_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wizard/flutter_wizard.dart';
 
 import '../widgets/dropdown_field.dart';
 import '../widgets/radio_list_field.dart';
@@ -22,6 +23,11 @@ abstract class StatefulWidgetStep extends StatefulWidget {
  */
 abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   final StreamController<String> _streamController = StreamController<String>();
+
+  MyWizardStep providerOfStep(int i) {
+    return widget.provider.wizardController.stepControllers[i].step
+        as MyWizardStep;
+  }
 
   Widget buildJustTextField(String hint, String fieldName) {
     return JustTextField(
@@ -54,7 +60,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   }
 
   Widget buildRadioList(String label, String fieldName, List<String> items,
-      [optionHeight, optionFontSize]) {
+      [optionHeight, optionFontSize, optionOtherText]) {
     return DynamicRadioList(
       fieldName: fieldName,
       label: label,
@@ -62,6 +68,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
       provider: widget.provider,
       optionHeight: optionHeight,
       optionFontSize: optionFontSize,
+      otherText: optionOtherText,
     );
   }
 
@@ -87,15 +94,17 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   }
 }
 
-class MyWizardStep {
+class MyWizardStep with WizardStep {
   var _controller;
-  var _field;
+  Map<String, dynamic> _field;
 
   MyWizardStep(this._field, this._controller);
 
   String getValue(name) {
+    if (!_field.containsKey(name))
+      throw Exception('Field $name was not defined in step provider!!!!!!');
+
     return _field[name]!.value;
-    // return _description.value;
   }
 
   void updateValue(String name, String value) {

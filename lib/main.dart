@@ -78,6 +78,16 @@ class ProviderExamplePage extends StatelessWidget {
         WizardStepController(
           step: provider.stepFourProvider,
         ),
+        WizardStepController(
+          step: provider.stepFiveProvider,
+          isNextEnabled: true, // @fixme for debug
+        ),
+        WizardStepController(
+          step: provider.stepSixProvider,
+        ),
+        WizardStepController(
+          step: provider.stepSevenProvider,
+        ),
       ],
       // Wrapping with a builder so the context contains the [WizardController]
       child: OrientationBuilder(
@@ -187,6 +197,21 @@ class ProviderExamplePage extends StatelessWidget {
                     provider: provider.stepFourProvider,
                   );
 
+                case 4:
+                  return StepFive(
+                    provider: provider.stepFiveProvider,
+                  );
+
+                case 5:
+                  return StepSix(
+                    provider: provider.stepSixProvider,
+                  );
+
+                case 6:
+                  return StepSeven(
+                    provider: provider.stepSevenProvider,
+                  );
+
                 default:
                   return Container();
               }
@@ -238,12 +263,18 @@ class ProviderExamplePageProvider {
       : stepOneProvider = StepOneProvider(),
         stepTwoProvider = StepTwoProvider(),
         stepThreeProvider = StepThreeProvider(),
-        stepFourProvider = StepFourProvider();
+        stepFourProvider = StepFourProvider(),
+        stepFiveProvider = StepFiveProvider(),
+        stepSixProvider = StepSixProvider(),
+        stepSevenProvider = StepSevenProvider();
 
   final StepOneProvider stepOneProvider;
   final StepTwoProvider stepTwoProvider;
   final StepThreeProvider stepThreeProvider;
   final StepFourProvider stepFourProvider;
+  final StepFiveProvider stepFiveProvider;
+  final StepSixProvider stepSixProvider;
+  final StepSevenProvider stepSevenProvider;
 
   Future<void> reportIssue() async {
     debugPrint('Finished!');
@@ -254,5 +285,8 @@ class ProviderExamplePageProvider {
     stepTwoProvider.dispose();
     stepThreeProvider.dispose();
     stepFourProvider.dispose();
+    stepFiveProvider.dispose();
+    stepSixProvider.dispose();
+    stepSevenProvider.dispose();
   }
 }
