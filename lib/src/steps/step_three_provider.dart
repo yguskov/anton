@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_wizard/flutter_wizard.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:rxdart/rxdart.dart';
 
-class StepThreeProvider extends MyWizardStep with WizardStep {
+class StepThreeProvider extends MyWizardStep {
   StepThreeProvider()
       : super({
           'salary': BehaviorSubject<String>.seeded(''),

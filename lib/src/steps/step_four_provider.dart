@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_wizard/flutter_wizard.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:rxdart/rxdart.dart';
 
-class StepFourProvider extends MyWizardStep with WizardStep {
+class StepFourProvider extends MyWizardStep {
   List<Map<String, String>> dutyList = [];
   StepFourProvider()
       : dutyList = [],

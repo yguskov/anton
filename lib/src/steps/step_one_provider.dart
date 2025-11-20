@@ -2,10 +2,9 @@ import 'dart:async';
 
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_wizard/flutter_wizard.dart';
 import 'package:rxdart/rxdart.dart';
 
-class StepOneProvider extends MyWizardStep with WizardStep {
+class StepOneProvider extends MyWizardStep {
   StepOneProvider()
       : super({
           'fio': BehaviorSubject<String>.seeded(''),

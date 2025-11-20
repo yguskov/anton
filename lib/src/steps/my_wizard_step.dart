@@ -3,6 +3,7 @@ import 'dart:js_interop';
 
 import 'package:example/src/widgets/just_text_field.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wizard/flutter_wizard.dart';
 
 import '../widgets/dropdown_field.dart';
 import '../widgets/radio_list_field.dart';
@@ -22,6 +23,11 @@ abstract class StatefulWidgetStep extends StatefulWidget {
  */
 abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   final StreamController<String> _streamController = StreamController<String>();
+
+  MyWizardStep providerOfStep(int i) {
+    return widget.provider.wizardController.stepControllers[i].step
+        as MyWizardStep;
+  }
 
   Widget buildJustTextField(String hint, String fieldName) {
     return JustTextField(
@@ -88,7 +94,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   }
 }
 
-class MyWizardStep {
+class MyWizardStep with WizardStep {
   var _controller;
   Map<String, dynamic> _field;
 

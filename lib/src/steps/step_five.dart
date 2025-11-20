@@ -1,6 +1,6 @@
 import 'dart:js_interop';
 
-import 'package:example/src/steps/step_five_provider.dart';
+import 'package:example/src/steps/steps.dart';
 import 'package:example/src/widgets/dropdown_field.dart';
 import 'package:flutter/material.dart';
 
@@ -27,6 +27,8 @@ class _StepFiveState extends StateStep<StepFive> {
   @override
   void initState() {
     super.initState();
+    // default values
+    widget.provider.controllerByName('skill_type').text = 'Не знаю';
     // Подписываемся на изменения всех полей
     widget.provider.controllerByName('skill_name').addListener(_rebuild);
     widget.provider.controllerByName('skill_level').addListener(_rebuild);
@@ -43,7 +45,7 @@ class _StepFiveState extends StateStep<StepFive> {
       widget.provider.controllerByName('skill_level').text =
           index.isDefinedAndNotNull ? skillList[index!]['level']! : '';
       widget.provider.controllerByName('skill_type').text =
-          index.isDefinedAndNotNull ? skillList[index!]['type']! : '';
+          index.isDefinedAndNotNull ? skillList[index!]['type']! : 'Не знаю';
       widget.provider.controllerByName('skill_power').text =
           index.isDefinedAndNotNull ? skillList[index!]['power']! : '';
       widget.provider.updateValue('skill_name',
@@ -51,7 +53,7 @@ class _StepFiveState extends StateStep<StepFive> {
       widget.provider.updateValue('skill_level',
           index.isDefinedAndNotNull ? skillList[index!]['level']! : '');
       widget.provider.updateValue('skill_type',
-          index.isDefinedAndNotNull ? skillList[index!]['type']! : '');
+          index.isDefinedAndNotNull ? skillList[index!]['type']! : 'Не знаю');
       widget.provider.updateValue('skill_power',
           index.isDefinedAndNotNull ? skillList[index!]['power']! : '');
     });
@@ -76,17 +78,18 @@ class _StepFiveState extends StateStep<StepFive> {
 
       widget.provider.controllerByName('skill_name').text = '';
       widget.provider.controllerByName('skill_level').text = '';
-      widget.provider.controllerByName('skill_type').text = '';
+      widget.provider.controllerByName('skill_type').text = 'Не знаю';
       widget.provider.controllerByName('skill_power').text = '';
       widget.provider.updateValue('skill_name', '');
       widget.provider.updateValue('skill_level', '');
-      widget.provider.updateValue('skill_type', '');
+      widget.provider.updateValue('skill_type', 'Не знаю');
       widget.provider.updateValue('skill_power', '');
     });
 
     // Delay slightly to ensure layout is updated
     if (_selectedSkill.isNull) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.provider.wizardController.enableGoNext(4);
         _scrollToBottom();
       });
     } else {
@@ -107,6 +110,8 @@ class _StepFiveState extends StateStep<StepFive> {
       widget.provider.updateValue('skill_type', '');
       widget.provider.updateValue('skill_power', '');
       _selectedSkill = null;
+      if (widget.myProvider.skillList.length == 0)
+        widget.provider.wizardController.disableGoNext(4);
     });
   }
 
@@ -133,7 +138,12 @@ class _StepFiveState extends StateStep<StepFive> {
       widget.provider.getValue('skill_level').isNotEmpty &&
       widget.provider.getValue('skill_type').isNotEmpty;
 
-  bool get removeEnabled => !_selectedSkill.isNull;
+  bool get removeEnabled {
+    if (_selectedSkill.isNull) return false;
+    StepSixProvider providerSix = providerOfStep(5) as StepSixProvider;
+    return !providerSix.knowList.any((item) =>
+        item['skill'] == widget.myProvider.skillList[_selectedSkill!]['name']);
+  }
 
   final ScrollController _scrollController = ScrollController();
 

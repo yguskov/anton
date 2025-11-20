@@ -80,6 +80,10 @@ class ProviderExamplePage extends StatelessWidget {
         ),
         WizardStepController(
           step: provider.stepFiveProvider,
+          isNextEnabled: false,
+        ),
+        WizardStepController(
+          step: provider.stepSixProvider,
         ),
       ],
       // Wrapping with a builder so the context contains the [WizardController]
@@ -195,6 +199,11 @@ class ProviderExamplePage extends StatelessWidget {
                     provider: provider.stepFiveProvider,
                   );
 
+                case 5:
+                  return StepSix(
+                    provider: provider.stepSixProvider,
+                  );
+
                 default:
                   return Container();
               }
@@ -247,13 +256,15 @@ class ProviderExamplePageProvider {
         stepTwoProvider = StepTwoProvider(),
         stepThreeProvider = StepThreeProvider(),
         stepFourProvider = StepFourProvider(),
-        stepFiveProvider = StepFiveProvider();
+        stepFiveProvider = StepFiveProvider(),
+        stepSixProvider = StepSixProvider();
 
   final StepOneProvider stepOneProvider;
   final StepTwoProvider stepTwoProvider;
   final StepThreeProvider stepThreeProvider;
   final StepFourProvider stepFourProvider;
   final StepFiveProvider stepFiveProvider;
+  final StepSixProvider stepSixProvider;
 
   Future<void> reportIssue() async {
     debugPrint('Finished!');
@@ -265,5 +276,6 @@ class ProviderExamplePageProvider {
     stepThreeProvider.dispose();
     stepFourProvider.dispose();
     stepFiveProvider.dispose();
+    stepSixProvider.dispose();
   }
 }
