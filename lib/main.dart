@@ -39,6 +39,11 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: ProviderExamplePage.provider(),
+      // routes: {
+      //   '/login': (context) => LoginScreen(),
+      //   '/register': (context) => RegisterScreen(),
+      //   '/dashboard': (context) => DashboardScreen(),
+      // },
     );
   }
 }
@@ -80,7 +85,7 @@ class ProviderExamplePage extends StatelessWidget {
         ),
         WizardStepController(
           step: provider.stepFiveProvider,
-          isNextEnabled: true, // @fixme for debug
+          isNextEnabled: false, // @fixme for debug
         ),
         WizardStepController(
           step: provider.stepSixProvider,
