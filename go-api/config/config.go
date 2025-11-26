@@ -3,6 +3,8 @@ package config
 import (
     "encoding/json"
     "os"
+    // "strconv"
+    // "time"	
 )
 
 type Config struct {
@@ -16,6 +18,10 @@ type Config struct {
     Server struct {
         Port string `json:"port"`
     } `json:"server"`
+	JWT struct {
+        SecretKey   string
+        ExpiryHours int
+    }	
 }
 
 func LoadConfig(path string) (*Config, error) {

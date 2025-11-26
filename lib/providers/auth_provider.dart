@@ -27,7 +27,8 @@ class AuthProvider with ChangeNotifier {
         userData: userData,
       );
 
-      _currentUser = await _apiService.register(request);
+      dynamic response = await _apiService.register(request);
+      _currentUser = response.User;
       _isLoading = false;
       notifyListeners();
       return true;
@@ -50,7 +51,8 @@ class AuthProvider with ChangeNotifier {
         password: password,
       );
 
-      _currentUser = await _apiService.login(request);
+      dynamic response = await _apiService.login(request);
+      _currentUser = response.User;
       _isLoading = false;
       notifyListeners();
       return true;

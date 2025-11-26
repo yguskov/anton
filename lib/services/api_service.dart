@@ -4,12 +4,36 @@ import '../models/user.dart';
 
 class ApiService {
   static const String baseUrl = 'http://localhost:8080/api';
+  String? _token;
 
   final http.Client client;
 
   ApiService({http.Client? client}) : client = client ?? http.Client();
 
-  Future<User> register(RegisterRequest request) async {
+  // Сохраняем токен
+  void setToken(String token) {
+    _token = token;
+  }
+
+  // Получаем headers с авторизацией
+  Map<String, String> _getHeaders() {
+    final headers = {'Content-Type': 'application/json'};
+    if (_token != null) {
+      headers['Authorization'] = 'Bearer $_token';
+    }
+    return headers;
+  }
+
+/**
+ * @return 
+ * {
+          'success': true,
+          'user': User.fromJson(data['data']['user']),
+          'token': data['data']['token'],
+   }
+ */
+
+  Future<Map<String, dynamic>> register(RegisterRequest request) async {
     final response = await client.post(
       Uri.parse('$baseUrl/register'),
       headers: {'Content-Type': 'application/json'},
@@ -17,13 +41,23 @@ class ApiService {
     );
 
     if (response.statusCode == 201) {
-      return User.fromJson(json.decode(response.body));
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        _token = data['data']['token'];
+        return {
+          'success': true,
+          'user': User.fromJson(data['data']['user']),
+          'token': data['data']['token'],
+        };
+      } else {
+        throw Exception(data['error'] ?? 'Registration failed');
+      }
     } else {
       throw Exception('Failed to register: ${response.body}');
     }
   }
 
-  Future<User> login(LoginRequest request) async {
+  Future<Map<String, dynamic>> login(LoginRequest request) async {
     final response = await client.post(
       Uri.parse('$baseUrl/login'),
       headers: {'Content-Type': 'application/json'},
@@ -31,7 +65,17 @@ class ApiService {
     );
 
     if (response.statusCode == 200) {
-      return User.fromJson(json.decode(response.body));
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        _token = data['data']['token'];
+        return {
+          'success': true,
+          'user': User.fromJson(data['data']['user']),
+          'token': data['data']['token'],
+        };
+      } else {
+        throw Exception(data['error'] ?? 'Login failed');
+      }
     } else {
       throw Exception('Failed to login: ${response.body}');
     }
@@ -40,13 +84,41 @@ class ApiService {
   Future<List<User>> getUsers() async {
     final response = await client.get(
       Uri.parse('$baseUrl/users'),
+      headers: _getHeaders(),
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> usersJson = json.decode(response.body);
-      return usersJson.map((json) => User.fromJson(json)).toList();
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        final List<dynamic> usersJson = data['data'];
+        return usersJson.map((json) => User.fromJson(json)).toList();
+      } else {
+        throw Exception(data['error'] ?? 'Failed to load users');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized - please login again');
     } else {
       throw Exception('Failed to load users');
+    }
+  }
+
+  Future<User> getProfile() async {
+    final response = await client.get(
+      Uri.parse('$baseUrl/profile'),
+      headers: _getHeaders(),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        return User.fromJson(data['data']);
+      } else {
+        throw Exception(data['error'] ?? 'Failed to load profile');
+      }
+    } else if (response.statusCode == 401) {
+      throw Exception('Unauthorized - please login again');
+    } else {
+      throw Exception('Failed to load profile');
     }
   }
 }

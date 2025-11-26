@@ -8,5 +8,9 @@
     },
     "server": {
         "port": "8080"
+    },
+    "JWT": {
+        "SecretKey": "anton-jwt-very-secret-api-key",
+        "ExpiryHours": 24
     }
 }

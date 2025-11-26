@@ -4,13 +4,28 @@ import (
     "database/sql"
     "encoding/json"
     "net/http"
+    "time"
+    "go-api/config"
     "go-api/database"
+    "go-api/middleware"
     "go-api/models"
     
     "golang.org/x/crypto/bcrypt"
 )
 
-func RegisterHandler(w http.ResponseWriter, r *http.Request) {
+type AuthResponse struct {
+    Token string      `json:"token"`
+    User  interface{} `json:"user"`
+}
+
+type Response struct {
+    Success bool        `json:"success"`
+    Message string      `json:"message"`
+    Data    interface{} `json:"data,omitempty"`
+    Error   string      `json:"error,omitempty"`
+}
+
+func RegisterHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
     var req models.RegisterRequest
     err := json.NewDecoder(r.Body).Decode(&req)
     if err != nil {
@@ -60,12 +75,34 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    w.Header().Set("Content-Type", "application/json")
-    w.WriteHeader(http.StatusCreated)
-    json.NewEncoder(w).Encode(user)
+    // Генерируем JWT токен
+    token, err := middleware.GenerateJWTToken(user.ID, user.Email, cfg)
+    if err != nil {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error generating token",
+        })
+        return
+    }
+
+    authResponse := AuthResponse{
+        Token: token,
+        User:  user,
+    }
+
+    writeResponse(w, http.StatusCreated, Response{
+        Success: true,
+        Message: "User registered successfully",
+        Data:    authResponse,
+    })
+
+
+    // w.Header().Set("Content-Type", "application/json")
+    // w.WriteHeader(http.StatusCreated)
+    // json.NewEncoder(w).Encode(user)
 }
 
-func LoginHandler(w http.ResponseWriter, r *http.Request) {
+func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
     var req models.LoginRequest
     err := json.NewDecoder(r.Body).Decode(&req)
     if err != nil {
@@ -94,15 +131,43 @@ func LoginHandler(w http.ResponseWriter, r *http.Request) {
         return
     }
 
+ // Генерируем JWT токен
+    token, err := middleware.GenerateJWTToken(user.ID, user.Email, cfg)
+    if err != nil {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error generating token",
+        })
+        return
+    }
+
     response := models.UserResponse{
         ID:        user.ID,
         Email:     user.Email,
         UserData:  user.UserData,
-        CreatedAt: user.CreatedAt.Format("2006-01-02 15:04:05"),
+        CreatedAt: user.CreatedAt.Format(time.RFC3339),
     }
 
-    w.Header().Set("Content-Type", "application/json")
-    json.NewEncoder(w).Encode(response)
+    authResponse := AuthResponse{
+        Token: token,
+        User:  response,
+    }
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "Login successful",
+        Data:    authResponse,
+    })
+
+    // response := models.UserResponse{
+    //     ID:        user.ID,
+    //     Email:     user.Email,
+    //     UserData:  user.UserData,
+    //     CreatedAt: user.CreatedAt.Format("2006-01-02 15:04:05"),
+    // }
+
+    // w.Header().Set("Content-Type", "application/json")
+    // json.NewEncoder(w).Encode(response)
 }
 
 func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
@@ -130,4 +195,10 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(users)
+}
+
+func writeResponse(w http.ResponseWriter, status int, response Response) {
+    w.Header().Set("Content-Type", "application/json")
+    w.WriteHeader(status)
+    json.NewEncoder(w).Encode(response)
 }

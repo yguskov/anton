@@ -70,3 +70,7 @@ curl -X POST http://localhost:8080/api/login \
     "password": "password123"
   }'
 
+# Проверка токена
+curl -X GET http://localhost:8080/api/users \
+-H "Authorization: Bearer YOUR_JWT_TOKEN_HERE"
+

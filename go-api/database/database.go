@@ -38,3 +38,11 @@ func InitDB(dataSourceName string) error {
     fmt.Println("Database connected and table ensured")
     return nil
 }
+
+// CloseDB закрывает соединение с базой данных
+func CloseDB() error {
+    if DB != nil {
+        return DB.Close()
+    }
+    return nil
+}
