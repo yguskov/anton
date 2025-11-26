@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 
-class StepSevenProvider extends MyWizardStep {
-  StepSevenProvider() : super({}, {});
+class StepFinishProvider extends MyWizardStep {
+  StepFinishProvider() : super({}, {});
 
   final descriptionFocusNode = FocusNode();
 

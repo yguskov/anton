@@ -43,7 +43,7 @@ func main() {
     
     // Настраиваем CORS для Flutter Web
     c := cors.New(cors.Options{
-        AllowedOrigins:   []string{"http://localhost:3000", "https://yourdomain.com"},
+        AllowedOrigins:   []string{"http://localhost:8080", "http://localhost:*"},
         AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
         AllowedHeaders:   []string{"*"},
         AllowCredentials: true,

@@ -1,3 +1,7 @@
+import 'package:provider/provider.dart';
+import 'providers/auth_provider.dart';
+import 'services/api_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
 import 'package:provider/provider.dart';
@@ -15,35 +19,47 @@ class MyApp extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    return MaterialApp(
-      title: 'Анкета',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        colorScheme: ColorScheme(
-          brightness: Brightness.light,
-          // primary: Colors.deepPurple,
-          primary: Color(0xFF5801fd),
-          onPrimary: Colors.white,
-          secondary: Colors.orange,
-          onSecondary: Colors.white,
-          surface: Colors.grey.shade100,
-          onSurface: Colors.grey.shade700,
-          background: Colors.white,
-          onBackground: Colors.grey.shade700,
-          error: Colors.redAccent,
-          onError: Colors.white,
+    return MultiProvider(
+      providers: [
+        Provider<ApiService>(
+          create: (_) => ApiService(),
         ),
-        progressIndicatorTheme: ProgressIndicatorThemeData(
-          linearTrackColor: Colors.orange.shade100,
-          color: Colors.orange,
+        ChangeNotifierProxyProvider<ApiService, AuthProvider>(
+          create: (context) => AuthProvider(apiService: ApiService()),
+          update: (context, apiService, authProvider) =>
+              AuthProvider(apiService: apiService),
         ),
+      ],
+      child: MaterialApp(
+        title: 'Анкета',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          colorScheme: ColorScheme(
+            brightness: Brightness.light,
+            // primary: Colors.deepPurple,
+            primary: Color(0xFF5801fd),
+            onPrimary: Colors.white,
+            secondary: Colors.orange,
+            onSecondary: Colors.white,
+            surface: Colors.grey.shade100,
+            onSurface: Colors.grey.shade700,
+            background: Colors.white,
+            onBackground: Colors.grey.shade700,
+            error: Colors.redAccent,
+            onError: Colors.white,
+          ),
+          progressIndicatorTheme: ProgressIndicatorThemeData(
+            linearTrackColor: Colors.orange.shade100,
+            color: Colors.orange,
+          ),
+        ),
+        home: ProviderExamplePage.provider(),
+        // routes: {
+        //   '/login': (context) => LoginScreen(),
+        //   '/register': (context) => RegisterScreen(),
+        //   '/dashboard': (context) => DashboardScreen(),
+        // },
       ),
-      home: ProviderExamplePage.provider(),
-      // routes: {
-      //   '/login': (context) => LoginScreen(),
-      //   '/register': (context) => RegisterScreen(),
-      //   '/dashboard': (context) => DashboardScreen(),
-      // },
     );
   }
 }
@@ -85,13 +101,16 @@ class ProviderExamplePage extends StatelessWidget {
         ),
         WizardStepController(
           step: provider.stepFiveProvider,
-          isNextEnabled: false, // @fixme for debug
+          isNextEnabled: true, // @fixme for debug
         ),
         WizardStepController(
           step: provider.stepSixProvider,
         ),
         WizardStepController(
           step: provider.stepSevenProvider,
+        ),
+        WizardStepController(
+          step: provider.stepFinishProvider,
         ),
       ],
       // Wrapping with a builder so the context contains the [WizardController]
@@ -217,6 +236,11 @@ class ProviderExamplePage extends StatelessWidget {
                     provider: provider.stepSevenProvider,
                   );
 
+                case 7:
+                  return StepFinish(
+                    provider: provider.stepFinishProvider,
+                  );
+
                 default:
                   return Container();
               }
@@ -271,7 +295,8 @@ class ProviderExamplePageProvider {
         stepFourProvider = StepFourProvider(),
         stepFiveProvider = StepFiveProvider(),
         stepSixProvider = StepSixProvider(),
-        stepSevenProvider = StepSevenProvider();
+        stepSevenProvider = StepSevenProvider(),
+        stepFinishProvider = StepFinishProvider();
 
   final StepOneProvider stepOneProvider;
   final StepTwoProvider stepTwoProvider;
@@ -280,6 +305,7 @@ class ProviderExamplePageProvider {
   final StepFiveProvider stepFiveProvider;
   final StepSixProvider stepSixProvider;
   final StepSevenProvider stepSevenProvider;
+  final StepFinishProvider stepFinishProvider;
 
   Future<void> reportIssue() async {
     debugPrint('Finished!');
@@ -293,5 +319,6 @@ class ProviderExamplePageProvider {
     stepFiveProvider.dispose();
     stepSixProvider.dispose();
     stepSevenProvider.dispose();
+    stepFinishProvider.dispose();
   }
 }

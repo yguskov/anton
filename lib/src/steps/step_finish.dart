@@ -1,31 +1,24 @@
-import 'dart:js_interop';
-
 import 'package:example/src/steps/steps.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/auth_provider.dart';
-import '../widgets/custom_card.dart';
-import '../widgets/dropdown_field.dart';
 import 'my_wizard_step.dart';
 
-class StepSeven extends StatefulWidgetStep {
-  final StepSevenProvider myProvider;
+class StepFinish extends StatefulWidgetStep {
+  final StepFinishProvider myProvider;
 
-  StepSeven({
-    required StepSevenProvider provider,
+  StepFinish({
+    required StepFinishProvider provider,
     Key? key,
   })  : myProvider = provider,
         super(key: key, provider: provider);
 
   @override
-  State<StepSeven> createState() => _StepSevenState();
+  State<StepFinish> createState() => _StepFinishState();
 }
 
-class _StepSevenState extends StateStep<StepSeven> {
-  List<Map<String, String>> get achieveList => widget.myProvider.achieveList;
-  int? _selectedAchieve;
-
+class _StepFinishState extends StateStep<StepFinish> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -107,7 +100,11 @@ class _StepSevenState extends StateStep<StepSeven> {
 
                     if (success) {
                       // @todo rebuild and hide registration form
+                      print(
+                          '${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
                       // Navigator.pushReplacementNamed(context, '/dashboard');
+                    } else {
+                      print('Error register');
                     }
                   }
                 },
@@ -117,7 +114,13 @@ class _StepSevenState extends StateStep<StepSeven> {
 
       return ListView(
         controller: _scrollController,
-        children: textFields,
+        children: [
+          Form(
+              key: _formKey,
+              child: Column(
+                children: textFields,
+              ))
+        ],
       );
     });
   }
@@ -128,9 +131,6 @@ class _StepSevenState extends StateStep<StepSeven> {
     _passwordController.dispose();
     _nameController.dispose();
 
-    // widget.provider.controllerByName('achieve_name').dispose();
-    // widget.provider.controllerByName('achieve_skill').dispose();
-    // widget.provider.controllerByName('achieve_result').dispose();
     _scrollController.dispose();
     super.dispose();
   }
