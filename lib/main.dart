@@ -1,3 +1,5 @@
+import 'package:example/models/cv.dart';
+import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'services/api_service.dart';
@@ -65,7 +67,11 @@ class MyApp extends StatelessWidget {
 }
 
 class ProviderExamplePage extends StatelessWidget {
-  const ProviderExamplePage._({Key? key}) : super(key: key);
+  ProviderExamplePage._({Key? key})
+      : cv = CV.instance,
+        super(key: key);
+
+  final CV cv;
 
   static Provider provider({Key? key}) {
     return Provider<ProviderExamplePageProvider>(
@@ -84,6 +90,8 @@ class ProviderExamplePage extends StatelessWidget {
     final provider = Provider.of<ProviderExamplePageProvider>(
       context,
     );
+    provider.cv = cv;
+
     return DefaultWizardController(
       stepControllers: [
         WizardStepController(
@@ -182,7 +190,10 @@ class ProviderExamplePage extends StatelessWidget {
         },
       ),
       onStepChanged: (prev, next) {
-        // print('$prev =========================> $next');
+        // @todo save step data to CV
+        provider.getStepProvider(prev).updateCV(cv);
+        print('$prev =========================> $next');
+        print(cv.toJson());
       },
     );
   }
@@ -288,6 +299,8 @@ class ProviderExamplePage extends StatelessWidget {
 }
 
 class ProviderExamplePageProvider {
+  CV? cv;
+
   ProviderExamplePageProvider()
       : stepOneProvider = StepOneProvider(),
         stepTwoProvider = StepTwoProvider(),
@@ -309,6 +322,28 @@ class ProviderExamplePageProvider {
 
   Future<void> reportIssue() async {
     debugPrint('Finished!');
+  }
+
+  MyWizardStep getStepProvider(int step) {
+    print('|||||||$step||||||||');
+    switch (step) {
+      case 0:
+        return stepOneProvider;
+      case 1:
+        return stepTwoProvider;
+      case 2:
+        return stepThreeProvider;
+      case 3:
+        return stepFourProvider;
+      case 4:
+        return stepFiveProvider;
+      case 5:
+        return stepSixProvider;
+      case 6:
+        return stepSevenProvider;
+      default:
+        return stepFinishProvider;
+    }
   }
 
   Future<void> dispose() async {

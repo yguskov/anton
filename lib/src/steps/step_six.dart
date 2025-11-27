@@ -1,5 +1,4 @@
 import 'dart:js_interop';
-import 'dart:js_interop';
 
 import 'package:example/src/steps/steps.dart';
 import 'package:flutter/material.dart';

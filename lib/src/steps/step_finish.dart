@@ -1,7 +1,9 @@
 import 'package:example/src/steps/steps.dart';
+import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../main.dart';
 import '../../providers/auth_provider.dart';
 import 'my_wizard_step.dart';
 
@@ -24,6 +26,8 @@ class _StepFinishState extends StateStep<StepFinish> {
   final _passwordController = TextEditingController();
   final _nameController = TextEditingController();
 
+  // get userCV => widget.provider.wizardController.pageController;
+
   @override
   void initState() {
     super.initState();
@@ -44,73 +48,77 @@ class _StepFinishState extends StateStep<StepFinish> {
     BuildContext context,
   ) {
     final authProvider = Provider.of<AuthProvider>(context);
+    final wizardProvider = Provider.of<ProviderExamplePageProvider>(context);
 
     return LayoutBuilder(builder: (context, constraints) {
-      List<Widget> textFields = [
-        TextFormField(
-          controller: _emailController,
-          decoration: InputDecoration(labelText: 'Email'),
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter email';
-            }
-            return null;
-          },
-        ),
-        TextFormField(
-          controller: _passwordController,
-          decoration: InputDecoration(labelText: 'Password'),
-          obscureText: true,
-          validator: (value) {
-            if (value == null || value.isEmpty) {
-              return 'Please enter password';
-            }
-            if (value.length < 6) {
-              return 'Password must be at least 6 characters';
-            }
-            return null;
-          },
-        ),
-        TextFormField(
-          controller: _nameController,
-          decoration: InputDecoration(labelText: 'Name'),
-        ),
-        SizedBox(height: 20),
-        if (authProvider.error != null)
-          Text(
-            authProvider.error!,
-            style: TextStyle(color: Colors.red),
+      List<Widget> textFields = [];
+      if (authProvider.isAuth) {
+        textFields = [
+          TextBar('Вы зарегистрированы как ${authProvider.currentUser!.email}')
+        ];
+      } else {
+        textFields = [
+          TextFormField(
+            controller: _emailController,
+            decoration: InputDecoration(labelText: 'Почта'),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Укажите почту';
+              }
+              return null;
+            },
           ),
-        SizedBox(height: 20),
-        authProvider.isLoading
-            ? CircularProgressIndicator()
-            : ElevatedButton(
-                onPressed: () async {
-                  if (_formKey.currentState!.validate()) {
-                    final userData = {
-                      'name': _nameController.text,
-                      'registration_type': 'web',
-                    };
+          TextFormField(
+            controller: _passwordController,
+            decoration: InputDecoration(labelText: 'Пароль'),
+            obscureText: true,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Укажите пароль';
+              }
+              if (value.length < 3) {
+                return 'Пароль не может быть меньше 3 символов';
+              }
+              return null;
+            },
+          ),
+          // TextFormField(
+          //   controller: _nameController,
+          //   decoration: InputDecoration(labelText: 'Name'),
+          // ),
+          SizedBox(height: 20),
+          if (authProvider.error != null)
+            Text(
+              authProvider.error!,
+              style: TextStyle(color: Colors.red),
+            ),
+          SizedBox(height: 20),
+          authProvider.isLoading
+              ? CircularProgressIndicator()
+              : ElevatedButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      final userData = wizardProvider.cv!.data;
+                      final success = await authProvider.register(
+                        _emailController.text,
+                        _passwordController.text,
+                        userData,
+                      );
 
-                    final success = await authProvider.register(
-                      _emailController.text,
-                      _passwordController.text,
-                      userData,
-                    );
-
-                    if (success) {
-                      // @todo rebuild and hide registration form
-                      print(
-                          '${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
-                      // Navigator.pushReplacementNamed(context, '/dashboard');
-                    } else {
-                      print('Error register');
+                      if (success) {
+                        // @todo rebuild and hide registration form
+                        print(
+                            '${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
+                        // Navigator.pushReplacementNamed(context, '/dashboard');
+                      } else {
+                        print('Error register');
+                      }
                     }
-                  }
-                },
-                child: Text('Register'),
-              ),
-      ];
+                  },
+                  child: Text('Register'),
+                ),
+        ];
+      }
 
       return ListView(
         controller: _scrollController,

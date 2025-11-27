@@ -1,3 +1,4 @@
+import 'package:example/models/cv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:rxdart/rxdart.dart';
@@ -20,6 +21,10 @@ class StepFiveProvider extends MyWizardStep {
           'skill_power': TextEditingController(),
           'duty_name': TextEditingController(),
         });
+
+  updateCV(CV cv) {
+    cv.setValue('skill', skillList);
+  }
 
   final descriptionFocusNode = FocusNode();
 

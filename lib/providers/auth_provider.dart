@@ -1,3 +1,5 @@
+import 'dart:js_interop';
+
 import 'package:flutter/foundation.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
@@ -13,6 +15,7 @@ class AuthProvider with ChangeNotifier {
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   String? get error => _error;
+  bool get isAuth => currentUser.isDefinedAndNotNull;
 
   Future<bool> register(
       String email, String password, Map<String, dynamic> userData) async {
@@ -28,7 +31,7 @@ class AuthProvider with ChangeNotifier {
       );
 
       dynamic response = await _apiService.register(request);
-      _currentUser = response.User;
+      _currentUser = response['user'];
       _isLoading = false;
       notifyListeners();
       return true;
