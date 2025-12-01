@@ -49,6 +49,9 @@ CREATE USER IF NOT EXISTS 'anton'@'localhost' IDENTIFIED BY 'ant';
 GRANT ALL PRIVILEGES ON anton.* TO 'anton'@'localhost';
 FLUSH PRIVILEGES;
 
+# Проверка АПИ сервера
+curl -X GET http://localhost:8080/api/health
+
 # Регистрация пользователя
 curl -X POST http://localhost:8080/api/register \
   -H "Content-Type: application/json" \
@@ -61,6 +64,18 @@ curl -X POST http://localhost:8080/api/register \
       "interests": ["programming", "reading"]
     }
   }'
+  
+curl -X POST http://5.187.2.205:8993/api/register \
+-H "Content-Type: application/json" \
+-d '{
+  "email": "snow@example.com",
+  "password": "123",
+  "user_data": {
+    "name": "John Snow",
+    "age": 30,
+    "interests": ["programming", "reading"]
+  }
+}'
 
 # Логин
 curl -X POST http://localhost:8080/api/login \

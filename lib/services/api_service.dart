@@ -3,12 +3,17 @@ import 'package:http/http.dart' as http;
 import '../models/user.dart';
 
 class ApiService {
-  static const String baseUrl = 'http://localhost:8080/api';
   String? _token;
 
+  final String baseUrl;
   final http.Client client;
 
-  ApiService({http.Client? client}) : client = client ?? http.Client();
+  ApiService({http.Client? client})
+      : client = client ?? http.Client(),
+        baseUrl = const String.fromEnvironment(
+          'API_URL',
+          defaultValue: 'http://localhost:8993/api',
+        );
 
   // Сохраняем токен
   void setToken(String token) {
