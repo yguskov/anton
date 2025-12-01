@@ -17,10 +17,10 @@ class StepFinish extends StatefulWidgetStep {
         super(key: key, provider: provider);
 
   @override
-  State<StepFinish> createState() => _StepFinishState();
+  State<StepFinish> createState() => StepFinishState();
 }
 
-class _StepFinishState extends StateStep<StepFinish> {
+class StepFinishState extends StateStep<StepFinish> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -48,7 +48,6 @@ class _StepFinishState extends StateStep<StepFinish> {
     BuildContext context,
   ) {
     final authProvider = Provider.of<AuthProvider>(context);
-    final wizardProvider = Provider.of<ProviderExamplePageProvider>(context);
 
     return LayoutBuilder(builder: (context, constraints) {
       List<Widget> textFields = [];
@@ -96,25 +95,7 @@ class _StepFinishState extends StateStep<StepFinish> {
           authProvider.isLoading
               ? CircularProgressIndicator()
               : ElevatedButton(
-                  onPressed: () async {
-                    if (_formKey.currentState!.validate()) {
-                      final userData = wizardProvider.cv!.data;
-                      final success = await authProvider.register(
-                        _emailController.text,
-                        _passwordController.text,
-                        userData,
-                      );
-
-                      if (success) {
-                        // @todo rebuild and hide registration form
-                        print(
-                            '${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
-                        // Navigator.pushReplacementNamed(context, '/dashboard');
-                      } else {
-                        print('Error register');
-                      }
-                    }
-                  },
+                  onPressed: onFinished,
                   child: Text('Register'),
                 ),
         ];
@@ -141,5 +122,28 @@ class _StepFinishState extends StateStep<StepFinish> {
 
     _scrollController.dispose();
     super.dispose();
+  }
+
+  void onFinished() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final wizardProvider =
+        Provider.of<ProviderExamplePageProvider>(context, listen: false);
+    if (_formKey.currentState!.validate()) {
+      final userData = wizardProvider.cv!.data;
+      final success = await authProvider.register(
+        _emailController.text,
+        _passwordController.text,
+        userData,
+      );
+
+      if (success) {
+        // @todo rebuild and hide registration form
+        print(
+            '${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
+        // Navigator.pushReplacementNamed(context, '/dashboard');
+      } else {
+        print('Error register');
+      }
+    }
   }
 }

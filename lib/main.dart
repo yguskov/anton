@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 
 import 'example.dart';
 
+GlobalKey<StepFinishState>? stepFinishKey = GlobalKey<StepFinishState>();
+
 void main() {
   runApp(const MyApp());
 }
@@ -189,6 +191,7 @@ class ProviderExamplePage extends StatelessWidget {
           );
         },
       ),
+
       onStepChanged: (prev, next) {
         // @todo save step data to CV
         provider.getStepProvider(prev).updateCV(cv);
@@ -250,6 +253,7 @@ class ProviderExamplePage extends StatelessWidget {
                 case 7:
                   return StepFinish(
                     provider: provider.stepFinishProvider,
+                    key: stepFinishKey, // @todo init Step Finish widget
                   );
 
                 default:
@@ -300,7 +304,6 @@ class ProviderExamplePage extends StatelessWidget {
 
 class ProviderExamplePageProvider {
   CV? cv;
-
   ProviderExamplePageProvider()
       : stepOneProvider = StepOneProvider(),
         stepTwoProvider = StepTwoProvider(),
