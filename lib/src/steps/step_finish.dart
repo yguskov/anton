@@ -59,7 +59,26 @@ class StepFinishState extends StateStep<StepFinish> {
         textFields = [
           TextFormField(
             controller: _emailController,
-            decoration: InputDecoration(labelText: 'Почта'),
+            decoration: InputDecoration(
+              labelText: 'Почта',
+              hintText: 'user@mail.com',
+              filled: true,
+              fillColor: Colors.grey[200],
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(4),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(6),
+                  bottomRight: Radius.circular(6),
+                ),
+              ),
+              contentPadding: const EdgeInsets.all(16),
+            ),
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Укажите почту';
@@ -67,9 +86,28 @@ class StepFinishState extends StateStep<StepFinish> {
               return null;
             },
           ),
+          SizedBox(height: 16),
           TextFormField(
             controller: _passwordController,
-            decoration: InputDecoration(labelText: 'Пароль'),
+            decoration: InputDecoration(
+              labelText: 'Пароль',
+              filled: true,
+              fillColor: Colors.grey[200],
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(4),
+                ),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.circular(6),
+                  bottomRight: Radius.circular(6),
+                ),
+              ),
+              contentPadding: const EdgeInsets.all(16),
+            ),
             obscureText: true,
             validator: (value) {
               if (value == null || value.isEmpty) {
@@ -94,10 +132,7 @@ class StepFinishState extends StateStep<StepFinish> {
           SizedBox(height: 20),
           authProvider.isLoading
               ? CircularProgressIndicator()
-              : ElevatedButton(
-                  onPressed: onFinished,
-                  child: Text('Register'),
-                ),
+              : SizedBox(height: 20),
         ];
       }
 
