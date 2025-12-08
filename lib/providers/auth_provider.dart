@@ -77,4 +77,20 @@ class AuthProvider with ChangeNotifier {
     _error = null;
     notifyListeners();
   }
+
+  Future<void> fetchCurrentUser() async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      _currentUser = await _apiService.getProfile();
+      _isLoading = false;
+      notifyListeners();
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
+    }
+  }
 }

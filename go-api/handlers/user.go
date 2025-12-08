@@ -197,6 +197,42 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
     json.NewEncoder(w).Encode(users)
 }
 
+func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
+    // Извлекаем из контекста
+    userID, ok := middleware.GetUserIDFromContext(r.Context())
+    if !ok {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error when define user",
+        })
+        return
+    }
+
+    var user models.User
+    var userData models.UserData
+    err := database.DB.QueryRow(
+        "SELECT id, email, password, user_data, created_at FROM user WHERE email = ?",
+        userID,
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt)
+
+    if err != nil {
+        http.Error(w, "Error scanning user", http.StatusInternalServerError)
+        return
+    }
+    user.UserData = userData
+
+    // response := models.UserResponse{
+    //     ID:        user.ID,
+    //     Email:     user.Email,
+    //     UserData:  user.UserData,
+    //     CreatedAt: user.CreatedAt.Format(time.RFC3339),
+    // }
+
+    w.Header().Set("Content-Type", "application/json")
+    json.NewEncoder(w).Encode(user)
+    // writeResponse(w, http.StatusOK, response)
+}
+
 func writeResponse(w http.ResponseWriter, status int, response Response) {
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(status)

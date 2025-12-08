@@ -1,4 +1,7 @@
+import 'dart:js_interop';
+
 import 'package:example/models/cv.dart';
+import 'package:example/profile.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
@@ -58,15 +61,17 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: ProviderExamplePage.provider(),
-        // routes: {
-        //   '/login': (context) => LoginScreen(),
-        //   '/register': (context) => RegisterScreen(),
-        //   '/dashboard': (context) => DashboardScreen(),
-        // },
+        routes: {
+          // '/login': (context) => LoginScreen(),
+          // '/register': (context) => RegisterScreen(),
+          '/profile': (context) => ProfilePage()
+        }  
       ),
     );
   }
 }
+
+
 
 class ProviderExamplePage extends StatelessWidget {
   ProviderExamplePage._({Key? key})

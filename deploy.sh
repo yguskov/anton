@@ -4,9 +4,10 @@ SERVER="root@5.187.2.205"
 APP_DIR="/var/www/go/anketa"
 WEB_DIR="/var/www/html/anketa"
 BINARY_NAME="api-server"
+BUILD_DIR=$(pwd)
 
 echo "🔨 Building API server..."
-cd ~/pro/anton/example/go-api
+cd $BUILD_DIR/go-api
 GOOS=linux GOARCH=amd64 go build -o $BINARY_NAME main.go
 
 echo "🚀 Stopping service on server..."
@@ -22,7 +23,7 @@ ssh $SERVER "cd $APP_DIR && chmod +x $BINARY_NAME && sudo systemctl restart anke
 echo "✅ Go deployment completed!"
 echo "🔨 Building WEB ..."
 
-cd ~/pro/anton/example
+cd $BUILD_DIR
 flutter build web --release --base-href /anketa/ --dart-define=API_URL=http://5.187.2.205:8993/api
 rsync -avz --delete build/web/ $SERVER:$WEB_DIR
 

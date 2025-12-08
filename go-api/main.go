@@ -63,7 +63,7 @@ func main() {
     protected := router.PathPrefix("/api").Subrouter()
     protected.Use(middleware.AuthMiddleware(cfg))
     protected.HandleFunc("/users", handlers.GetUsersHandler).Methods("GET")
-    // protected.HandleFunc("/profile", handlers.GetProfileHandler).Methods("GET")	
+    protected.HandleFunc("/profile", handlers.GetProfileHandler).Methods("GET")	
     
     // Настраиваем CORS для Flutter Web
     c := cors.New(cors.Options{
