@@ -211,7 +211,7 @@ func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
     var user models.User
     var userData models.UserData
     err := database.DB.QueryRow(
-        "SELECT id, email, password, user_data, created_at FROM user WHERE email = ?",
+        "SELECT id, email, password, user_data, created_at FROM user WHERE id = ?",
         userID,
     ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt)
 
@@ -227,6 +227,7 @@ func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
     //     UserData:  user.UserData,
     //     CreatedAt: user.CreatedAt.Format(time.RFC3339),
     // }
+    //  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwiZW1haWwiOiJyckByci5yciIsImlzcyI6ImdvLWFwaSIsInN1YiI6InJyQHJyLnJyIiwiZXhwIjoxNzY1NTMwNzg5LCJuYmYiOjE3NjU0NDQzODksImlhdCI6MTc2NTQ0NDM4OX0.TgUUXzVPUjagJHJRgSdMdstqUyb85-_xzj8SOaexBug
 
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(user)

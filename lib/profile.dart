@@ -8,15 +8,14 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late Future<String> _future;
 
   @override
   void initState() {
     super.initState();
-          final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
     
       if(authProvider.currentUser == null) {
-        authProvider.fetchCurrentUser();
+          authProvider.fetchCurrentUser();
       }
       // final sccess = await authProvider.register();
       //       dynamic response = await _apiService.login(request);
@@ -27,7 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
 
-    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
 
     return Scaffold(
             appBar: AppBar(
@@ -44,7 +43,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           child: Container(
                             color: Colors.grey[300], 
                             child: authProvider.isLoading
-                              ? CircularProgressIndicator()
+                              ? CircularProgressIndicator(backgroundColor: Colors.white,)
                               : ListView(children: [
                               SizedBox(height: 10,),
                               Text('id: ${authProvider.currentUser?.id}', textAlign: TextAlign.center,),
@@ -65,8 +64,5 @@ class _ProfilePageState extends State<ProfilePage> {
               },
             ),
           ); 
-      
-
-    return Text('Place for User profile ${authProvider.currentUser?.email}');
   }
 }

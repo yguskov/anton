@@ -86,6 +86,8 @@ class AuthProvider with ChangeNotifier {
     try {
       _currentUser = await _apiService.getProfile();
       _isLoading = false;
+
+      print('----- fetch user from API: ${_currentUser!.email}');
       notifyListeners();
     } catch (e) {
       _error = e.toString();

@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
 
@@ -13,11 +14,15 @@ class ApiService {
         baseUrl = const String.fromEnvironment(
           'API_URL',
           defaultValue: 'http://localhost:8993/api',
-        );
+        ) {
+          if(window.localStorage['token'] != null)
+            _token = window.localStorage['token']!;
+        }
 
   // Сохраняем токен
-  void setToken(String token) {
+  void set token(String token) {
     _token = token;
+    window.localStorage['token'] = token;
   }
 
   // Получаем headers с авторизацией
@@ -48,7 +53,7 @@ class ApiService {
     if (response.statusCode == 201) {
       final data = json.decode(response.body);
       if (data['success'] == true) {
-        _token = data['data']['token'];
+        token = data['data']['token'];
         return {
           'success': true,
           'user': User.fromJson(data['data']['user']),
@@ -72,7 +77,7 @@ class ApiService {
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
       if (data['success'] == true) {
-        _token = data['data']['token'];
+        token = data['data']['token'];
         return {
           'success': true,
           'user': User.fromJson(data['data']['user']),
@@ -115,8 +120,8 @@ class ApiService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      if (data['success'] == true) {
-        return User.fromJson(data['data']);
+      if (data['email'] != null) {
+        return User.fromJson(data);
       } else {
         throw Exception(data['error'] ?? 'Failed to load profile');
       }
