@@ -25,6 +25,11 @@ class ApiService {
     window.localStorage['token'] = token;
   }
 
+  void clearToken() {
+    _token = null;
+    window.localStorage.remove('token');
+  }
+
   // Получаем headers с авторизацией
   Map<String, String> _getHeaders() {
     final headers = {'Content-Type': 'application/json'};
@@ -89,6 +94,10 @@ class ApiService {
     } else {
       throw Exception('Failed to login: ${response.body}');
     }
+  }
+
+  void logout() {
+    clearToken();
   }
 
   Future<List<User>> getUsers() async {

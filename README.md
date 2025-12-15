@@ -34,6 +34,7 @@ flutter create . --platforms web
 export CHROME_EXECUTABLE="/usr/bin/chromium-browser"
 flutter doctor -v
 flutter run -d chrome --web-renderer html --verbose
+cd go-api && go run main.go
 flutter build web --release --base-href /anketa/
 rsync -avz --delete build/web/ root@5.187.2.205:/var/www/html/anketa
 

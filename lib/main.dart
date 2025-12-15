@@ -1,15 +1,14 @@
-import 'dart:js_interop';
 
 import 'package:example/models/cv.dart';
 import 'package:example/profile.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:provider/provider.dart';
+import 'login.dart';
 import 'providers/auth_provider.dart';
 import 'services/api_service.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
-import 'package:provider/provider.dart';
 
 import 'example.dart';
 
@@ -59,10 +58,17 @@ class MyApp extends StatelessWidget {
             linearTrackColor: Colors.orange.shade100,
             color: Colors.orange,
           ),
+          popupMenuTheme: PopupMenuThemeData(
+            textStyle: TextStyle(color: Colors.white, fontSize: 16),
+            color: Color(0xFF5801fd),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
         ),
         home: ProviderExamplePage.provider(),
         routes: {
-          // '/login': (context) => LoginScreen(),
+          '/login': (context) => LoginPage(),
           // '/register': (context) => RegisterScreen(),
           '/profile': (context) => ProfilePage()
         }  

@@ -55,12 +55,14 @@ class AuthProvider with ChangeNotifier {
       );
 
       dynamic response = await _apiService.login(request);
-      _currentUser = response.User;
+      print(response);
+      _currentUser = response['user'];
       _isLoading = false;
       notifyListeners();
       return true;
     } catch (e) {
       _error = e.toString();
+      print(e);
       _isLoading = false;
       notifyListeners();
       return false;
@@ -68,6 +70,7 @@ class AuthProvider with ChangeNotifier {
   }
 
   void logout() {
+    _apiService.logout();
     _currentUser = null;
     _error = null;
     notifyListeners();

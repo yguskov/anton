@@ -1,4 +1,5 @@
 import 'package:example/providers/auth_provider.dart';
+import 'package:example/src/app_bar_with_menu.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -29,8 +30,8 @@ class _ProfilePageState extends State<ProfilePage> {
     final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
 
     return Scaffold(
-            appBar: AppBar(
-              title: Text("Профиль пользователя ${authProvider.currentUser?.email}"),
+            appBar: AntAppBar(
+              title: "Профиль пользователя ${authProvider.currentUser?.email}",
             ),
             body: LayoutBuilder(
               builder: (context, constraints) {
