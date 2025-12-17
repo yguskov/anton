@@ -31,6 +31,9 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Color(0xFFF76D12),
       // foregroundColor: Colors.white,
     );
+    const header2Style = TextStyle(
+      fontWeight: FontWeight.bold,
+    );
     double h20 = 20; // vertical indent
 
     final AuthProvider authProvider =
@@ -96,11 +99,32 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                     SizedBox(height: h20),
                                     Text(
-                                      'Если затея провалится, то мы можем через наших партнеров подобрать вам, как выдающемуся специалисту, новую работу',
+                                      'Сообщите нам о результате общения о достижении вашей цели, получилось ли? или добились каких-то альтернатив?',
                                       textAlign: TextAlign.center,
+                                      style: header2Style,
+                                    ),
+                                    SizedBox(height: h20),
+                                    Center(
+                                      child: ElevatedButton(
+                                        onPressed: edit,
+                                        style: redButtonStyle,
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 17, vertical: 1),
+                                          child:
+                                              Text('Сообщить о \nрезультате'),
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: h20),
+                                    Text(
+                                      'Если затея провалится, то мы можем через наших партнеров подобрать вам, как выдающемуся специалисту, новую работу',
+                                      textAlign: TextAlign.left,
                                     ),
                                     SizedBox(height: h20),
                                     TextBar('Оставьте ссылку на ваше резюме'),
+                                    SizedBox(height: h20),
+                                    TextBar('Сменить пароль'),
                                     SizedBox(height: h20),
                                     Text(
                                       'Создан: ${authProvider.currentUser?.createdAt}',
