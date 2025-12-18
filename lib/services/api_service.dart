@@ -15,9 +15,9 @@ class ApiService {
           'API_URL',
           defaultValue: 'http://localhost:8993/api',
         ) {
-          if(window.localStorage['token'] != null)
-            _token = window.localStorage['token']!;
-        }
+    if (window.localStorage['token'] != null)
+      _token = window.localStorage['token']!;
+  }
 
   // Сохраняем токен
   void set token(String token) {
@@ -65,7 +65,7 @@ class ApiService {
           'token': data['data']['token'],
         };
       } else {
-        throw Exception(data['error'] ?? 'Registration failed');
+        throw Exception(data['error'] ?? 'Ошибка регистрации');
       }
     } else {
       throw Exception('Failed to register: ${response.body}');
@@ -138,6 +138,29 @@ class ApiService {
       throw Exception('Unauthorized - please login again');
     } else {
       throw Exception('Failed to load profile');
+    }
+  }
+
+  Future<Map<String, dynamic>> changePassword(
+      Map<String, dynamic> request) async {
+    final response = await client.post(
+      Uri.parse('$baseUrl/password'),
+      headers: _getHeaders(),
+      body: json.encode(request),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        token = data['data']['token'];
+        return {
+          'success': true,
+        };
+      } else {
+        throw Exception(data['error'] ?? 'Change password failed');
+      }
+    } else {
+      throw Exception('Failed to change password: ${response.body}');
     }
   }
 }

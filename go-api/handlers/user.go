@@ -4,6 +4,7 @@ import (
     "database/sql"
     "encoding/json"
     "net/http"
+    "log"
     "time"
     "go-api/config"
     "go-api/database"
@@ -234,8 +235,105 @@ func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
     // writeResponse(w, http.StatusOK, response)
 }
 
+func PasswordHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+    // Извлекаем из контекста
+    userID, ok := middleware.GetUserIDFromContext(r.Context())
+    if !ok {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error when define user",
+        })
+        return
+    }
+
+    var req models.PasswordRequest
+    err := json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+    // Хешируем старый пароль
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.New), bcrypt.DefaultCost)
+    if err != nil {
+        http.Error(w, "Error processing new password", http.StatusInternalServerError)
+        return
+    }    
+
+    log.Printf(" Change password for id=%d new hash=%s", userID, string(hashedPassword))
+
+    var user models.User
+    err = database.DB.QueryRow(
+        "SELECT id, email, password, user_data, created_at FROM user WHERE id = ?",
+        userID, 
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt)
+    
+    if err == sql.ErrNoRows {
+        http.Error(w, "Invalid credentials", http.StatusUnauthorized)
+        return
+    } else if err != nil {
+        http.Error(w, "Database error", http.StatusInternalServerError)
+        return
+    }
+
+    // Проверяем пароль
+    err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Old))
+    if err != nil {
+        http.Error(w, "Invalid old password", http.StatusUnauthorized)
+        return
+    }
+
+    // Меняем пароль
+    result, err := database.DB.Exec(
+        "UPDATE user SET password = ? WHERE id = ?",
+        string(hashedPassword), userID, 
+    )
+
+    if err != nil {
+        // Обработка ошибки SQL (например, сбой подключения, синтаксис и т.д.)
+        http.Error(w, "Database error", http.StatusUnauthorized)
+        return
+    }
+
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        // Ошибка при получении количества затронутых строк (редко, но возможно)
+        http.Error(w, "Get updated rows error", http.StatusUnauthorized)
+        return
+    }
+
+    if rowsAffected == 0 {
+        // ❌ Ни одна строка не обновлена:
+        http.Error(w, "User not found or old password is incorrect", http.StatusUnauthorized)
+        return 
+    }
+
+    // Генерируем JWT токен
+    token, err := middleware.GenerateJWTToken(user.ID, user.Email, cfg)
+    if err != nil {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error generating token",
+        })
+        return
+    }
+
+    authResponse := AuthResponse{
+        Token: token,
+    }
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "Change password successful",
+        Data:    authResponse,
+    })
+}
+
 func writeResponse(w http.ResponseWriter, status int, response Response) {
     w.Header().Set("Content-Type", "application/json")
     w.WriteHeader(status)
     json.NewEncoder(w).Encode(response)
 }
+
+Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNSwiZW1haWwiOiJmaXNoQGtpLmNvbSIsImlzcyI6ImdvLWFwaSIsInN1YiI6ImZpc2hAa2kuY29tIiwiZXhwIjoxNzY2MTM3NDQ4LCJuYmYiOjE3NjYwNTEwNDgsImlhdCI6MTc2NjA1MTA0OH0.azATGKCRtMznyODrvWA_Sw2bEAbN9bwm-sUuAcj6jgA
+       eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNSwiZW1haWwiOiJmaXNoQGtpLmNvbSIsImlzcyI6ImdvLWFwaSIsInN1YiI6ImZpc2hAa2kuY29tIiwiZXhwIjoxNzY2MTQxMDI5LCJuYmYiOjE3NjYwNTQ2MjksImlhdCI6MTc2NjA1NDYyOX0.PbOUgJ-84BYO_3s6DsZ50cSHt-5hDIAoknyKDbgj9As

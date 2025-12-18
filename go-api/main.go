@@ -64,6 +64,9 @@ func main() {
     protected.Use(middleware.AuthMiddleware(cfg))
     protected.HandleFunc("/users", handlers.GetUsersHandler).Methods("GET")
     protected.HandleFunc("/profile", handlers.GetProfileHandler).Methods("GET")	
+    protected.HandleFunc("/password", func(w http.ResponseWriter, r *http.Request) {
+        handlers.PasswordHandler(w, r, cfg)
+    }).Methods("POST")	
     
     // Настраиваем CORS для Flutter Web
     c := cors.New(cors.Options{
@@ -93,6 +96,7 @@ func main() {
     log.Printf("📊 API endpoints:")
     log.Printf("   POST http://localhost:%s/api/register (public)", port)
     log.Printf("   POST http://localhost:%s/api/login (public)", port)
+    log.Printf("   POST http://localhost:%s/api/password (protected)", port)
     log.Printf("   GET  http://localhost:%s/api/users (protected)", port)
     log.Printf("   GET  http://localhost:%s/api/profile (protected)", port)
     log.Printf("   GET  http://localhost:%s/api/health (public)", port)

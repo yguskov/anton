@@ -98,4 +98,25 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<bool> changePassword(String oldPassword, String newPassword) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      dynamic response = await _apiService
+          .changePassword({'old': oldPassword, 'new': newPassword});
+      print(response);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      print(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
 }

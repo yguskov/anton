@@ -10,6 +10,16 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final _formKey = GlobalKey<FormState>(); // for change email
+  final _oldPasswordController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _password2Controller = TextEditingController();
+
+  bool get _passwordChangeEnabled =>
+      _oldPasswordController.text.isNotEmpty &&
+      _oldPasswordController.text.isNotEmpty &&
+      _password2Controller.text.isNotEmpty;
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +41,12 @@ class _ProfilePageState extends State<ProfilePage> {
       backgroundColor: Color(0xFFF76D12),
       // foregroundColor: Colors.white,
     );
+
+    var grayButtonStyle = ElevatedButton.styleFrom(
+      backgroundColor: Colors.black87,
+      foregroundColor: Colors.white,
+    );
+
     const header2Style = TextStyle(
       fontWeight: FontWeight.bold,
     );
@@ -126,6 +142,79 @@ class _ProfilePageState extends State<ProfilePage> {
                                     SizedBox(height: h20),
                                     TextBar('Сменить пароль'),
                                     SizedBox(height: h20),
+                                    Form(
+                                        key: _formKey,
+                                        onChanged: () => setState(() {}),
+                                        child: Column(
+                                          children: [
+                                            TextFormField(
+                                              controller:
+                                                  _oldPasswordController,
+                                              decoration: inputDecorattion(
+                                                  'Старый пароль'),
+                                              obscureText: true,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Укажите пароль';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            SizedBox(height: 16),
+                                            TextFormField(
+                                              controller: _passwordController,
+                                              decoration: inputDecorattion(
+                                                  'Новый пароль'),
+                                              obscureText: true,
+                                              validator: (value) {
+                                                if (value == null ||
+                                                    value.isEmpty) {
+                                                  return 'Укажите пароль';
+                                                }
+                                                if (value.length < 3) {
+                                                  return 'Пароль не может быть меньше 3 символов';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            SizedBox(height: 20),
+                                            TextFormField(
+                                              controller: _password2Controller,
+                                              decoration: inputDecorattion(
+                                                  'Подтвердите пароль'),
+                                              obscureText: true,
+                                              validator: (value) {
+                                                if (value !=
+                                                    _passwordController.text) {
+                                                  return 'Пароль не совпадает';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            SizedBox(height: 20),
+                                            if (authProvider.error != null)
+                                              Text(
+                                                authProvider.error!,
+                                                style: TextStyle(
+                                                    color: Colors.red),
+                                              ),
+                                            SizedBox(height: 20),
+                                            authProvider.isLoading
+                                                ? CircularProgressIndicator()
+                                                : SizedBox(height: 20),
+                                          ],
+                                        )),
+                                    Align(
+                                      alignment: Alignment.centerRight,
+                                      child: ElevatedButton(
+                                        onPressed: changePassword,
+                                        style: _passwordChangeEnabled
+                                            ? redButtonStyle
+                                            : grayButtonStyle,
+                                        child: Text('Сохранить'),
+                                      ),
+                                    ),
                                     Text(
                                       'Создан: ${authProvider.currentUser?.createdAt}',
                                       textAlign: TextAlign.center,
@@ -155,5 +244,56 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void edit() {
     Navigator.pushNamed(context, '/');
+  }
+
+  InputDecoration inputDecorattion(String label) {
+    return InputDecoration(
+      labelText: label,
+      filled: true,
+      fillColor: Colors.grey[200],
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(4),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(6),
+          bottomRight: Radius.circular(6),
+        ),
+      ),
+      contentPadding: const EdgeInsets.all(16),
+    );
+  }
+
+  Future<void> changePassword() async {
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    if (_formKey.currentState!.validate()) {
+      final success = await authProvider.changePassword(
+        _oldPasswordController.text,
+        _passwordController.text,
+      );
+
+      if (success) {
+        setState(() {
+          _oldPasswordController.text = '';
+          _passwordController.text = '';
+          _password2Controller.text = '';
+        });
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('\nПароль изменен!\n', textAlign: TextAlign.center),
+              backgroundColor: Theme.of(context).colorScheme.primary),
+        );
+
+        // Navigator.pushNamed(context, '/profile');
+      } else {
+        print('Ошибка смены пароля');
+      }
+    }
   }
 }

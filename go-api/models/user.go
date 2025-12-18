@@ -49,6 +49,11 @@ type LoginRequest struct {
     Password string `json:"password"`
 }
 
+type PasswordRequest struct {
+    Old    string `json:"old"`
+    New    string `json:"new"`
+}
+
 type UserResponse struct {
     ID        int      `json:"id"`
     Email     string   `json:"email"`
