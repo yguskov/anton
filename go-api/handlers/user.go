@@ -334,6 +334,3 @@ func writeResponse(w http.ResponseWriter, status int, response Response) {
     w.WriteHeader(status)
     json.NewEncoder(w).Encode(response)
 }
-
-Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNSwiZW1haWwiOiJmaXNoQGtpLmNvbSIsImlzcyI6ImdvLWFwaSIsInN1YiI6ImZpc2hAa2kuY29tIiwiZXhwIjoxNzY2MTM3NDQ4LCJuYmYiOjE3NjYwNTEwNDgsImlhdCI6MTc2NjA1MTA0OH0.azATGKCRtMznyODrvWA_Sw2bEAbN9bwm-sUuAcj6jgA
-       eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNSwiZW1haWwiOiJmaXNoQGtpLmNvbSIsImlzcyI6ImdvLWFwaSIsInN1YiI6ImZpc2hAa2kuY29tIiwiZXhwIjoxNzY2MTQxMDI5LCJuYmYiOjE3NjYwNTQ2MjksImlhdCI6MTc2NjA1NDYyOX0.PbOUgJ-84BYO_3s6DsZ50cSHt-5hDIAoknyKDbgj9As
