@@ -3,13 +3,14 @@ class User {
   final String email;
   final Map<String, dynamic> userData;
   final String createdAt;
+  final String guid;
 
-  User({
-    required this.id,
-    required this.email,
-    required this.userData,
-    required this.createdAt,
-  });
+  User(
+      {required this.id,
+      required this.email,
+      required this.userData,
+      required this.createdAt,
+      this.guid = ''});
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
@@ -17,6 +18,7 @@ class User {
       email: json['email'],
       userData: Map<String, dynamic>.from(json['user_data'] ?? {}),
       createdAt: json['created_at'],
+      guid: json['guid'],
     );
   }
 
@@ -26,6 +28,7 @@ class User {
       'email': email,
       'user_data': userData,
       'created_at': createdAt,
+      'guid': guid,
     };
   }
 }

@@ -10,8 +10,8 @@ import (
     "go-api/database"
     "go-api/middleware"
     "go-api/models"
-    
     "golang.org/x/crypto/bcrypt"
+    "github.com/rs/xid"
 )
 
 type AuthResponse struct {
@@ -49,10 +49,11 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
 
     // Сохраняем пользователя в БД
     result, err := database.DB.Exec(
-        "INSERT INTO user (email, password, user_data) VALUES (?, ?, ?)",
+        "INSERT INTO user (email, password, user_data, guid) VALUES (?, ?, ?, ?)",
         req.Email, 
         string(hashedPassword), 
         req.UserData,
+        xid.New().String(),
     )
     if err != nil {
         http.Error(w, "Error creating user: "+err.Error(), http.StatusInternalServerError)
@@ -68,9 +69,9 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
     // Получаем созданного пользователя
     var user models.User
     err = database.DB.QueryRow(
-        "SELECT id, email, user_data, created_at FROM user WHERE id = ?",
+        "SELECT id, email, user_data, created_at, guid FROM user WHERE id = ?",
         userID,
-    ).Scan(&user.ID, &user.Email, &user.UserData, &user.CreatedAt)
+    ).Scan(&user.ID, &user.Email, &user.UserData, &user.CreatedAt, &user.Guid)
     if err != nil {
         http.Error(w, "Error retrieving user", http.StatusInternalServerError)
         return
@@ -113,9 +114,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 
     var user models.User
     err = database.DB.QueryRow(
-        "SELECT id, email, password, user_data, created_at FROM user WHERE email = ?",
+        "SELECT id, email, password, user_data, created_at, guid FROM user WHERE email = ?",
         req.Email,
-    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt)
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt, &user.Guid)
     
     if err == sql.ErrNoRows {
         http.Error(w, "Invalid credentials", http.StatusUnauthorized)
@@ -147,6 +148,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
         Email:     user.Email,
         UserData:  user.UserData,
         CreatedAt: user.CreatedAt.Format(time.RFC3339),
+        Guid:      user.Guid,
     }
 
     authResponse := AuthResponse{
@@ -212,9 +214,9 @@ func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
     var user models.User
     var userData models.UserData
     err := database.DB.QueryRow(
-        "SELECT id, email, password, user_data, created_at FROM user WHERE id = ?",
+        "SELECT id, email, password, user_data, created_at, guid FROM user WHERE id = ?",
         userID,
-    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt)
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt, &user.Guid)
 
     if err != nil {
         http.Error(w, "Error scanning user", http.StatusInternalServerError)

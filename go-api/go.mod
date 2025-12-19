@@ -9,3 +9,5 @@ require (
 	github.com/rs/cors v1.10.1
 	golang.org/x/crypto v0.14.0
 )
+
+require github.com/rs/xid v1.6.0 // indirect

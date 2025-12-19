@@ -14,6 +14,7 @@ type User struct {
     UserData  UserData       `json:"user_data"`
     CreatedAt time.Time      `json:"created_at"`
     UpdatedAt time.Time      `json:"updated_at"`
+    Guid      string         `json:"guid"`
 }
 
 type UserData map[string]interface{}
@@ -59,4 +60,5 @@ type UserResponse struct {
     Email     string   `json:"email"`
     UserData  UserData `json:"user_data"`
     CreatedAt string   `json:"created_at"`
+    Guid      string   `json:"guid"`
 }
