@@ -128,7 +128,7 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
         ),
         SizedBox(height: 2),
         radioList,
-        widget.otherText.isNull
+        widget.otherText == null
             ? Container()
             : Padding(
                 padding: const EdgeInsets.only(left: leftPadding, top: 15),

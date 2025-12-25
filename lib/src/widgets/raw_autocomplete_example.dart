@@ -94,7 +94,7 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
   Widget build(BuildContext context) {
     List<Widget> children = [];
 
-    if (!widget.label.isNull) {
+    if (widget.label != null) {
       children.add(Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),

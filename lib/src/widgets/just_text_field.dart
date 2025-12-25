@@ -52,7 +52,7 @@ class _JustTextFieldState extends State<JustTextField> {
   Widget build(BuildContext context) {
     List<Widget> rows = [];
 
-    if (!widget.label.isNull) {
+    if (widget.label != null) {
       rows.add(Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
