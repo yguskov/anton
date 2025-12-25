@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 
+import 'package:example/models/cv.dart';
 import 'package:flutter/foundation.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
@@ -7,6 +8,7 @@ import '../services/api_service.dart';
 class AuthProvider with ChangeNotifier {
   final ApiService _apiService;
   User? _currentUser;
+  CV? _userCV;
   bool _isLoading = false;
   String? _error;
 
@@ -15,7 +17,9 @@ class AuthProvider with ChangeNotifier {
   User? get currentUser => _currentUser;
   bool get isLoading => _isLoading;
   String? get error => _error;
-  bool get isAuth => currentUser.isDefinedAndNotNull;
+  bool get isAuth => currentUser != null;
+
+  CV? get userCV => _userCV;
 
   Future<bool> register(
       String email, String password, Map<String, dynamic> userData) async {
@@ -117,6 +121,25 @@ class AuthProvider with ChangeNotifier {
       _isLoading = false;
       notifyListeners();
       return false;
+    }
+  }
+
+  Future<void> loadUserCV(String id) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      String json = await _apiService.getUserCV(id);
+      _isLoading = false;
+
+      print('----- fetch user CV from API for $id');
+      notifyListeners();
+      _userCV = CV.fromJson(json);
+    } catch (e) {
+      _error = e.toString();
+      _isLoading = false;
+      notifyListeners();
     }
   }
 }

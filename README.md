@@ -90,3 +90,5 @@ curl -X POST http://localhost:8080/api/login \
 curl -X GET http://localhost:8080/api/users \
 -H "Authorization: Bearer YOUR_JWT_TOKEN_HERE"
 
+version of flutter 3.10.2
+

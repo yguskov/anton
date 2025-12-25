@@ -1,6 +1,6 @@
-
 import 'package:example/models/cv.dart';
 import 'package:example/profile.dart';
+import 'package:example/show.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:provider/provider.dart';
 import 'login.dart';
@@ -21,10 +21,39 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  Route<dynamic>? generateRoute(RouteSettings settings) {
+    final String? path = settings.name;
+    print('------------- $path');
+    // Роут /page/:id
+    if (path != null && path.startsWith('/show/')) {
+      final idStr = path.substring('/show/'.length);
+      print('-------- $idStr');
+      return MaterialPageRoute(
+        builder: (context) => ShowPage(idStr),
+      );
+    }
+
+    switch (path) {
+      case '/login':
+        return MaterialPageRoute(builder: (context) => LoginPage());
+      // Главная страница (home)
+      case '/profile':
+        return MaterialPageRoute(builder: (context) => ProfilePage());
+
+      case '':
+      case '/':
+        return MaterialPageRoute(
+            builder: (context) => ProviderExamplePage.provider());
+    }
+
+    // Роут не найден
+    return MaterialPageRoute(
+      builder: (context) => NotFoundPage(),
+    );
+  }
+
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
         Provider<ApiService>(
@@ -37,12 +66,15 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp(
+        onGenerateRoute: (settings) {
+          // settings.name содержит путь, например: '/page/123'
+          return generateRoute(settings);
+        },
         title: 'Анкета',
         theme: ThemeData(
           primarySwatch: Colors.blue,
           colorScheme: ColorScheme(
             brightness: Brightness.light,
-            // primary: Colors.deepPurple,
             primary: Color(0xFF5801fd),
             onPrimary: Colors.white,
             secondary: Colors.orange,
@@ -66,18 +98,18 @@ class MyApp extends StatelessWidget {
             ),
           ),
         ),
-        home: ProviderExamplePage.provider(),
-        routes: {
-          '/login': (context) => LoginPage(),
-          // '/register': (context) => RegisterScreen(),
-          '/profile': (context) => ProfilePage()
-        }  
       ),
     );
   }
 }
 
-
+class NotFoundPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(child: Text('Page not found'));
+  }
+}
 
 class ProviderExamplePage extends StatelessWidget {
   ProviderExamplePage._({Key? key})

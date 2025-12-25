@@ -163,4 +163,8 @@ class ApiService {
       throw Exception('Failed to change password: ${response.body}');
     }
   }
+
+  Future<String> getUserCV(String id) async {
+    return '';
+  }
 }
