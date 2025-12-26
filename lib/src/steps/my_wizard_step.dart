@@ -24,7 +24,7 @@ abstract class StatefulWidgetStep extends StatefulWidget {
 abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   final StreamController<String> _streamController = StreamController<String>();
 
-  // @book get another step
+  // get another step
   MyWizardStep providerOfStep(int i) {
     return widget.provider.wizardController.stepControllers[i].step
         as MyWizardStep;
@@ -121,6 +121,7 @@ abstract class MyWizardStep with WizardStep {
 
   get field => _field;
 
+  // save all fields of the step to CV
   updateCV(CV cv) {
     _field.forEach((key, value) {
       cv.setValue(key, value.value);

@@ -20,7 +20,7 @@ class StepFourProvider extends MyWizardStep {
         });
 
   updateCV(CV cv) {
-    cv.setValue('skill', dutyList);
+    cv.setValue('duty', dutyList);
   }
 
   final descriptionFocusNode = FocusNode();

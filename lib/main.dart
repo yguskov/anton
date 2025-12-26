@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
     final String? path = settings.name;
     print('------------- $path');
     // Роут /page/:id
-    if (path != null && path.startsWith('/show/')) {
-      final idStr = path.substring('/show/'.length);
-      print('-------- $idStr');
+    if (path != null && path.startsWith('/review/')) {
+      final idStr = path.substring('/review/'.length);
+      print('-------- review - $idStr');
       return MaterialPageRoute(
         builder: (context) => ShowPage(idStr),
       );

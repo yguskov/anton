@@ -164,7 +164,22 @@ class ApiService {
     }
   }
 
-  Future<String> getUserCV(String id) async {
-    return '';
+  Future<Map<String, dynamic>> getUserCV(String id) async {
+    final response = await client.post(
+      Uri.parse('$baseUrl/cv'),
+      headers: _getHeaders(),
+      body: json.encode({'id': id}),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        return data['data'];
+      } else {
+        throw Exception(data['error'] ?? 'Change password failed');
+      }
+    } else {
+      throw Exception('Failed to change password: ${response.body}');
+    }
   }
 }

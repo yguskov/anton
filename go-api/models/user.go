@@ -55,6 +55,10 @@ type PasswordRequest struct {
     New    string `json:"new"`
 }
 
+type CVRequest struct {
+    ID string `json:"id"`
+}
+
 type UserResponse struct {
     ID        int      `json:"id"`
     Email     string   `json:"email"`

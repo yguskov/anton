@@ -2,6 +2,7 @@ import 'dart:js_interop';
 
 import 'package:example/providers/auth_provider.dart';
 import 'package:example/src/app_bar_with_menu.dart';
+import 'package:example/src/widgets/cv_widget.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -33,19 +34,20 @@ class _ShowPageState extends State<ShowPage> {
 
     // final queryParams = Uri.base.queryParameters;
     String id = widget.id;
-
     authProvider.loadUserCV(id);
   }
 
   @override
   Widget build(BuildContext context) {
     final AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+        Provider.of<AuthProvider>(context, listen: true);
+
+    print('---BUILD------------ ${authProvider.userCV}');
 
     CV? cv = authProvider.userCV;
     Widget cvWidget;
     if (cv != null) {
-      cvWidget = CVWidget(cv: cv!);
+      cvWidget = CVWidget(cv: cv);
     } else {
       cvWidget = Center(
         child: Padding(
@@ -79,7 +81,7 @@ class _ShowPageState extends State<ShowPage> {
 
     return Scaffold(
       appBar: AntAppBar(
-        title: "Презентация",
+        title: "Презентация намерений",
       ),
       body: Theme(
         data: Theme.of(context).copyWith(
@@ -109,16 +111,16 @@ class _ShowPageState extends State<ShowPage> {
                               horizontal: 10, vertical: 20.0),
                           child: ListView(
                             children: [
+                              // TextBar('Презентация намерений'),
+                              SizedBox(height: h20),
                               cvWidget,
-                              SizedBox(height: 20),
+                              SizedBox(height: 2 * h20),
                               Center(
                                 child: ElevatedButton(
                                   onPressed: edit,
-                                  child: Text('Нажать'),
+                                  child: Text('Можно обсудить'),
                                 ),
                               ),
-                              SizedBox(height: h20),
-                              TextBar(''),
                               SizedBox(height: h20),
                               authProvider.isLoading
                                   ? Center(
@@ -200,7 +202,13 @@ class _ShowPageState extends State<ShowPage> {
   }
 
   void edit() {
-    Navigator.pushNamed(context, '/');
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+          content: Text('\nOk\n', textAlign: TextAlign.center),
+          backgroundColor: Theme.of(context).colorScheme.primary),
+    );
+
+    // Navigator.pushNamed(context, '/');
   }
 
   InputDecoration inputDecorattion(String label) {
@@ -274,17 +282,4 @@ class _ShowPageState extends State<ShowPage> {
   }
 }
 
-class CVWidget extends StatelessWidget {
-  final CV cv;
-
-  const CVWidget({
-    super.key, // Flutter 3.0+ syntax (replaces `Key? key`)
-    required this.cv,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
-    return Column(children: []);
-  }
-}
+// d56iefpams3vsfqpk5k0

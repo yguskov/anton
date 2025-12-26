@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:js_interop';
 
 import 'package:example/models/cv.dart';
@@ -128,14 +129,13 @@ class AuthProvider with ChangeNotifier {
     _isLoading = true;
     _error = null;
     notifyListeners();
-
     try {
-      String json = await _apiService.getUserCV(id);
+      var json = await _apiService.getUserCV(id);
       _isLoading = false;
 
-      print('----- fetch user CV from API for $id');
+      print('--------json---------------- ${json}');
       notifyListeners();
-      _userCV = CV.fromJson(json);
+      _userCV = CV.fromJson(jsonEncode(json));
     } catch (e) {
       _error = e.toString();
       _isLoading = false;
@@ -143,3 +143,5 @@ class AuthProvider with ChangeNotifier {
     }
   }
 }
+
+// http://localhost:42208/#/show/d56iefpams3vsfqpk5k0

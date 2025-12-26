@@ -26,6 +26,7 @@ class CV {
   }
 
   String toJson() {
+    print(' ----------------- ${jsonEncode(_data)}');
     return jsonEncode(_data);
   }
 

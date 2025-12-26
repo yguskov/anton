@@ -326,7 +326,7 @@ class _ProfilePageState extends State<ProfilePage> {
       // Копируем текст в буфер
       Clipboard.setData(ClipboardData(
           text: path.substring(0, path.lastIndexOf('#') + 1) +
-              '/show?id=' +
+              '/review/' +
               authProvider.currentUser!.guid));
 
       // показать уведомление

@@ -212,7 +212,7 @@ func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
     }
 
     var user models.User
-    var userData models.UserData
+    // var userData models.UserData
     err := database.DB.QueryRow(
         "SELECT id, email, password, user_data, created_at, guid FROM user WHERE id = ?",
         userID,
@@ -222,7 +222,7 @@ func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Error scanning user", http.StatusInternalServerError)
         return
     }
-    user.UserData = userData
+    // user.UserData = userData
 
     // response := models.UserResponse{
     //     ID:        user.ID,
@@ -235,6 +235,44 @@ func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
     json.NewEncoder(w).Encode(user)
     // writeResponse(w, http.StatusOK, response)
+}
+
+func CVHandler(w http.ResponseWriter, r *http.Request) {
+    // Извлекаем из контекста
+    var req models.CVRequest
+    err := json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+
+    var user models.User
+    err = database.DB.QueryRow(
+        "SELECT id, email, password, user_data, created_at, guid FROM user WHERE guid = ?",
+        req.ID,
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt, &user.Guid)
+
+    if err != nil {
+        http.Error(w, "Error scanning user", http.StatusInternalServerError)
+        return
+    }
+    // user.UserData = userData
+
+    // response := models.UserResponse{
+    //     ID:        user.ID,
+    //     Email:     user.Email,
+    //     UserData:  user.UserData,
+    //     CreatedAt: user.CreatedAt.Format(time.RFC3339),
+    // }
+    //  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwiZW1haWwiOiJyckByci5yciIsImlzcyI6ImdvLWFwaSIsInN1YiI6InJyQHJyLnJyIiwiZXhwIjoxNzY1NTMwNzg5LCJuYmYiOjE3NjU0NDQzODksImlhdCI6MTc2NTQ0NDM4OX0.TgUUXzVPUjagJHJRgSdMdstqUyb85-_xzj8SOaexBug
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "CV get successful",
+        Data:    user.UserData,
+    })
+
 }
 
 func PasswordHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
@@ -332,7 +370,7 @@ func PasswordHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
 }
 
 func writeResponse(w http.ResponseWriter, status int, response Response) {
-    w.Header().Set("Content-Type", "application/json")
+    w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(status)
     json.NewEncoder(w).Encode(response)
 }
