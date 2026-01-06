@@ -31,4 +31,27 @@ class CV {
   }
 
   get data => _data;
+
+  List<Map<String, String>> get duty {
+    return _jsonToMap(_data['duty']);
+  }
+
+  _jsonToMap(listOfJson) {
+    try {
+      return listOfJson
+          .map((jsonMap) =>
+              // print('<<<<<${jsonMap.runtimeType}:=$jsonMap==>>>>');
+              Map<String, String>.from(jsonMap))
+          // .where((name) => name != null)
+          .cast<Map<String, String>>()
+          .toList();
+
+      // Если вы уверены в типе данных
+      // result = (_data['duty'] ?? [] as List<Map<String, String>>);
+    } on Error catch (e) {
+      print('------------- Ошибка приведения: $e\n===${listOfJson}=====');
+      // Альтернативная обработка
+    }
+    return [];
+  }
 }

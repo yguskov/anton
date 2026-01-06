@@ -229,7 +229,6 @@ class _StepFourState extends StateStep<StepFour> {
 
   _buildDutyList(BoxConstraints constraints) {
     double boxWidth;
-    print(constraints);
     if (constraints.maxWidth < 600) {
       boxWidth = constraints.maxWidth;
     } else {
