@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:markup_text/markup_text.dart';
 
 import '../../models/cv.dart';
 import 'custom_card.dart';
@@ -23,11 +24,55 @@ class CVWidget extends StatelessWidget {
       const SizedBox(height: h1),
       Text('Кому: ${cv.getValue('boss_fio')}'),
       const SizedBox(height: h1),
-      Text('От кого: ${cv.getValue('fio')}'),
+      MarkupText(
+          'От кого: ${cv.getValue('fio')} ((b)${cv.getValue('position')}(/b))'),
+      // Text('От кого: ${cv.getValue('fio')} (${cv.getValue('position')})'),
       const SizedBox(height: h1),
+
       listCard(
-        title: 'Мои текущие обязанности',
+        title: 'Мои текущие обязанности:',
         list: cv.duty,
+        centerTextCallBack: (item) {
+          return '${item['name'] ?? ''} , ${item['period'] ?? ''}';
+        },
+        leftTextCallBack: (item) {
+          switch (item['attitude'] ?? '') {
+            case '-1':
+              return 'Не нравится';
+            case '0':
+              return '';
+            case '1':
+              return 'Нравится';
+          }
+          return '';
+        },
+        rightTextCallBack: (item) {
+          return (item['type'] ?? '') == 'new'
+              ? 'Новая'
+              : (item['type'] == 'extra' ? 'Дополнительная' : '');
+        },
+        leftColorCallBack: (item) {
+          switch (item['attitude'] ?? '') {
+            case '-1':
+              return Colors.orange;
+            case '0':
+              return Colors.grey;
+            case '1':
+              return Colors.green.shade800;
+          }
+          return Colors.grey;
+        },
+        rightColorCallBack: (item) {
+          return (item['type'] ?? '') == 'new'
+              ? Colors.green.shade800
+              : Color(0xFF5801fd);
+        },
+      ),
+      const SizedBox(height: h1),
+
+      listCard(
+        title: 'В данный момент я обладаю навыками:',
+        list: cv.know, // @FIXME add to cv.dart as duty
         centerTextCallBack: (item) {
           return '${item['name'] ?? ''} , ${item['period'] ?? ''}';
         },

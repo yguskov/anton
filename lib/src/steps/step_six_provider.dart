@@ -23,7 +23,7 @@ class StepSixProvider extends MyWizardStep {
         });
 
   updateCV(CV cv) {
-    cv.setValue('skill', knowList);
+    cv.setValue('know', knowList);
     cv.setValue('want_tip', getValue('want_tip'));
   }
 
