@@ -32,9 +32,9 @@ class CV {
 
   get data => _data;
 
-  List<Map<String, String>> get duty {
-    return _jsonToMap(_data['duty']);
-  }
+  List<Map<String, String>> get duty => _jsonToMap(_data['duty']);
+  List<Map<String, String>> get skill => _jsonToMap(_data['skill']);
+  List<Map<String, String>> get know => _jsonToMap(_data['know']);
 
   _jsonToMap(listOfJson) {
     try {
@@ -55,34 +55,44 @@ class CV {
     return [];
   }
 }
-/*
-{
-  "aim": "Продвижения по карьере", 
-  "fio": "Вас Васич", 
-  "why": "Взял/Готов взять на себя дополнительную ответственность", 
-  "duty": [
-    {"name": "Разработка приложений", "type": "base", "period": "каждый день", "attitude": "1"}, 
-    {"name": "Тестирование", "type": "extra", "period": "раз в неделю", "attitude": "-1"}
-  ], 
-  "skill": [
-    {"name": "Посетил курсы про php", "when": "1", "skill": "Пишу на PHP", "result": "Играю с листа"}, 
-    {"name": "Читал книгу для чайников", "when": "12", "skill": "Пишу на Java", "result": "Пишу двумя руками"}
-  ], 
-  "salary": "20000", 
-  "sector": "ИТ", 
-  "achieve": [
-    {"name": "Написал сайт про погоду", "when": "1", "result": "Все в компании знают погоду на завтра"}, 
-    {"name": "Написал заказчику сайт про визитку", "when": "6", "result": "Получили прибыль"}, 
-    {"name": "Написал приложения под Андроид", "when": "3", "result": "Добавили его в портфолио"}
-  ], 
-  "boss_fio": "Огнев Евгений", 
-  "position": "Джуниор фронтэнд программист", 
+
+/** Example 
+ a@a.com
+ {
+  "aim": "Профессионального роста", 
+  "fio": "Августин Михайлович", 
+  "why": "Активно развиваюсь и обещаю продолжать расти", 
+  "salary": "200000", 
+  "sector": "Строительство", 
+  "boss_fio": "Алевтина Петровна", 
+  "position": "Строитель-монтажник", 
   "want_tip": "1", 
   "want_info": "1", 
   "work_from": "office", 
-  "boss_email": "ogo@e.ru", 
-  "last_upgrade": "6", 
+  "boss_email": "a@p.k", 
+  "last_upgrade": "3", 
   "office_country": "Россия", 
-  "office_location": "Красноярск"
+  "office_location": "Бедрск"
+
+  "duty": [
+    {"name": "Монтаж плит", "type": "base", "period": "раз в неделю", "attitude": "-1"}, 
+    {"name": "Размазывание швов", "type": "new", "period": "каждый день", "attitude": "0"}, 
+    {"name": "Сварочные работы", "type": "extra", "period": "2 раза в неделю", "attitude": "1"}
+  ], 
+  "skill": [
+    {"name": "Замазка швов", "type": "Не знаю", "level": "3", "power": "Слабым навыком"}, 
+    {"name": "Установка плит", "type": "hard", "level": "4", "power": "Сильным навыком"}, 
+    {"name": "Сварка", "type": "Не знаю", "level": "0", "power": "Сильным навыком"}, 
+    {"name": "Кладка", "type": "софт", "level": "3", "power": "Сильным навыком"}
+  ], 
+  "know": [
+    {"name": "Изучил устройство башенного крана", "when": "6", "skill": "Установка плит", "result": "Поднимаю плиты"}, 
+    {"name": "Смотрел  ютуб про сварку", "when": "1", "skill": "Сварка", "result": "Научился варить"}
+  ], 
+  "achieve": [
+    {"name": "Сварил навес", "when": "1", "result": "Теперь есть где курить сотрудникам компании"}, 
+    {"name": "Построил дом директору", "when": "12", "result": "Директору есть где жить и с кем"}, 
+    {"name": "Бросил курить", "when": "3", "result": "Сэкономил расходы на зарплату"}
+  ], 
 }
 */

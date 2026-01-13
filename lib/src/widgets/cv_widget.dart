@@ -72,41 +72,33 @@ class CVWidget extends StatelessWidget {
 
       listCard(
         title: 'В данный момент я обладаю навыками:',
-        list: cv.know, // @FIXME add to cv.dart as duty
+        list: cv.skill,
         centerTextCallBack: (item) {
-          return '${item['name'] ?? ''} , ${item['period'] ?? ''}';
+          return '${item['name'] ?? ''}. ${item['type'] ?? ''}';
         },
         leftTextCallBack: (item) {
-          switch (item['attitude'] ?? '') {
-            case '-1':
-              return 'Не нравится';
-            case '0':
-              return '';
-            case '1':
-              return 'Нравится';
+          if ((item['power'] ?? '').toLowerCase().contains('сильн')) {
+            return 'сильный';
+          }
+          if ((item['power'] ?? '').toLowerCase().contains('слаб')) {
+            return 'слабый';
           }
           return '';
         },
-        rightTextCallBack: (item) {
-          return (item['type'] ?? '') == 'new'
-              ? 'Новая'
-              : (item['type'] == 'extra' ? 'Дополнительная' : '');
-        },
         leftColorCallBack: (item) {
-          switch (item['attitude'] ?? '') {
-            case '-1':
-              return Colors.orange;
-            case '0':
-              return Colors.grey;
-            case '1':
-              return Colors.green.shade800;
+          if ((item['power'] ?? '').toLowerCase().contains('сильн')) {
+            return Colors.green.shade800;
+          }
+          if ((item['power'] ?? '').toLowerCase().contains('слаб')) {
+            return Colors.orange;
           }
           return Colors.grey;
         },
+        rightTextCallBack: (item) {
+          return 'Уровень ${item['level']}';
+        },
         rightColorCallBack: (item) {
-          return (item['type'] ?? '') == 'new'
-              ? Colors.green.shade800
-              : Color(0xFF5801fd);
+          return Color(0xFF5B32332);
         },
       ),
 
