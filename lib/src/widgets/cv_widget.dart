@@ -46,11 +46,11 @@ class CVWidget extends StatelessWidget {
           }
           return '';
         },
-        rightTextCallBack: (item) {
-          return (item['type'] ?? '') == 'new'
-              ? 'Новая'
-              : (item['type'] == 'extra' ? 'Дополнительная' : '');
-        },
+        rightTextCallBack: (item) => item['type'] == 'new'
+            ? 'Новая'
+            : item['type'] == 'extra'
+                ? 'Дополнительная'
+                : 'Основная',
         leftColorCallBack: (item) {
           switch (item['attitude'] ?? '') {
             case '-1':
@@ -73,9 +73,8 @@ class CVWidget extends StatelessWidget {
       listCard(
         title: 'В данный момент я обладаю навыками:',
         list: cv.skill,
-        centerTextCallBack: (item) {
-          return '${item['name'] ?? ''}. ${item['type'] ?? ''}';
-        },
+        centerTextCallBack: (item) =>
+            '${item['name'] ?? ''}. ${item['type'] ?? ''}',
         leftTextCallBack: (item) {
           if ((item['power'] ?? '').toLowerCase().contains('сильн')) {
             return 'сильный';
@@ -94,14 +93,33 @@ class CVWidget extends StatelessWidget {
           }
           return Colors.grey;
         },
-        rightTextCallBack: (item) {
-          return 'Уровень ${item['level']}';
-        },
-        rightColorCallBack: (item) {
-          return Color(0xFF5B32332);
-        },
+        rightTextCallBack: (item) => 'Уровень ${item['level']}',
+        rightColorCallBack: (item) => Color(0xFF5B32332),
       ),
+      const SizedBox(height: h1),
 
+      listCard(
+        title: 'Последнее время я развивал свои навыки следующим образом:',
+        list: cv.know,
+        centerTextCallBack: (item) => item['name'] ?? '',
+        leftTextCallBack: (item) => item['skill'] ?? '',
+        leftColorCallBack: (item) => Color(0xFF5801fd),
+        rightTextCallBack: (item) => '${item['when']} мес. назад',
+        rightColorCallBack: (item) => Color(0xFF5B32332),
+        bottomTitleCallBack: (item) => 'Польза',
+        bottomTextCallBack: (item) => item['result'] ?? '',
+      ),
+      const SizedBox(height: h1),
+
+      listCard(
+        title: 'Я смог добиться выдающихся результатов:',
+        list: cv.achieve,
+        centerTextCallBack: (item) => item['name'] ?? '',
+        rightTextCallBack: (item) => '${item['when']} мес. назад',
+        rightColorCallBack: (item) => Color(0xFF5B32332),
+        bottomTitleCallBack: (item) => 'Польза',
+        bottomTextCallBack: (item) => item['result'] ?? '',
+      ),
       const SizedBox(height: h1),
       Text('У меня есть Цель, я хочу ${cv.getValue('aim')}'),
       const SizedBox(height: h1),
@@ -119,10 +137,12 @@ class CVWidget extends StatelessWidget {
     required title,
     required List<Map<String, String>> list,
     required String Function(Map<String, String>) centerTextCallBack,
-    required String Function(Map<String, String>) leftTextCallBack,
-    required String Function(Map<String, String>) rightTextCallBack,
-    required Color Function(Map<String, String>) leftColorCallBack,
-    required Color Function(Map<String, String>) rightColorCallBack,
+    String Function(Map<String, String>)? leftTextCallBack,
+    Color Function(Map<String, String>)? leftColorCallBack,
+    String Function(Map<String, String>)? rightTextCallBack,
+    Color Function(Map<String, String>)? rightColorCallBack,
+    String Function(Map<String, String>)? bottomTitleCallBack,
+    String Function(Map<String, String>)? bottomTextCallBack,
   }) {
     double h1 = 20;
     const headerStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 19.0);
@@ -155,10 +175,20 @@ class CVWidget extends StatelessWidget {
                     width: boxWidth,
                     height: 60,
                     title: centerTextCallBack(item),
-                    leftText: leftTextCallBack(item),
-                    rightText: rightTextCallBack(item),
-                    leftColor: leftColorCallBack(item),
-                    rightColor: rightColorCallBack(item),
+                    leftText: leftTextCallBack?.call(item),
+                    leftColor: leftColorCallBack != null
+                        ? leftColorCallBack(item)
+                        : null,
+                    rightText: rightTextCallBack != null
+                        ? rightTextCallBack(item)
+                        : null,
+                    rightColor: rightColorCallBack!(item),
+                    bottomTitle: bottomTitleCallBack != null
+                        ? bottomTitleCallBack(item)
+                        : null,
+                    bottomText: bottomTextCallBack != null
+                        ? bottomTextCallBack(item)
+                        : null,
                     selected: false,
                   )
               ]),

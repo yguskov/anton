@@ -4,10 +4,12 @@ class CustomSquareCard extends StatelessWidget {
   final String title;
   final String? leftText;
   final String? rightText;
+  final String? bottomTitle;
+  final String? bottomText;
   final double width;
   final double height;
-  final Color leftColor;
-  final Color rightColor;
+  final Color? leftColor;
+  final Color? rightColor;
   final bool selected;
 
   const CustomSquareCard({
@@ -20,6 +22,8 @@ class CustomSquareCard extends StatelessWidget {
     this.leftColor = Colors.grey,
     this.rightColor = Colors.grey,
     this.selected = false,
+    this.bottomTitle,
+    this.bottomText,
   }) : super(key: key);
 
   @override
@@ -41,7 +45,7 @@ class CustomSquareCard extends StatelessWidget {
       ),
     ));
 
-    if (leftText?.isNotEmpty ?? false) {
+    if (leftText != null && leftText != '') {
       children.add(Positioned(
         bottom: 0,
         left: 0,
@@ -51,7 +55,7 @@ class CustomSquareCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white70,
             border: Border.all(
-              color: leftColor,
+              color: leftColor ?? Colors.grey,
               width: 1,
             ),
             borderRadius: BorderRadius.circular(4),
@@ -66,7 +70,7 @@ class CustomSquareCard extends StatelessWidget {
       ));
     }
 
-    if (rightText?.isNotEmpty ?? false) {
+    if (rightText != null) {
       children.add(Positioned(
         bottom: 0,
         right: 0,
@@ -76,7 +80,7 @@ class CustomSquareCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: Colors.white70,
             border: Border.all(
-              color: rightColor,
+              color: rightColor ?? Colors.grey,
               width: 1,
             ),
             borderRadius: BorderRadius.circular(4),
@@ -91,7 +95,7 @@ class CustomSquareCard extends StatelessWidget {
       ));
     }
 
-    return Container(
+    Widget mainContainer = Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
@@ -106,5 +110,76 @@ class CustomSquareCard extends StatelessWidget {
         children: children,
       ),
     );
+
+    if (bottomText == null) {
+      return mainContainer;
+    } else {
+      var borderSide = BorderSide(
+        color: selected ? Colors.red.shade300 : Colors.blueGrey,
+        width: selected ? 2 : 1.2,
+      );
+      Widget bottomContainer = Container(
+        width: width,
+        height: height,
+        decoration: BoxDecoration(
+          color: Colors.grey[300], // серый фон
+          border: Border(
+              top: BorderSide(
+                color: Colors.blueGrey,
+                width: 0.6,
+              ),
+              left: borderSide,
+              bottom: borderSide,
+              right: borderSide),
+          borderRadius: BorderRadius.circular(4), // скругление
+        ),
+        child: Stack(
+          children: [
+            Positioned(
+              top: 0,
+              left: 0,
+              child: Container(
+                width: 100,
+                height: 20,
+                decoration: BoxDecoration(
+                  color: Colors.white70,
+                  border: Border.all(
+                    color: Colors.green.shade800,
+                    width: 1,
+                  ),
+                  borderRadius: BorderRadius.circular(1),
+                ),
+                child: Center(
+                  child: Text(
+                    bottomTitle ?? ' ',
+                    style:
+                        TextStyle(fontSize: 12, color: Colors.green.shade800),
+                  ),
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.topLeft,
+              child: Padding(
+                padding: EdgeInsets.only(top: 20, left: 5),
+                child: Text(
+                  bottomText!,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.normal,
+                    color: Colors.black87,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+      // second long text
+      return Column(
+        children: [mainContainer, bottomContainer],
+      );
+    }
   }
 }

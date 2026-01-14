@@ -35,6 +35,7 @@ class CV {
   List<Map<String, String>> get duty => _jsonToMap(_data['duty']);
   List<Map<String, String>> get skill => _jsonToMap(_data['skill']);
   List<Map<String, String>> get know => _jsonToMap(_data['know']);
+  List<Map<String, String>> get achieve => _jsonToMap(_data['achieve']);
 
   _jsonToMap(listOfJson) {
     try {
