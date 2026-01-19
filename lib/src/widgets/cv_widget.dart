@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:markup_text/markup_text.dart';
 
@@ -24,8 +23,7 @@ class CVWidget extends StatelessWidget {
       const SizedBox(height: h1),
       Text('Кому: ${cv.getValue('boss_fio')}'),
       const SizedBox(height: h1),
-      MarkupText(
-          'От кого: ${cv.getValue('fio')} ((b)${cv.getValue('position')}(/b))'),
+      MarkupText('От кого: ${cv.getValue('fio')} ((b)${cv.getValue('position')}(/b))'),
       // Text('От кого: ${cv.getValue('fio')} (${cv.getValue('position')})'),
       const SizedBox(height: h1),
 
@@ -63,9 +61,7 @@ class CVWidget extends StatelessWidget {
           return Colors.grey;
         },
         rightColorCallBack: (item) {
-          return (item['type'] ?? '') == 'new'
-              ? Colors.green.shade800
-              : Color(0xFF5801fd);
+          return (item['type'] ?? '') == 'new' ? Colors.green.shade800 : Color(0xFF5801fd);
         },
       ),
       const SizedBox(height: h1),
@@ -73,8 +69,7 @@ class CVWidget extends StatelessWidget {
       listCard(
         title: 'В данный момент я обладаю навыками:',
         list: cv.skill,
-        centerTextCallBack: (item) =>
-            '${item['name'] ?? ''}. ${item['type'] ?? ''}',
+        centerTextCallBack: (item) => '${item['name'] ?? ''}. ${item['type'] ?? ''}',
         leftTextCallBack: (item) {
           if ((item['power'] ?? '').toLowerCase().contains('сильн')) {
             return 'сильный';
@@ -125,8 +120,7 @@ class CVWidget extends StatelessWidget {
       const SizedBox(height: h1),
       Text('Я заслуживаю её потому, что я ${cv.getValue('why')}'),
       const SizedBox(height: h1),
-      Text(
-          'Предлагаю назначить встречу и обсудить возможности или альтернативные варианты.'),
+      Text('Предлагаю назначить встречу и обсудить возможности или альтернативные варианты.'),
     ]);
   }
 
@@ -147,8 +141,7 @@ class CVWidget extends StatelessWidget {
     double h1 = 20;
     const headerStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 19.0);
 
-    return LayoutBuilder(
-        builder: (BuildContext context, BoxConstraints constraints) {
+    return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
       double boxWidth;
       if (constraints.maxWidth < 600) {
         boxWidth = constraints.maxWidth;
@@ -166,32 +159,21 @@ class CVWidget extends StatelessWidget {
             ),
           ),
           SizedBox(height: h1),
-          Wrap(
-              spacing: 10, // горизонтальный отступ между блоками
-              runSpacing: 10, // вертикальный отступ между строками
-              children: [
-                for (var item in list)
-                  CustomSquareCard(
-                    width: boxWidth,
-                    height: 60,
-                    title: centerTextCallBack(item),
-                    leftText: leftTextCallBack?.call(item),
-                    leftColor: leftColorCallBack != null
-                        ? leftColorCallBack(item)
-                        : null,
-                    rightText: rightTextCallBack != null
-                        ? rightTextCallBack(item)
-                        : null,
-                    rightColor: rightColorCallBack!(item),
-                    bottomTitle: bottomTitleCallBack != null
-                        ? bottomTitleCallBack(item)
-                        : null,
-                    bottomText: bottomTextCallBack != null
-                        ? bottomTextCallBack(item)
-                        : null,
-                    selected: false,
-                  )
-              ]),
+          Wrap(spacing: 10, runSpacing: 10, children: [
+            for (var item in list)
+              CustomSquareCard(
+                width: boxWidth,
+                height: 60,
+                title: centerTextCallBack(item),
+                leftText: leftTextCallBack?.call(item),
+                leftColor: leftColorCallBack != null ? leftColorCallBack(item) : null,
+                rightText: rightTextCallBack != null ? rightTextCallBack(item) : null,
+                rightColor: rightColorCallBack!(item),
+                bottomTitle: bottomTitleCallBack != null ? bottomTitleCallBack(item) : null,
+                bottomText: bottomTextCallBack != null ? bottomTextCallBack(item) : null,
+                selected: false,
+              )
+          ]),
         ],
       );
     });

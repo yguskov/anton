@@ -7,6 +7,7 @@ import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'dart:html' if (dart.library.io) 'dart:io' as html;
 
 import 'models/cv.dart';
 
@@ -29,8 +30,11 @@ class _ShowPageState extends State<ShowPage> {
   @override
   void initState() {
     super.initState();
-    final AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+    Future.microtask(() {
+      html.document.title = 'Презентация';
+    });
+
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     // final queryParams = Uri.base.queryParameters;
     String id = widget.id;
@@ -39,8 +43,7 @@ class _ShowPageState extends State<ShowPage> {
 
   @override
   Widget build(BuildContext context) {
-    final AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: true);
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
 
     print('---BUILD------------ ${authProvider.userCV}');
 
@@ -107,8 +110,7 @@ class _ShowPageState extends State<ShowPage> {
                       child: Container(
                         // color: Colors.grey[300],
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 20.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
                           child: ListView(
                             children: [
                               // TextBar('Презентация намерений'),
@@ -157,12 +159,10 @@ class _ShowPageState extends State<ShowPage> {
                                           SizedBox(height: 16),
                                           if (authProvider.error != null)
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
+                                              padding: const EdgeInsets.all(10.0),
                                               child: Text(
                                                 authProvider.error!,
-                                                style: TextStyle(
-                                                    color: Colors.red),
+                                                style: TextStyle(color: Colors.red),
                                               ),
                                             ),
                                           authProvider.isLoading
@@ -264,8 +264,7 @@ class _ShowPageState extends State<ShowPage> {
 
   // Copy link for manager
   void copyLink() {
-    final AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
     if (authProvider.currentUser?.guid != null) {
       String path = Uri.base.toString();
       // Копируем текст в буфер
