@@ -4,6 +4,7 @@ import 'package:example/providers/auth_provider.dart';
 import 'package:example/src/app_bar_with_menu.dart';
 import 'package:example/src/widgets/cv_widget.dart';
 import 'package:example/src/widgets/text_bar.dart';
+import 'package:example/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -67,19 +68,6 @@ class _ShowPageState extends State<ShowPage> {
       );
     }
 
-    var redButtonStyle = ElevatedButton.styleFrom(
-      backgroundColor: Color(0xFFF76D12),
-      // foregroundColor: Colors.white,
-    );
-
-    var grayButtonStyle = ElevatedButton.styleFrom(
-      backgroundColor: Colors.blueGrey,
-      foregroundColor: Colors.white,
-    );
-
-    const header2Style = TextStyle(
-      fontWeight: FontWeight.bold,
-    );
     double h20 = 20; // vertical indent
 
     return Scaffold(

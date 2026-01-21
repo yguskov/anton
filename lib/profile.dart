@@ -1,6 +1,7 @@
 import 'package:example/providers/auth_provider.dart';
 import 'package:example/src/app_bar_with_menu.dart';
 import 'package:example/src/widgets/text_bar.dart';
+import 'package:example/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
@@ -25,8 +26,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    final AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
 
     if (authProvider.currentUser == null) {
       authProvider.fetchCurrentUser();
@@ -39,11 +39,6 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    var redButtonStyle = ElevatedButton.styleFrom(
-      backgroundColor: Color(0xFFF76D12),
-      // foregroundColor: Colors.white,
-    );
-
     var grayButtonStyle = ElevatedButton.styleFrom(
       backgroundColor: Colors.blueGrey,
       foregroundColor: Colors.white,
@@ -54,8 +49,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
     double h20 = 20; // vertical indent
 
-    final AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: true);
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
 
     return Scaffold(
       appBar: AntAppBar(
@@ -85,8 +79,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       child: Container(
                         // color: Colors.grey[300],
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 20.0),
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
                           child: ListView(
                             children: [
                               SizedBox(height: 20),
@@ -100,9 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ElevatedButton(
-                                      onPressed: edit,
-                                      child: Text('Предпросмотр')),
+                                  ElevatedButton(onPressed: edit, child: Text('Предпросмотр')),
                                   SizedBox(width: h20),
                                   ElevatedButton(
                                       onPressed: copyLink,
@@ -122,8 +113,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                   onPressed: edit,
                                   style: redButtonStyle,
                                   child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 17, vertical: 1),
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 17, vertical: 1),
                                     child: Text('Сообщить о \nрезультате'),
                                   ),
                                 ),
@@ -170,12 +161,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                         children: [
                                           TextFormField(
                                             controller: _oldPasswordController,
-                                            decoration: inputDecorattion(
-                                                'Старый пароль'),
+                                            decoration: inputDecorattion('Старый пароль'),
                                             obscureText: true,
                                             validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
+                                              if (value == null || value.isEmpty) {
                                                 return 'Укажите пароль';
                                               }
                                               return null;
@@ -184,12 +173,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                           SizedBox(height: 16),
                                           TextFormField(
                                             controller: _passwordController,
-                                            decoration: inputDecorattion(
-                                                'Новый пароль'),
+                                            decoration: inputDecorattion('Новый пароль'),
                                             obscureText: true,
                                             validator: (value) {
-                                              if (value == null ||
-                                                  value.isEmpty) {
+                                              if (value == null || value.isEmpty) {
                                                 return 'Укажите пароль';
                                               }
                                               if (value.length < 3) {
@@ -201,12 +188,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                           SizedBox(height: 20),
                                           TextFormField(
                                             controller: _password2Controller,
-                                            decoration: inputDecorattion(
-                                                'Подтвердите пароль'),
+                                            decoration: inputDecorattion('Подтвердите пароль'),
                                             obscureText: true,
                                             validator: (value) {
-                                              if (value !=
-                                                  _passwordController.text) {
+                                              if (value != _passwordController.text) {
                                                 return 'Пароль не совпадает';
                                               }
                                               return null;
@@ -214,12 +199,10 @@ class _ProfilePageState extends State<ProfilePage> {
                                           ),
                                           if (authProvider.error != null)
                                             Padding(
-                                              padding:
-                                                  const EdgeInsets.all(10.0),
+                                              padding: const EdgeInsets.all(10.0),
                                               child: Text(
                                                 authProvider.error!,
-                                                style: TextStyle(
-                                                    color: Colors.red),
+                                                style: TextStyle(color: Colors.red),
                                               ),
                                             ),
                                           authProvider.isLoading
@@ -231,9 +214,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 alignment: Alignment.centerRight,
                                 child: ElevatedButton(
                                   onPressed: changePassword,
-                                  style: _passwordChangeEnabled
-                                      ? redButtonStyle
-                                      : grayButtonStyle,
+                                  style: _passwordChangeEnabled ? redButtonStyle : grayButtonStyle,
                                   child: Text('Сохранить'),
                                 ),
                               ),
@@ -319,8 +300,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   // Copy link for manager
   void copyLink() {
-    final AuthProvider authProvider =
-        Provider.of<AuthProvider>(context, listen: false);
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
     if (authProvider.currentUser?.guid != null) {
       String path = Uri.base.toString();
       // Копируем текст в буфер

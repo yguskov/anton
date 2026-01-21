@@ -3,7 +3,7 @@ import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../../main.dart';
+import '../../register.dart';
 import '../../providers/auth_provider.dart';
 import 'my_wizard_step.dart';
 
@@ -52,9 +52,7 @@ class StepFinishState extends StateStep<StepFinish> {
     return LayoutBuilder(builder: (context, constraints) {
       List<Widget> textFields = [];
       if (authProvider.isAuth) {
-        textFields = [
-          TextBar('Вы зарегистрированы как ${authProvider.currentUser!.email}')
-        ];
+        textFields = [TextBar('Вы зарегистрированы как ${authProvider.currentUser!.email}')];
       } else {
         textFields = [
           TextFormField(
@@ -130,9 +128,7 @@ class StepFinishState extends StateStep<StepFinish> {
               style: TextStyle(color: Colors.red),
             ),
           SizedBox(height: 20),
-          authProvider.isLoading
-              ? CircularProgressIndicator()
-              : SizedBox(height: 20),
+          authProvider.isLoading ? CircularProgressIndicator() : SizedBox(height: 20),
         ];
       }
 
@@ -161,8 +157,7 @@ class StepFinishState extends StateStep<StepFinish> {
 
   void onFinished() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final wizardProvider =
-        Provider.of<ProviderExamplePageProvider>(context, listen: false);
+    final wizardProvider = Provider.of<ProviderExamplePageProvider>(context, listen: false);
     if (_formKey.currentState!.validate()) {
       final userData = wizardProvider.cv!.data;
       final success = await authProvider.register(
@@ -173,8 +168,7 @@ class StepFinishState extends StateStep<StepFinish> {
 
       if (success) {
         // @todo rebuild and hide registration form
-        print(
-            '${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
+        print('${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
         Navigator.pushReplacementNamed(context, '/profile');
         // Navigator.pushNamed(context, '/profile');
       } else {
