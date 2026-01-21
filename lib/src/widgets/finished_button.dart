@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
+import 'package:provider/provider.dart';
+
+import '../../main.dart';
+import '../steps/step_finish_provider.dart';
 
 class FinishedButton extends StatelessWidget {
   const FinishedButton({Key? key}) : super(key: key);
@@ -18,7 +22,11 @@ class FinishedButton extends StatelessWidget {
         final enabled = snapshot.data!;
         return ElevatedButton(
           child: const Text("Сохранить"),
-          onPressed: enabled ? _onPressed : null,
+          onPressed: enabled
+              ? () {
+                  _onPressed(context);
+                }
+              : null,
           style: ElevatedButton.styleFrom(
             backgroundColor: Color(0xFFF76D12), // Основной цвет фона
             foregroundColor: Colors.white, // Цвет текста и иконки
@@ -28,7 +36,7 @@ class FinishedButton extends StatelessWidget {
     );
   }
 
-  void _onPressed() {
-    debugPrint("### Finished!");
+  _onPressed(context) {
+    stepFinishKey!.currentState!.onFinished();
   }
 }

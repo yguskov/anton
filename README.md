@@ -34,6 +34,61 @@ flutter create . --platforms web
 export CHROME_EXECUTABLE="/usr/bin/chromium-browser"
 flutter doctor -v
 flutter run -d chrome --web-renderer html --verbose
+cd go-api && go run main.go
 flutter build web --release --base-href /anketa/
 rsync -avz --delete build/web/ root@5.187.2.205:/var/www/html/anketa
+
+# go api
+Установите MySQL и создайте базу данных flutter_app
+Обновите config.json с вашими данными БД
+Обновить зависимости: go mod tidy
+Запустите: go run main.go
+
+# database and user
+CREATE DATABASE IF NOT EXISTS anton;
+CREATE USER IF NOT EXISTS 'anton'@'localhost' IDENTIFIED BY 'ant';
+GRANT ALL PRIVILEGES ON anton.* TO 'anton'@'localhost';
+FLUSH PRIVILEGES;
+
+# Проверка АПИ сервера
+curl -X GET http://localhost:8080/api/health
+
+# Регистрация пользователя
+curl -X POST http://localhost:8080/api/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "password123",
+    "user_data": {
+      "name": "John Doe",
+      "age": 30,
+      "interests": ["programming", "reading"]
+    }
+  }'
+  
+curl -X POST http://5.187.2.205:8993/api/register \
+-H "Content-Type: application/json" \
+-d '{
+  "email": "snow@example.com",
+  "password": "123",
+  "user_data": {
+    "name": "John Snow",
+    "age": 30,
+    "interests": ["programming", "reading"]
+  }
+}'
+
+# Логин
+curl -X POST http://localhost:8080/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "test@example.com",
+    "password": "password123"
+  }'
+
+# Проверка токена
+curl -X GET http://localhost:8080/api/users \
+-H "Authorization: Bearer YOUR_JWT_TOKEN_HERE"
+
+version of flutter 3.10.2
 

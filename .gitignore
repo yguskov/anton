@@ -56,3 +56,6 @@ windows/flutter/generated_plugins.cmake
 # OS
 .DS_Store
 Thumbs.db
+
+# GO
+go.sum

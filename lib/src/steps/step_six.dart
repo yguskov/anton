@@ -1,5 +1,4 @@
 import 'dart:js_interop';
-import 'dart:js_interop';
 
 import 'package:example/src/steps/steps.dart';
 import 'package:flutter/material.dart';
@@ -74,21 +73,21 @@ class _StepSixState extends StateStep<StepSix> {
     setState(() {
       _selectedKnow = index;
       widget.provider.controllerByName('know_name').text =
-          index.isDefinedAndNotNull ? knowList[index!]['name']! : '';
+          index != null ? knowList[index!]['name']! : '';
       widget.provider.controllerByName('know_skill').text =
-          index.isDefinedAndNotNull ? knowList[index!]['skill']! : '';
+          index != null ? knowList[index!]['skill']! : '';
       widget.provider.controllerByName('know_when').text =
-          index.isDefinedAndNotNull ? knowList[index!]['when']! : '';
+          index != null ? knowList[index!]['when']! : '';
       widget.provider.controllerByName('know_result').text =
-          index.isDefinedAndNotNull ? knowList[index!]['result']! : '';
-      widget.provider.updateValue('know_name',
-          index.isDefinedAndNotNull ? knowList[index!]['name']! : '');
-      widget.provider.updateValue('know_skill',
-          index.isDefinedAndNotNull ? knowList[index!]['skill']! : '');
-      widget.provider.updateValue('know_when',
-          index.isDefinedAndNotNull ? knowList[index!]['when']! : '');
-      widget.provider.updateValue('know_result',
-          index.isDefinedAndNotNull ? knowList[index!]['result']! : '');
+          index != null ? knowList[index!]['result']! : '';
+      widget.provider.updateValue(
+          'know_name', index != null ? knowList[index!]['name']! : '');
+      widget.provider.updateValue(
+          'know_skill', index != null ? knowList[index!]['skill']! : '');
+      widget.provider.updateValue(
+          'know_when', index != null ? knowList[index!]['when']! : '');
+      widget.provider.updateValue(
+          'know_result', index != null ? knowList[index!]['result']! : '');
     });
   }
 
@@ -103,7 +102,7 @@ class _StepSixState extends StateStep<StepSix> {
         'result': widget.provider.getValue('know_result'),
       };
 
-      if (_selectedKnow.isNull) {
+      if (_selectedKnow == null) {
         knowList.add(currentKnow);
       } else {
         knowList[_selectedKnow!] = currentKnow;
@@ -120,7 +119,7 @@ class _StepSixState extends StateStep<StepSix> {
     });
 
     // Delay slightly to ensure layout is updated
-    if (_selectedKnow.isNull) {
+    if (_selectedKnow == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToBottom();
       });
@@ -154,7 +153,7 @@ class _StepSixState extends StateStep<StepSix> {
       widget.provider.getValue('know_skill').isNotEmpty &&
       widget.provider.getValue('know_when').isNotEmpty;
 
-  bool get removeEnabled => !_selectedKnow.isNull;
+  bool get removeEnabled => _selectedKnow != null;
 
   final ScrollController _scrollController = ScrollController();
 

@@ -1,3 +1,4 @@
+import 'package:example/models/cv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:rxdart/rxdart.dart';
@@ -20,6 +21,11 @@ class StepSixProvider extends MyWizardStep {
           'know_result': TextEditingController(),
           'want_tip': TextEditingController(),
         });
+
+  updateCV(CV cv) {
+    cv.setValue('know', knowList);
+    cv.setValue('want_tip', getValue('want_tip'));
+  }
 
   final descriptionFocusNode = FocusNode();
 

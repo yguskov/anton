@@ -1,8 +1,18 @@
+import 'package:example/models/cv.dart';
+import 'package:example/profile.dart';
+import 'package:example/show.dart';
+import 'package:example/src/steps/my_wizard_step.dart';
+import 'package:provider/provider.dart';
+import 'login.dart';
+import 'providers/auth_provider.dart';
+import 'services/api_service.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
-import 'package:provider/provider.dart';
 
 import 'example.dart';
+
+GlobalKey<StepFinishState>? stepFinishKey = GlobalKey<StepFinishState>();
 
 void main() {
   runApp(const MyApp());
@@ -11,40 +21,102 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
+  Route<dynamic>? generateRoute(RouteSettings settings) {
+    final String? path = settings.name;
+    print('------------- $path');
+    // Роут /page/:id
+    if (path != null && path.startsWith('/review/')) {
+      final idStr = path.substring('/review/'.length);
+      print('-------- review - $idStr');
+      return MaterialPageRoute(
+        builder: (context) => ShowPage(idStr),
+      );
+    }
+
+    switch (path) {
+      case '/login':
+        return MaterialPageRoute(builder: (context) => LoginPage());
+      // Главная страница (home)
+      case '/profile':
+        return MaterialPageRoute(builder: (context) => ProfilePage());
+
+      case '':
+      case '/':
+        return MaterialPageRoute(
+            builder: (context) => ProviderExamplePage.provider());
+    }
+
+    // Роут не найден
+    return MaterialPageRoute(
+      builder: (context) => NotFoundPage(),
+    );
+  }
+
   @override
-  Widget build(
-    BuildContext context,
-  ) {
-    return MaterialApp(
-      title: 'Анкета',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        colorScheme: ColorScheme(
-          brightness: Brightness.light,
-          // primary: Colors.deepPurple,
-          primary: Color(0xFF5801fd),
-          onPrimary: Colors.white,
-          secondary: Colors.orange,
-          onSecondary: Colors.white,
-          surface: Colors.grey.shade100,
-          onSurface: Colors.grey.shade700,
-          background: Colors.white,
-          onBackground: Colors.grey.shade700,
-          error: Colors.redAccent,
-          onError: Colors.white,
+  Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        Provider<ApiService>(
+          create: (_) => ApiService(),
         ),
-        progressIndicatorTheme: ProgressIndicatorThemeData(
-          linearTrackColor: Colors.orange.shade100,
-          color: Colors.orange,
+        ChangeNotifierProxyProvider<ApiService, AuthProvider>(
+          create: (context) => AuthProvider(apiService: ApiService()),
+          update: (context, apiService, authProvider) =>
+              AuthProvider(apiService: apiService),
+        ),
+      ],
+      child: MaterialApp(
+        onGenerateRoute: (settings) {
+          // settings.name содержит путь, например: '/page/123'
+          return generateRoute(settings);
+        },
+        title: 'Анкета',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          colorScheme: ColorScheme(
+            brightness: Brightness.light,
+            primary: Color(0xFF5801fd),
+            onPrimary: Colors.white,
+            secondary: Colors.orange,
+            onSecondary: Colors.white,
+            surface: Colors.grey.shade100,
+            onSurface: Colors.grey.shade700,
+            background: Colors.white,
+            onBackground: Colors.grey.shade700,
+            error: Colors.redAccent,
+            onError: Colors.white,
+          ),
+          progressIndicatorTheme: ProgressIndicatorThemeData(
+            linearTrackColor: Colors.orange.shade100,
+            color: Colors.orange,
+          ),
+          popupMenuTheme: PopupMenuThemeData(
+            textStyle: TextStyle(color: Colors.white, fontSize: 16),
+            color: Color(0xFF5801fd),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
         ),
       ),
-      home: ProviderExamplePage.provider(),
     );
   }
 }
 
+class NotFoundPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return Container(child: Text('Page not found'));
+  }
+}
+
 class ProviderExamplePage extends StatelessWidget {
-  const ProviderExamplePage._({Key? key}) : super(key: key);
+  ProviderExamplePage._({Key? key})
+      : cv = CV.instance,
+        super(key: key);
+
+  final CV cv;
 
   static Provider provider({Key? key}) {
     return Provider<ProviderExamplePageProvider>(
@@ -63,6 +135,8 @@ class ProviderExamplePage extends StatelessWidget {
     final provider = Provider.of<ProviderExamplePageProvider>(
       context,
     );
+    provider.cv = cv;
+
     return DefaultWizardController(
       stepControllers: [
         WizardStepController(
@@ -87,6 +161,9 @@ class ProviderExamplePage extends StatelessWidget {
         ),
         WizardStepController(
           step: provider.stepSevenProvider,
+        ),
+        WizardStepController(
+          step: provider.stepFinishProvider,
         ),
       ],
       // Wrapping with a builder so the context contains the [WizardController]
@@ -157,8 +234,12 @@ class ProviderExamplePage extends StatelessWidget {
           );
         },
       ),
+
       onStepChanged: (prev, next) {
-        // print('$prev =========================> $next');
+        // @todo save step data to CV
+        provider.getStepProvider(prev).updateCV(cv);
+        print('$prev =========================> $next');
+        print(cv.toJson());
       },
     );
   }
@@ -212,6 +293,12 @@ class ProviderExamplePage extends StatelessWidget {
                     provider: provider.stepSevenProvider,
                   );
 
+                case 7:
+                  return StepFinish(
+                    provider: provider.stepFinishProvider,
+                    key: stepFinishKey, // @todo init Step Finish widget
+                  );
+
                 default:
                   return Container();
               }
@@ -259,6 +346,7 @@ class ProviderExamplePage extends StatelessWidget {
 }
 
 class ProviderExamplePageProvider {
+  CV? cv;
   ProviderExamplePageProvider()
       : stepOneProvider = StepOneProvider(),
         stepTwoProvider = StepTwoProvider(),
@@ -266,7 +354,8 @@ class ProviderExamplePageProvider {
         stepFourProvider = StepFourProvider(),
         stepFiveProvider = StepFiveProvider(),
         stepSixProvider = StepSixProvider(),
-        stepSevenProvider = StepSevenProvider();
+        stepSevenProvider = StepSevenProvider(),
+        stepFinishProvider = StepFinishProvider();
 
   final StepOneProvider stepOneProvider;
   final StepTwoProvider stepTwoProvider;
@@ -275,9 +364,32 @@ class ProviderExamplePageProvider {
   final StepFiveProvider stepFiveProvider;
   final StepSixProvider stepSixProvider;
   final StepSevenProvider stepSevenProvider;
+  final StepFinishProvider stepFinishProvider;
 
   Future<void> reportIssue() async {
     debugPrint('Finished!');
+  }
+
+  MyWizardStep getStepProvider(int step) {
+    print('|||||||$step||||||||');
+    switch (step) {
+      case 0:
+        return stepOneProvider;
+      case 1:
+        return stepTwoProvider;
+      case 2:
+        return stepThreeProvider;
+      case 3:
+        return stepFourProvider;
+      case 4:
+        return stepFiveProvider;
+      case 5:
+        return stepSixProvider;
+      case 6:
+        return stepSevenProvider;
+      default:
+        return stepFinishProvider;
+    }
   }
 
   Future<void> dispose() async {
@@ -288,5 +400,6 @@ class ProviderExamplePageProvider {
     stepFiveProvider.dispose();
     stepSixProvider.dispose();
     stepSevenProvider.dispose();
+    stepFinishProvider.dispose();
   }
 }

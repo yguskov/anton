@@ -34,10 +34,11 @@ class _JustTextFieldState extends State<JustTextField> {
   void initState() {
     super.initState();
     _controller = widget.provider.controllerByName(widget.fieldName);
-    // onValueChanged = (_) {
-    //   print(_controller.text);
-    //   widget.provider.updateValue(widget.fieldName, _controller.text);
-    // };
+    _controller.addListener(_onValueChanged);
+  }
+
+  _onValueChanged() {
+    widget.provider.updateValue(widget.fieldName, _controller.text);
   }
 
   @override
@@ -51,7 +52,7 @@ class _JustTextFieldState extends State<JustTextField> {
   Widget build(BuildContext context) {
     List<Widget> rows = [];
 
-    if (!widget.label.isNull) {
+    if (widget.label != null) {
       rows.add(Container(
         width: double.infinity,
         padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),

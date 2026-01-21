@@ -41,21 +41,21 @@ class _StepFiveState extends StateStep<StepFive> {
     setState(() {
       _selectedSkill = index;
       widget.provider.controllerByName('skill_name').text =
-          index.isDefinedAndNotNull ? skillList[index!]['name']! : '';
+          index != null ? skillList[index!]['name']! : '';
       widget.provider.controllerByName('skill_level').text =
-          index.isDefinedAndNotNull ? skillList[index!]['level']! : '';
+          index != null ? skillList[index!]['level']! : '';
       widget.provider.controllerByName('skill_type').text =
-          index.isDefinedAndNotNull ? skillList[index!]['type']! : 'Не знаю';
+          index != null ? skillList[index!]['type']! : 'Не знаю';
       widget.provider.controllerByName('skill_power').text =
-          index.isDefinedAndNotNull ? skillList[index!]['power']! : '';
-      widget.provider.updateValue('skill_name',
-          index.isDefinedAndNotNull ? skillList[index!]['name']! : '');
-      widget.provider.updateValue('skill_level',
-          index.isDefinedAndNotNull ? skillList[index!]['level']! : '');
-      widget.provider.updateValue('skill_type',
-          index.isDefinedAndNotNull ? skillList[index!]['type']! : 'Не знаю');
-      widget.provider.updateValue('skill_power',
-          index.isDefinedAndNotNull ? skillList[index!]['power']! : '');
+          index != null ? skillList[index!]['power']! : '';
+      widget.provider.updateValue(
+          'skill_name', index != null ? skillList[index!]['name']! : '');
+      widget.provider.updateValue(
+          'skill_level', index != null ? skillList[index!]['level']! : '');
+      widget.provider.updateValue(
+          'skill_type', index != null ? skillList[index!]['type']! : 'Не знаю');
+      widget.provider.updateValue(
+          'skill_power', index != null ? skillList[index!]['power']! : '');
     });
   }
 
@@ -70,7 +70,7 @@ class _StepFiveState extends StateStep<StepFive> {
         'power': widget.provider.getValue('skill_power'),
       };
 
-      if (_selectedSkill.isNull) {
+      if (_selectedSkill == null) {
         skillList.add(currentSkill);
       } else {
         skillList[_selectedSkill!] = currentSkill;
@@ -87,7 +87,7 @@ class _StepFiveState extends StateStep<StepFive> {
     });
 
     // Delay slightly to ensure layout is updated
-    if (_selectedSkill.isNull) {
+    if (_selectedSkill == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         widget.provider.wizardController.enableGoNext(4);
         _scrollToBottom();
@@ -139,7 +139,7 @@ class _StepFiveState extends StateStep<StepFive> {
       widget.provider.getValue('skill_type').isNotEmpty;
 
   bool get removeEnabled {
-    if (_selectedSkill.isNull) return false;
+    if (_selectedSkill == null) return false;
     StepSixProvider providerSix = providerOfStep(5) as StepSixProvider;
     return !providerSix.knowList.any((item) =>
         item['skill'] == widget.myProvider.skillList[_selectedSkill!]['name']);

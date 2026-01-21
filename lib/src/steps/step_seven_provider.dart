@@ -1,3 +1,4 @@
+import 'package:example/models/cv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:rxdart/rxdart.dart';
@@ -17,6 +18,10 @@ class StepSevenProvider extends MyWizardStep {
           'achieve_result': TextEditingController(),
           'achieve_when': TextEditingController(),
         });
+
+  updateCV(CV cv) {
+    cv.setValue('achieve', achieveList);
+  }
 
   final descriptionFocusNode = FocusNode();
 

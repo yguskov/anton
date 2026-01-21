@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'dart:js_interop';
 
+import 'package:example/models/cv.dart';
 import 'package:example/src/widgets/just_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
@@ -24,6 +24,7 @@ abstract class StatefulWidgetStep extends StatefulWidget {
 abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   final StreamController<String> _streamController = StreamController<String>();
 
+  // get another step
   MyWizardStep providerOfStep(int i) {
     return widget.provider.wizardController.stepControllers[i].step
         as MyWizardStep;
@@ -94,7 +95,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   }
 }
 
-class MyWizardStep with WizardStep {
+// Step provider
+abstract class MyWizardStep with WizardStep {
   var _controller;
   Map<String, dynamic> _field;
 
@@ -115,5 +117,17 @@ class MyWizardStep with WizardStep {
     if (!_controller.containsKey(field))
       throw Exception('Empty controller with name $field');
     return _controller[field];
+  }
+
+  get field => _field;
+
+  // save all fields of the step to CV
+  updateCV(CV cv) {
+    _field.forEach((key, value) {
+      cv.setValue(key, value.value);
+      print('$key=====${value.value}');
+    });
+
+    print(cv.toJson());
   }
 }

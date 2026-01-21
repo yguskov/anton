@@ -1,3 +1,4 @@
+import 'package:example/models/cv.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:rxdart/rxdart.dart';
@@ -17,6 +18,10 @@ class StepFourProvider extends MyWizardStep {
           'duty_attitude': TextEditingController(),
           'duty_type': TextEditingController(),
         });
+
+  updateCV(CV cv) {
+    cv.setValue('duty', dutyList);
+  }
 
   final descriptionFocusNode = FocusNode();
 

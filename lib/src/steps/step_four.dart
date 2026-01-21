@@ -38,21 +38,21 @@ class _StepFourState extends StateStep<StepFour> {
     setState(() {
       _selectedDuty = index;
       widget.provider.controllerByName('duty_name').text =
-          index.isDefinedAndNotNull ? dutyList[index!]['name']! : '';
+          index != null ? dutyList[index!]['name']! : '';
       widget.provider.controllerByName('duty_period').text =
-          index.isDefinedAndNotNull ? dutyList[index!]['period']! : '';
+          index != null ? dutyList[index!]['period']! : '';
       widget.provider.controllerByName('duty_attitude').text =
-          index.isDefinedAndNotNull ? dutyList[index!]['attitude']! : '';
+          index != null ? dutyList[index!]['attitude']! : '';
       widget.provider.controllerByName('duty_type').text =
-          index.isDefinedAndNotNull ? dutyList[index!]['type']! : '';
-      widget.provider.updateValue('duty_name',
-          index.isDefinedAndNotNull ? dutyList[index!]['name']! : '');
-      widget.provider.updateValue('duty_period',
-          index.isDefinedAndNotNull ? dutyList[index!]['period']! : '');
-      widget.provider.updateValue('duty_attitude',
-          index.isDefinedAndNotNull ? dutyList[index!]['attitude']! : '');
-      widget.provider.updateValue('duty_type',
-          index.isDefinedAndNotNull ? dutyList[index!]['type']! : '');
+          index != null ? dutyList[index!]['type']! : '';
+      widget.provider.updateValue(
+          'duty_name', index != null ? dutyList[index!]['name']! : '');
+      widget.provider.updateValue(
+          'duty_period', index != null ? dutyList[index!]['period']! : '');
+      widget.provider.updateValue(
+          'duty_attitude', index != null ? dutyList[index!]['attitude']! : '');
+      widget.provider.updateValue(
+          'duty_type', index != null ? dutyList[index!]['type']! : '');
     });
   }
 
@@ -67,7 +67,7 @@ class _StepFourState extends StateStep<StepFour> {
         'type': widget.provider.getValue('duty_type'),
       };
 
-      if (_selectedDuty.isNull) {
+      if (_selectedDuty == null) {
         dutyList.add(currentDuty);
       } else {
         dutyList[_selectedDuty!] = currentDuty;
@@ -84,7 +84,7 @@ class _StepFourState extends StateStep<StepFour> {
     });
 
     // Delay slightly to ensure layout is updated
-    if (_selectedDuty.isNull) {
+    if (_selectedDuty == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToBottom();
       });
@@ -137,7 +137,7 @@ class _StepFourState extends StateStep<StepFour> {
       widget.provider.getValue('duty_period').isNotEmpty &&
       widget.provider.getValue('duty_attitude').isNotEmpty;
 
-  bool get removeEnabled => !_selectedDuty.isNull;
+  bool get removeEnabled => _selectedDuty != null;
 
   final ScrollController _scrollController = ScrollController();
 
@@ -229,7 +229,6 @@ class _StepFourState extends StateStep<StepFour> {
 
   _buildDutyList(BoxConstraints constraints) {
     double boxWidth;
-    print(constraints);
     if (constraints.maxWidth < 600) {
       boxWidth = constraints.maxWidth;
     } else {

@@ -1,0 +1,16 @@
+{
+    "database": {
+        "host": "localhost",
+        "port": "3306",
+        "user": "anton",
+        "password": "ant",
+        "name": "anton"
+    },
+    "server": {
+        "port": "8993"
+    },
+    "JWT": {
+        "SecretKey": "anton-jwt-very-secret-api-key",
+        "ExpiryHours": 24
+    }
+}

@@ -56,17 +56,17 @@ class _StepSevenState extends StateStep<StepSeven> {
     setState(() {
       _selectedAchieve = index;
       widget.provider.controllerByName('achieve_name').text =
-          index.isDefinedAndNotNull ? achieveList[index!]['name']! : '';
+          index != null ? achieveList[index!]['name']! : '';
       widget.provider.controllerByName('achieve_result').text =
-          index.isDefinedAndNotNull ? achieveList[index!]['result']! : '';
+          index != null ? achieveList[index!]['result']! : '';
       widget.provider.controllerByName('achieve_when').text =
-          index.isDefinedAndNotNull ? achieveList[index!]['when']! : '';
-      widget.provider.updateValue('achieve_name',
-          index.isDefinedAndNotNull ? achieveList[index!]['name']! : '');
+          index != null ? achieveList[index!]['when']! : '';
+      widget.provider.updateValue(
+          'achieve_name', index != null ? achieveList[index!]['name']! : '');
       widget.provider.updateValue('achieve_result',
-          index.isDefinedAndNotNull ? achieveList[index!]['result']! : '');
-      widget.provider.updateValue('achieve_when',
-          index.isDefinedAndNotNull ? achieveList[index!]['when']! : '');
+          index != null ? achieveList[index!]['result']! : '');
+      widget.provider.updateValue(
+          'achieve_when', index != null ? achieveList[index!]['when']! : '');
     });
   }
 
@@ -80,7 +80,7 @@ class _StepSevenState extends StateStep<StepSeven> {
         'when': widget.provider.getValue('achieve_when'),
       };
 
-      if (_selectedAchieve.isNull) {
+      if (_selectedAchieve == null) {
         achieveList.add(currentAchieve);
       } else {
         achieveList[_selectedAchieve!] = currentAchieve;
@@ -95,7 +95,7 @@ class _StepSevenState extends StateStep<StepSeven> {
     });
 
     // Delay slightly to ensure layout is updated
-    if (_selectedAchieve.isNull) {
+    if (_selectedAchieve == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         _scrollToBottom();
       });
@@ -127,7 +127,7 @@ class _StepSevenState extends StateStep<StepSeven> {
       widget.provider.getValue('achieve_result').isNotEmpty &&
       widget.provider.getValue('achieve_when').isNotEmpty;
 
-  bool get removeEnabled => !_selectedAchieve.isNull;
+  bool get removeEnabled => _selectedAchieve != null;
 
   final ScrollController _scrollController = ScrollController();
 

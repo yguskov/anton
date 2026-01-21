@@ -5,3 +5,11 @@ linter:
     # avoid_print: false  # Uncomment to disable the `avoid_print` rule
     # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
     public_member_api_docs: false
+
+dart_code_metrics:
+  metrics:
+    maximum-line-length: 100  # или 120, или другое значение
+
+# ИЛИ если используете dart format:
+dartfmt:
+  line-length: 100  # для dart format    
