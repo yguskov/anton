@@ -20,10 +20,13 @@ class StepFiveProvider extends MyWizardStep {
           'skill_type': TextEditingController(),
           'skill_power': TextEditingController(),
           'duty_name': TextEditingController(),
-        });
+        }) {
+    skillList = CV.instance.skill;
+  }
 
   updateCV(CV cv) {
     cv.setValue('skill', skillList);
+    super.keepInStorage(cv);
   }
 
   final descriptionFocusNode = FocusNode();

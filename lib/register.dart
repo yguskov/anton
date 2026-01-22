@@ -1,3 +1,4 @@
+import 'package:example/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:example/models/cv.dart';
@@ -11,7 +12,8 @@ class ProviderExamplePage extends StatelessWidget {
       : cv = CV.instance,
         super(key: key);
 
-  final CV cv;
+  CV cv;
+  bool first = true;
 
   static Provider provider({Key? key}) {
     return Provider<ProviderExamplePageProvider>(
@@ -27,9 +29,30 @@ class ProviderExamplePage extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
+    AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    if (first) {
+      print('------------------ wizard created -------------');
+
+      if (authProvider.currentUser?.guid != null) {
+        Future.microtask(() async {
+          final provider = Provider.of<AuthProvider>(context, listen: false);
+          await provider.loadUserCV(authProvider.currentUser!.guid);
+          cv = provider.userCV ?? CV.instance;
+          print('------------------ CV Loaded -------------');
+        });
+        first = false;
+        print('------------------ return indicatior -------------');
+        return CircularProgressIndicator();
+      } else {
+        // @todo try to load from local storage
+      }
+    }
+    print('------------------ return wizard -------------');
+
     final provider = Provider.of<ProviderExamplePageProvider>(
       context,
     );
+
     provider.cv = cv;
 
     return DefaultWizardController(
@@ -134,8 +157,12 @@ class ProviderExamplePage extends StatelessWidget {
         // @todo save step data to CV
         provider.getStepProvider(prev).updateCV(cv);
         print('$prev =========================> $next');
-        print(cv.toJson());
+        print('-------real-CV-json---- ${cv.toJson()} ---');
       },
+
+      // onControllerCreated: (wizardController) async {
+
+      // },
     );
   }
 

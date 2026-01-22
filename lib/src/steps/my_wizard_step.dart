@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:html';
 
 import 'package:example/models/cv.dart';
 import 'package:example/src/widgets/just_text_field.dart';
@@ -26,8 +27,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
   // get another step
   MyWizardStep providerOfStep(int i) {
-    return widget.provider.wizardController.stepControllers[i].step
-        as MyWizardStep;
+    return widget.provider.wizardController.stepControllers[i].step as MyWizardStep;
   }
 
   Widget buildJustTextField(String hint, String fieldName) {
@@ -49,8 +49,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     );
   }
 
-  Widget buildDropdownSection(String label, String hint, String fieldName,
-      List<PopupDropdownItem<String>> items) {
+  Widget buildDropdownSection(
+      String label, String hint, String fieldName, List<PopupDropdownItem<String>> items) {
     return DropdownField(
       fieldName: fieldName,
       label: label,
@@ -87,9 +87,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                 widget.provider.updateValue(fieldName, value! ? '1' : '');
               });
             }),
-        Expanded(
-            child: Text(label,
-                maxLines: 2, overflow: TextOverflow.visible, softWrap: true))
+        Expanded(child: Text(label, maxLines: 2, overflow: TextOverflow.visible, softWrap: true))
       ],
     );
   }
@@ -97,10 +95,21 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
 // Step provider
 abstract class MyWizardStep with WizardStep {
-  var _controller;
+  Map<String, TextEditingController> _controller;
   Map<String, dynamic> _field;
 
-  MyWizardStep(this._field, this._controller);
+  MyWizardStep(this._field, this._controller) {
+    // print('--new step--');
+    for (var item in _field.entries) {
+      String name = item.key;
+      // print('---trye load $name = ${CV.instance.getValue(name) ?? '-'}');
+      _field[name]!.add(CV.instance.getValue(name) ?? '');
+      if (_controller[name] != null) {
+        if (CV.instance.getValue(name) != null)
+          _controller[name]!.text = CV.instance.getValue(name)!;
+      }
+    }
+  }
 
   String getValue(name) {
     if (!_field.containsKey(name))
@@ -114,9 +123,8 @@ abstract class MyWizardStep with WizardStep {
   }
 
   TextEditingController controllerByName(String field) {
-    if (!_controller.containsKey(field))
-      throw Exception('Empty controller with name $field');
-    return _controller[field];
+    if (!_controller.containsKey(field)) throw Exception('Empty controller with name $field');
+    return _controller[field]!;
   }
 
   get field => _field;
@@ -125,9 +133,16 @@ abstract class MyWizardStep with WizardStep {
   updateCV(CV cv) {
     _field.forEach((key, value) {
       cv.setValue(key, value.value);
-      print('$key=====${value.value}');
+      // print('$key=====${value.value}');
     });
+    keepInStorage(cv);
+    // print(cv.toJson());
+  }
 
-    print(cv.toJson());
+/**
+ * Keep in local storage
+ */
+  keepInStorage(CV cv) {
+    window.localStorage['cv'] = cv.toJson();
   }
 }

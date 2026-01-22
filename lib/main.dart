@@ -120,6 +120,26 @@ class HomePage extends StatelessWidget {
       ),
       body: CustomScrollView(
         slivers: [
+          // Buttons
+          SliverToBoxAdapter(
+            child: Container(
+              color: Colors.blueGrey,
+              child: Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pushNamed(context, '/login'),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: Text('Авторизуйся'),
+                      ),
+                      style: grayButtonStyle,
+                    ),
+                  )),
+            ),
+          ),
+
           // Верхний фиксированный элемент
           SliverToBoxAdapter(
             child: Container(
@@ -165,7 +185,7 @@ class HomePage extends StatelessWidget {
                 Container(
                   height: 50,
                   color: Theme.of(context).colorScheme.primary,
-                  child: Center(child: Text('ССылки')),
+                  child: Center(child: Text('Bottom', style: TextStyle(color: Colors.white))),
                 ),
               ],
             ),
@@ -183,6 +203,29 @@ class HomePage extends StatelessWidget {
         child: Text('Создать презентацию'),
       ),
       style: redButtonStyle,
+    );
+  }
+
+  _showLoginDialog(context) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Text('Авторизация'),
+              LoginPage(),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close'),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

@@ -158,22 +158,28 @@ class StepFinishState extends StateStep<StepFinish> {
   void onFinished() async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final wizardProvider = Provider.of<ProviderExamplePageProvider>(context, listen: false);
-    if (_formKey.currentState!.validate()) {
-      final userData = wizardProvider.cv!.data;
-      final success = await authProvider.register(
-        _emailController.text,
-        _passwordController.text,
-        userData,
-      );
 
-      if (success) {
-        // @todo rebuild and hide registration form
-        print('${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
-        Navigator.pushReplacementNamed(context, '/profile');
-        // Navigator.pushNamed(context, '/profile');
-      } else {
-        print('Error register');
+    bool success = false;
+    if (authProvider.currentUser != null) {
+      // @todo save CV
+    } else {
+      if (_formKey.currentState!.validate()) {
+        final userData = wizardProvider.cv!.data;
+        success = await authProvider.register(
+          _emailController.text,
+          _passwordController.text,
+          userData,
+        );
       }
+    }
+
+    if (success) {
+      // @todo rebuild and hide registration form
+      print('${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
+      Navigator.pushReplacementNamed(context, '/profile');
+      // Navigator.pushNamed(context, '/profile');
+    } else {
+      print('Error register');
     }
   }
 }

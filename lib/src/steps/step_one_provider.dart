@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:example/models/cv.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';

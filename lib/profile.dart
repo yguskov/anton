@@ -244,7 +244,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void edit() {
-    Navigator.pushNamed(context, '/');
+    Navigator.pushNamed(context, '/register');
   }
 
   InputDecoration inputDecorattion(String label) {

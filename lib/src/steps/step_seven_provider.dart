@@ -17,7 +17,9 @@ class StepSevenProvider extends MyWizardStep {
           'achieve_name': TextEditingController(),
           'achieve_result': TextEditingController(),
           'achieve_when': TextEditingController(),
-        });
+        }) {
+    achieveList = CV.instance.achieve;
+  }
 
   updateCV(CV cv) {
     cv.setValue('achieve', achieveList);

@@ -26,7 +26,7 @@ class CV {
   }
 
   String toJson() {
-    print(' ----------------- ${jsonEncode(_data)}');
+    print(' ------toJson------- ${jsonEncode(_data)}');
     return jsonEncode(_data);
   }
 
@@ -53,7 +53,7 @@ class CV {
       print('------------- Ошибка приведения: $e\n===${listOfJson}=====');
       // Альтернативная обработка
     }
-    return [];
+    return <Map<String, String>>[];
   }
 }
 

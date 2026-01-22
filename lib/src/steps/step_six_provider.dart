@@ -20,7 +20,9 @@ class StepSixProvider extends MyWizardStep {
           'know_when': TextEditingController(),
           'know_result': TextEditingController(),
           'want_tip': TextEditingController(),
-        });
+        }) {
+    knowList = CV.instance.know;
+  }
 
   updateCV(CV cv) {
     cv.setValue('know', knowList);
