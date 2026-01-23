@@ -369,6 +369,70 @@ func PasswordHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
     })
 }
 
+func SaveCVHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+    // Извлекаем из контекста
+    userID, ok := middleware.GetUserIDFromContext(r.Context())
+    if !ok {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error when define user",
+        })
+        return
+    }
+
+    // проверяем есть ли такой юзер
+    var exists bool
+    err := database.DB.QueryRow(
+        "SELECT EXISTS(SELECT 1 FROM user WHERE id = ?)",
+        userID,
+    ).Scan(&exists)
+
+    if err != nil {
+        log.Printf("Check user error: %v", err)
+        http.Error(w, "Database error", http.StatusInternalServerError)
+        return
+    }
+
+    if !exists {
+        http.Error(w, "User not found", http.StatusNotFound)
+        return
+    }    
+
+    var req models.UserData
+    err = json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+    // Меняем CV
+    _, err = database.DB.Exec(
+        "UPDATE user SET user_data = ? WHERE id = ?",
+        req, userID, 
+    )
+
+    if err != nil {
+        // Обработка ошибки SQL (например, сбой подключения, синтаксис и т.д.)
+        http.Error(w, "Database error", http.StatusUnauthorized)
+        return
+    }
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "CV data saved",
+    })
+
+/*     authResponse := AuthResponse{
+        Token: token,
+    }
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "Change password successful",
+        Data:    authResponse,
+    }) */
+}
+
 func writeResponse(w http.ResponseWriter, status int, response Response) {
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(status)

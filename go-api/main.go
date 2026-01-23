@@ -70,6 +70,9 @@ func main() {
     protected.HandleFunc("/password", func(w http.ResponseWriter, r *http.Request) {
         handlers.PasswordHandler(w, r, cfg)
     }).Methods("POST")	
+    protected.HandleFunc("/save", func(w http.ResponseWriter, r *http.Request) {
+        handlers.SaveCVHandler(w, r, cfg)
+    }).Methods("POST")	
     
     // Настраиваем CORS для Flutter Web
     c := cors.New(cors.Options{

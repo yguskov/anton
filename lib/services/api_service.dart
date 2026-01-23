@@ -15,8 +15,7 @@ class ApiService {
           'API_URL',
           defaultValue: 'http://localhost:8993/api',
         ) {
-    if (window.localStorage['token'] != null)
-      _token = window.localStorage['token']!;
+    if (window.localStorage['token'] != null) _token = window.localStorage['token']!;
   }
 
   // Сохраняем токен
@@ -141,8 +140,7 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> changePassword(
-      Map<String, dynamic> request) async {
+  Future<Map<String, dynamic>> changePassword(Map<String, dynamic> request) async {
     final response = await client.post(
       Uri.parse('$baseUrl/password'),
       headers: _getHeaders(),
@@ -161,6 +159,29 @@ class ApiService {
       }
     } else {
       throw Exception('Failed to change password: ${response.body}');
+    }
+  }
+
+  // Save CV Data
+  Future<Map<String, dynamic>> save(Map<String, dynamic> userData) async {
+    final response = await client.post(
+      Uri.parse('$baseUrl/save'),
+      headers: _getHeaders(),
+      body: json.encode(userData),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Ok',
+        };
+      } else {
+        throw Exception(data['error'] ?? 'Ошибка сохранения');
+      }
+    } else {
+      throw Exception('Cервер вернул ошибку: ${response.body}');
     }
   }
 

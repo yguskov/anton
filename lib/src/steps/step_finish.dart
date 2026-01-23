@@ -122,15 +122,18 @@ class StepFinishState extends StateStep<StepFinish> {
           //   decoration: InputDecoration(labelText: 'Name'),
           // ),
           SizedBox(height: 20),
-          if (authProvider.error != null)
-            Text(
-              authProvider.error!,
-              style: TextStyle(color: Colors.red),
-            ),
-          SizedBox(height: 20),
-          authProvider.isLoading ? CircularProgressIndicator() : SizedBox(height: 20),
         ];
       }
+
+      textFields.addAll([
+        if (authProvider.error != null)
+          Text(
+            authProvider.error!,
+            style: TextStyle(color: Colors.red),
+          ),
+        SizedBox(height: 20),
+        authProvider.isLoading ? CircularProgressIndicator() : SizedBox(height: 20),
+      ]);
 
       return ListView(
         controller: _scrollController,
@@ -160,11 +163,11 @@ class StepFinishState extends StateStep<StepFinish> {
     final wizardProvider = Provider.of<ProviderExamplePageProvider>(context, listen: false);
 
     bool success = false;
+    final userData = wizardProvider.cv!.data;
     if (authProvider.currentUser != null) {
-      // @todo save CV
+      success = await authProvider.saveCV(userData);
     } else {
       if (_formKey.currentState!.validate()) {
-        final userData = wizardProvider.cv!.data;
         success = await authProvider.register(
           _emailController.text,
           _passwordController.text,
