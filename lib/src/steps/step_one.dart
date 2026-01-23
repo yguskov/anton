@@ -11,10 +11,10 @@ class StepOne extends StatefulWidgetStep {
   }) : super(key: key, provider: provider);
 
   @override
-  StateStep<StepOne> createState() => _StepOneState();
+  StateStep<StepOne> createState() => StepOneState();
 }
 
-class _StepOneState extends StateStep<StepOne> {
+class StepOneState extends StateStep<StepOne> {
   static const List<String> _positionOptions = [
     'Аналитик',
     'Джуниор фронтэнд программист',
@@ -41,11 +41,10 @@ class _StepOneState extends StateStep<StepOne> {
       const SizedBox(height: 20),
       buildTextFieldWithLabel('Ваши Фамилия и Имя', 'Михайлов Петр', 'fio'),
       const SizedBox(height: 16),
-      buildTextFieldWithLabel('Какая у вас [должность/профессия]?',
-          'Джуниор фронтэнд программист', 'position', _positionOptions),
+      buildTextFieldWithLabel('Какая у вас [должность/профессия]?', 'Джуниор фронтэнд программист',
+          'position', _positionOptions),
       const SizedBox(height: 16),
-      buildTextFieldWithLabel(
-          'В какой [индустрии] работаете?', 'ИТ', 'sector', _sectorOptions),
+      buildTextFieldWithLabel('В какой [индустрии] работаете?', 'ИТ', 'sector', _sectorOptions),
       const SizedBox(height: 16),
       TextBar('Как вы обращаетесь к начальнику? Какая у него почта?'),
       const SizedBox(height: 5),

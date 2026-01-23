@@ -17,10 +17,10 @@ class StepFive extends StatefulWidgetStep {
         super(key: key, provider: provider);
 
   @override
-  State<StepFive> createState() => _StepFiveState();
+  State<StepFive> createState() => StepFiveState();
 }
 
-class _StepFiveState extends StateStep<StepFive> {
+class StepFiveState extends StateStep<StepFive> {
   List<Map<String, String>> get skillList => widget.myProvider.skillList;
   int? _selectedSkill;
 
@@ -48,14 +48,11 @@ class _StepFiveState extends StateStep<StepFive> {
           index != null ? skillList[index!]['type']! : 'Не знаю';
       widget.provider.controllerByName('skill_power').text =
           index != null ? skillList[index!]['power']! : '';
-      widget.provider.updateValue(
-          'skill_name', index != null ? skillList[index!]['name']! : '');
-      widget.provider.updateValue(
-          'skill_level', index != null ? skillList[index!]['level']! : '');
-      widget.provider.updateValue(
-          'skill_type', index != null ? skillList[index!]['type']! : 'Не знаю');
-      widget.provider.updateValue(
-          'skill_power', index != null ? skillList[index!]['power']! : '');
+      widget.provider.updateValue('skill_name', index != null ? skillList[index!]['name']! : '');
+      widget.provider.updateValue('skill_level', index != null ? skillList[index!]['level']! : '');
+      widget.provider
+          .updateValue('skill_type', index != null ? skillList[index!]['type']! : 'Не знаю');
+      widget.provider.updateValue('skill_power', index != null ? skillList[index!]['power']! : '');
     });
   }
 
@@ -141,8 +138,8 @@ class _StepFiveState extends StateStep<StepFive> {
   bool get removeEnabled {
     if (_selectedSkill == null) return false;
     StepSixProvider providerSix = providerOfStep(5) as StepSixProvider;
-    return !providerSix.knowList.any((item) =>
-        item['skill'] == widget.myProvider.skillList[_selectedSkill!]['name']);
+    return !providerSix.knowList
+        .any((item) => item['skill'] == widget.myProvider.skillList[_selectedSkill!]['name']);
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -163,22 +160,20 @@ class _StepFiveState extends StateStep<StepFive> {
       List<Widget> textFields = [
         Text('Чем вы сильны?', style: headerStyle),
         const SizedBox(height: 6),
-        Text(
-            'Какие навыки позволят использовать ваши умения в максимально эффективных позициях.',
+        Text('Какие навыки позволят использовать ваши умения в максимально эффективных позициях.',
             style: headerStyle2),
         const SizedBox(height: 16),
-        buildTextFieldWithLabel(
-            'Мои навыки', 'Управление метлой', 'skill_name', skills),
+        buildTextFieldWithLabel('Мои навыки', 'Управление метлой', 'skill_name', skills),
         const SizedBox(height: 16),
-        buildDropdownSection('Какой у вас уровень мастерства навыка',
-            '1-5| не знаю', 'skill_level', levels),
+        buildDropdownSection(
+            'Какой у вас уровень мастерства навыка', '1-5| не знаю', 'skill_level', levels),
         const SizedBox(height: 16),
         // power
         buildRadioList('Я считаю это своим:', 'skill_power',
             ['Сильным навыком', 'Слабым навыком', 'Не знаю'], null, 1.3),
         const SizedBox(height: 16),
-        buildTextFieldWithLabel('К какому типу относится навык?',
-            'hard|soft|другое', 'skill_type', ['hard', 'soft']),
+        buildTextFieldWithLabel(
+            'К какому типу относится навык?', 'hard|soft|другое', 'skill_type', ['hard', 'soft']),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -188,9 +183,8 @@ class _StepFiveState extends StateStep<StepFive> {
                 child: const Text("Удалить"),
                 onPressed: removeEnabled ? _remove : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: removeEnabled
-                      ? Color(0xFFF76D12)
-                      : Colors.black87, // Основной цвет фона
+                  backgroundColor:
+                      removeEnabled ? Color(0xFFF76D12) : Colors.black87, // Основной цвет фона
                   foregroundColor: Colors.white, // Цвет текста и иконки
                 ),
               ),
@@ -204,9 +198,8 @@ class _StepFiveState extends StateStep<StepFive> {
                 child: const Text("Сохранить"),
                 onPressed: saveEnabled ? _save : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: saveEnabled
-                      ? Color(0xFFF76D12)
-                      : Colors.black87, // Основной цвет фона
+                  backgroundColor:
+                      saveEnabled ? Color(0xFFF76D12) : Colors.black87, // Основной цвет фона
                   foregroundColor: Colors.white, // Цвет текста и иконки
                 ),
               ),

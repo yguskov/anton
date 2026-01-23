@@ -12,8 +12,6 @@ import 'example.dart';
 import 'package:example/register.dart';
 import 'package:example/styles.dart';
 
-GlobalKey<StepFinishState>? stepFinishKey = GlobalKey<StepFinishState>();
-
 void main() {
   runApp(const MyApp());
 }

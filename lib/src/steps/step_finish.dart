@@ -177,7 +177,6 @@ class StepFinishState extends StateStep<StepFinish> {
     }
 
     if (success) {
-      // @todo rebuild and hide registration form
       print('${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
       Navigator.pushReplacementNamed(context, '/profile');
       // Navigator.pushNamed(context, '/profile');

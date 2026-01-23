@@ -41,12 +41,12 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   Widget buildTextFieldWithLabel(String? label, String hint, String fieldName,
       [List<String>? options]) {
     return RawAutocompleteExample(
-      fieldName: fieldName,
-      label: label,
-      hint: hint,
-      provider: widget.provider,
-      options: options,
-    );
+        fieldName: fieldName,
+        label: label,
+        hint: hint,
+        provider: widget.provider,
+        options: options,
+        hasError: widget.provider.hasError(fieldName));
   }
 
   Widget buildDropdownSection(
@@ -97,16 +97,21 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 abstract class MyWizardStep with WizardStep {
   Map<String, TextEditingController> _controller;
   Map<String, dynamic> _field;
+  Map<String, bool> _hasError = {};
+
+  get field => _field;
 
   MyWizardStep(this._field, this._controller) {
-    // print('--new step--');
     for (var item in _field.entries) {
       String name = item.key;
-      // print('---trye load $name = ${CV.instance.getValue(name) ?? '-'}');
       _field[name]!.add(CV.instance.getValue(name) ?? '');
       if (_controller[name] != null) {
         if (CV.instance.getValue(name) != null)
           _controller[name]!.text = CV.instance.getValue(name)!;
+
+        _controller[name]!.addListener(() {
+          if (_controller[name]!.text != '') clearError(name);
+        });
       }
     }
   }
@@ -127,16 +132,12 @@ abstract class MyWizardStep with WizardStep {
     return _controller[field]!;
   }
 
-  get field => _field;
-
   // save all fields of the step to CV
   updateCV(CV cv) {
     _field.forEach((key, value) {
       cv.setValue(key, value.value);
-      // print('$key=====${value.value}');
     });
     keepInStorage(cv);
-    // print(cv.toJson());
   }
 
 /**
@@ -145,4 +146,22 @@ abstract class MyWizardStep with WizardStep {
   keepInStorage(CV cv) {
     window.localStorage['cv'] = cv.toJson();
   }
+
+  bool verifyData() {
+    return true;
+  }
+
+  void addError(String fieldName) {
+    _hasError[fieldName] = true;
+  }
+
+  bool hasError(String fieldName) {
+    return _hasError[fieldName] ?? false;
+  }
+
+  void clearError(String name) {
+    _hasError.remove(name);
+  }
+
+  bool get hasAnyError => _hasError.isNotEmpty;
 }

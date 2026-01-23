@@ -10,10 +10,10 @@ class StepTwo extends StatefulWidgetStep {
   }) : super(key: key, provider: provider);
 
   @override
-  State<StepTwo> createState() => _StepTwoState();
+  State<StepTwo> createState() => StepTwoState();
 }
 
-class _StepTwoState extends StateStep<StepTwo> {
+class StepTwoState extends StateStep<StepTwo> {
   // Данные для dropdown'ов
   static const List<String> aimList = [
     'Повышения зарплаты',
@@ -42,8 +42,7 @@ class _StepTwoState extends StateStep<StepTwo> {
       const SizedBox(height: 16),
       buildRadioList('Я хочу:', 'aim', aimList, 25.0),
       const SizedBox(height: 16),
-      buildRadioList('Я этого заслуживаю (Цель) потому, что я:', 'why', whyList,
-          35, 1.3, 'Другое'),
+      buildRadioList('Я этого заслуживаю (Цель) потому, что я:', 'why', whyList, 35, 1.3, 'Другое'),
       const SizedBox(height: 16),
     ];
 

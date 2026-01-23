@@ -23,6 +23,7 @@ class StepFourProvider extends MyWizardStep {
 
   updateCV(CV cv) {
     cv.setValue('duty', dutyList);
+    keepInStorage(cv);
   }
 
   final descriptionFocusNode = FocusNode();

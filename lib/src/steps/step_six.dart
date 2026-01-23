@@ -17,10 +17,10 @@ class StepSix extends StatefulWidgetStep {
         super(key: key, provider: provider);
 
   @override
-  State<StepSix> createState() => _StepSixState();
+  State<StepSix> createState() => StepSixState();
 }
 
-class _StepSixState extends StateStep<StepSix> {
+class StepSixState extends StateStep<StepSix> {
   List<Map<String, String>> get knowList => widget.myProvider.knowList;
   int? _selectedKnow;
 // List<PopupDropdownItem<String>>
@@ -30,8 +30,7 @@ class _StepSixState extends StateStep<StepSix> {
 
     StepFiveProvider fiveProvider = providerOfStep(4) as StepFiveProvider;
     return fiveProvider.skillList
-        .map((item) =>
-            PopupDropdownItem(value: item['name']!, label: item['name']!))
+        .map((item) => PopupDropdownItem(value: item['name']!, label: item['name']!))
         // .where((name) => name != null)
         .cast<PopupDropdownItem<String>>()
         .toList()
@@ -80,14 +79,10 @@ class _StepSixState extends StateStep<StepSix> {
           index != null ? knowList[index!]['when']! : '';
       widget.provider.controllerByName('know_result').text =
           index != null ? knowList[index!]['result']! : '';
-      widget.provider.updateValue(
-          'know_name', index != null ? knowList[index!]['name']! : '');
-      widget.provider.updateValue(
-          'know_skill', index != null ? knowList[index!]['skill']! : '');
-      widget.provider.updateValue(
-          'know_when', index != null ? knowList[index!]['when']! : '');
-      widget.provider.updateValue(
-          'know_result', index != null ? knowList[index!]['result']! : '');
+      widget.provider.updateValue('know_name', index != null ? knowList[index!]['name']! : '');
+      widget.provider.updateValue('know_skill', index != null ? knowList[index!]['skill']! : '');
+      widget.provider.updateValue('know_when', index != null ? knowList[index!]['when']! : '');
+      widget.provider.updateValue('know_result', index != null ? knowList[index!]['result']! : '');
     });
   }
 
@@ -177,17 +172,13 @@ class _StepSixState extends StateStep<StepSix> {
             'Покажите, что в вас стоит вкладываться ресурсами ради вашего роста и повышения эффективности',
             style: headerStyle2),
         const SizedBox(height: 16),
-        buildTextFieldWithLabel(
-            'Укажите какое новое знание вы получили',
-            'Прочитал книгу “Программирование для чайников”',
-            'know_name',
-            knows),
+        buildTextFieldWithLabel('Укажите какое новое знание вы получили',
+            'Прочитал книгу “Программирование для чайников”', 'know_name', knows),
         const SizedBox(height: 16),
-        buildDropdownSection('Какой навык это развивает?',
-            'Выбрать навык из имеющихся', 'know_skill', skill_list),
+        buildDropdownSection(
+            'Какой навык это развивает?', 'Выбрать навык из имеющихся', 'know_skill', skill_list),
         const SizedBox(height: 16),
-        buildDropdownSection('Когда вы это изучали?', 'Х месяцев назад',
-            'know_when', period_list),
+        buildDropdownSection('Когда вы это изучали?', 'Х месяцев назад', 'know_when', period_list),
         const SizedBox(height: 16),
         // result
         buildTextFieldWithLabel('Что принесло вам новое знание?',
@@ -201,9 +192,8 @@ class _StepSixState extends StateStep<StepSix> {
                 child: const Text("Удалить"),
                 onPressed: removeEnabled ? _remove : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: removeEnabled
-                      ? Color(0xFFF76D12)
-                      : Colors.black87, // Основной цвет фона
+                  backgroundColor:
+                      removeEnabled ? Color(0xFFF76D12) : Colors.black87, // Основной цвет фона
                   foregroundColor: Colors.white, // Цвет текста и иконки
                 ),
               ),
@@ -217,9 +207,8 @@ class _StepSixState extends StateStep<StepSix> {
                 child: const Text("Сохранить"),
                 onPressed: saveEnabled ? _save : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: saveEnabled
-                      ? Color(0xFFF76D12)
-                      : Colors.black87, // Основной цвет фона
+                  backgroundColor:
+                      saveEnabled ? Color(0xFFF76D12) : Colors.black87, // Основной цвет фона
                   foregroundColor: Colors.white, // Цвет текста и иконки
                 ),
               ),

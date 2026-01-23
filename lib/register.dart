@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:example/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -6,6 +8,18 @@ import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
 
 import 'example.dart';
+
+GlobalKey<StepFinishState>? stepFinishKey = GlobalKey<StepFinishState>();
+
+List<GlobalKey<StateStep>> stepGlobalKey = [
+  GlobalKey<StepOneState>(),
+  GlobalKey<StepTwoState>(),
+  GlobalKey<StepThreeState>(),
+  GlobalKey<StepFourState>(),
+  GlobalKey<StepFiveState>(),
+  GlobalKey<StepSixState>(),
+  GlobalKey<StepSevenState>(),
+];
 
 class ProviderExamplePage extends StatelessWidget {
   ProviderExamplePage._({Key? key})
@@ -31,23 +45,19 @@ class ProviderExamplePage extends StatelessWidget {
   ) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     if (first) {
-      print('------------------ wizard created -------------');
-
       if (authProvider.currentUser?.guid != null) {
         Future.microtask(() async {
           final provider = Provider.of<AuthProvider>(context, listen: false);
           await provider.loadUserCV(authProvider.currentUser!.guid);
           cv = provider.userCV ?? CV.instance;
-          print('------------------ CV Loaded -------------');
         });
         first = false;
-        print('------------------ return indicatior -------------');
         return CircularProgressIndicator();
       } else {
-        // @todo try to load from local storage
+        // try to load from local storage
+        if (window.localStorage['cv'] != null) cv = CV.fromJson(window.localStorage['cv']!);
       }
     }
-    print('------------------ return wizard -------------');
 
     final provider = Provider.of<ProviderExamplePageProvider>(
       context,
@@ -157,7 +167,6 @@ class ProviderExamplePage extends StatelessWidget {
         // @todo save step data to CV
         provider.getStepProvider(prev).updateCV(cv);
         print('$prev =========================> $next');
-        print('-------real-CV-json---- ${cv.toJson()} ---');
       },
 
       // onControllerCreated: (wizardController) async {
@@ -183,16 +192,19 @@ class ProviderExamplePage extends StatelessWidget {
                 case 0:
                   return StepOne(
                     provider: provider.stepOneProvider,
+                    key: stepGlobalKey[0],
                   );
 
                 case 1:
                   return StepTwo(
                     provider: provider.stepTwoProvider,
+                    key: stepGlobalKey[1],
                   );
 
                 case 2:
                   return StepThree(
                     provider: provider.stepThreeProvider,
+                    // key: stepGlobalKey[3],
                   );
 
                 case 3:
@@ -218,7 +230,7 @@ class ProviderExamplePage extends StatelessWidget {
                 case 7:
                   return StepFinish(
                     provider: provider.stepFinishProvider,
-                    key: stepFinishKey, // @todo init Step Finish widget
+                    key: stepFinishKey,
                   );
 
                 default:

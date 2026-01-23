@@ -55,6 +55,8 @@ class CV {
     }
     return <Map<String, String>>[];
   }
+
+  void loadFromJson(String s) {}
 }
 
 /** Example 

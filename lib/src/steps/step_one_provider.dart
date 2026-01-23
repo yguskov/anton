@@ -39,6 +39,12 @@ class StepOneProvider extends MyWizardStep {
     }
   }
 
+  bool verifyData() {
+    if (getValue('fio') == '') addError('fio');
+
+    return !hasAnyError;
+  }
+
   void dispose() {
     descriptionTextController.dispose();
   }
