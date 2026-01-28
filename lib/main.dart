@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:example/profile.dart';
 import 'package:example/show.dart';
 import 'package:example/src/app_bar_with_menu.dart';
@@ -114,7 +116,7 @@ class HomePage extends StatelessWidget {
     double h20 = 20; // vertical indent
     return Scaffold(
       appBar: AntAppBar(
-        title: "Начало",
+        title: "/",
       ),
       body: CustomScrollView(
         slivers: [
@@ -143,14 +145,55 @@ class HomePage extends StatelessWidget {
             child: Container(
               color: Color.fromARGB(255, 2, 83, 36),
               child: Center(
-                  child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: Text(
-                  textAlign: TextAlign.center,
-                  'Тут должно быть красиво расписано, про что все это',
-                  style: TextStyle(color: Colors.white),
-                ),
-              )),
+                  child: Stack(
+                      // padding: const EdgeInsets.only(top: 0.0),
+                      children: [
+                    Image.asset(
+                      'image/office_schema.jpeg',
+                      // width: 200,
+                      width: double.infinity,
+                      height: 360,
+                      fit: BoxFit.cover,
+                    ),
+                    // Размытый фон + текст
+                    Positioned(
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      child: ClipRect(
+                        child: BackdropFilter(
+                          filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
+                          child: Container(
+                            padding: EdgeInsets.only(top: 100),
+                            color: Colors.black.withOpacity(0.3),
+                            child: Column(
+                              children: [
+                                Text(
+                                  'Здесь должна быть какая-то графика',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 33,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(height: 8),
+                                Text(
+                                  'Тексты о проекте и описание',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white.withOpacity(0.9),
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ])),
             ),
           ),
 
@@ -182,8 +225,8 @@ class HomePage extends StatelessWidget {
                 // Нижний фиксированный элемент
                 Container(
                   height: 50,
-                  color: Theme.of(context).colorScheme.primary,
-                  child: Center(child: Text('Bottom', style: TextStyle(color: Colors.white))),
+                  color: Colors.blueGrey /* Theme.of(context).colorScheme.primary */,
+                  child: Center(child: Text(' ', style: TextStyle(color: Colors.white))),
                 ),
               ],
             ),
