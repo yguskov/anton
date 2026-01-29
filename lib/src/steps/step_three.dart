@@ -1,7 +1,9 @@
+import 'package:example/services/api_service.dart';
 import 'package:example/src/widgets/dropdown_field.dart';
 import 'package:example/src/widgets/raw_autocomplete_example.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'my_wizard_step.dart';
 import 'step_three_provider.dart';
@@ -39,6 +41,24 @@ class StepThreeState extends StateStep<StepThree> {
     'Новосибирск',
   ];
 
+  List<String> country_items = [
+    'Москва',
+    'Санкт-Петербург',
+    'Новосибирск',
+  ];
+
+  @override
+  void initState() {
+    ApiService apiService = Provider.of<ApiService>(context, listen: false);
+    Future.microtask(() async {
+      region_items = await apiService.listHint('office_location');
+      country_items = await apiService.listHint('office_country');
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(
     BuildContext context,
@@ -68,8 +88,7 @@ class StepThreeState extends StateStep<StepThree> {
           ),
           Expanded(
             flex: 5,
-            child:
-                buildTextFieldWithLabel(null, 'Россия', 'office_country', ['Россия', 'Казахстан']),
+            child: buildTextFieldWithLabel(null, 'Россия', 'office_country', country_items),
           ),
         ],
       ),

@@ -203,4 +203,49 @@ class ApiService {
       throw Exception('Failed to change password: ${response.body}');
     }
   }
+
+  Future<List<String>> listHint(String category) async {
+    // Разбираем базовый URL
+    final baseUri = Uri.parse(baseUrl);
+
+    // Создаем новый URL
+    final url = Uri(
+      scheme: baseUri.scheme, // 'http'
+      host: baseUri.host, // 'localhost'
+      port: baseUri.port, // 8993
+      path: '${baseUri.path}/hint', // '/api/hints'
+      queryParameters: {'category': category},
+    );
+
+/* 
+    final url = Uri.https(
+      baseUrl,
+      '/hints',
+      {
+        'category': category,
+        // 'limit': '10',
+        // 'sort': 'desc',
+      },
+    );
+ */
+    final response = await client.get(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+
+      print('----body-------${response.body}----------');
+      print('----data-------${data}----------');
+
+      return data.map((item) => item.toString()).toList();
+
+      // final data = json.decode(response.body);
+      // return data as List<String>;
+      // final List<dynamic> json = data as List<String>;
+    } else {
+      return List<String>.from([]);
+    }
+  }
 }

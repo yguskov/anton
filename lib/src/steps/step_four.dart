@@ -1,8 +1,10 @@
 import 'dart:js_interop';
 
+import 'package:example/services/api_service.dart';
 import 'package:example/src/steps/step_four_provider.dart';
 import 'package:example/src/widgets/dropdown_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/custom_card.dart';
 import 'my_wizard_step.dart';
@@ -24,6 +26,8 @@ class StepFourState extends StateStep<StepFour> {
   List<Map<String, String>> get dutyList => widget.myProvider.dutyList;
   int? _selectedDuty;
 
+  List<String> _duty_options = [];
+
   @override
   void initState() {
     super.initState();
@@ -31,6 +35,12 @@ class StepFourState extends StateStep<StepFour> {
     widget.provider.controllerByName('duty_name').addListener(_rebuild);
     widget.provider.controllerByName('duty_period').addListener(_rebuild);
     widget.provider.controllerByName('duty_attitude').addListener(_rebuild);
+
+    ApiService apiService = Provider.of<ApiService>(context, listen: false);
+    Future.microtask(() async {
+      _duty_options = await apiService.listHint('duty');
+      setState(() {});
+    });
   }
 
   // select paticular duty
@@ -106,7 +116,7 @@ class StepFourState extends StateStep<StepFour> {
     });
   }
 
-  List<String>? get duites => ['Чистка конюшен', 'Разработка приложений', 'Тестирование'];
+  List<String>? get duties => _duty_options;
 
   List<String>? get periods =>
       ['каждый день', '2 раза в неделю', 'раз в неделю', 'раз в две недели', 'раз в месяц'];
@@ -153,7 +163,7 @@ class StepFourState extends StateStep<StepFour> {
                 'Какую новую ответственность вы готовы на себя взять для повышение зарплаты? ',
             style: headerStyle2),
         const SizedBox(height: 16),
-        buildTextFieldWithLabel('Мои обязанности', 'Чистка конюшен', 'duty_name', duites),
+        buildTextFieldWithLabel('Мои обязанности', 'Чистка конюшен', 'duty_name', duties),
         const SizedBox(height: 16),
         buildTextFieldWithLabel('Как часто?', '2 раза в неделю', 'duty_period', periods),
         const SizedBox(height: 16),

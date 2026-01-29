@@ -1,8 +1,10 @@
 import 'dart:js_interop';
 
+import 'package:example/services/api_service.dart';
 import 'package:example/src/steps/steps.dart';
 import 'package:example/src/widgets/dropdown_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/custom_card.dart';
 import 'my_wizard_step.dart';
@@ -24,6 +26,15 @@ class StepFiveState extends StateStep<StepFive> {
   List<Map<String, String>> get skillList => widget.myProvider.skillList;
   int? _selectedSkill;
 
+  List<String> _skill_options = [
+    'Пишу на Java',
+    'Пишу на PHP',
+    'Бухучет',
+    'Вожу самосвал',
+    'В детстве водил мотоцикл',
+    'Управление метлой'
+  ];
+
   @override
   void initState() {
     super.initState();
@@ -34,6 +45,12 @@ class StepFiveState extends StateStep<StepFive> {
     widget.provider.controllerByName('skill_level').addListener(_rebuild);
     widget.provider.controllerByName('skill_type').addListener(_rebuild);
     widget.provider.controllerByName('skill_power').addListener(_rebuild);
+
+    ApiService apiService = Provider.of<ApiService>(context, listen: false);
+    Future.microtask(() async {
+      _skill_options = await apiService.listHint('skill');
+      setState(() {});
+    });
   }
 
   // select paticular skill
@@ -48,11 +65,11 @@ class StepFiveState extends StateStep<StepFive> {
           index != null ? skillList[index!]['type']! : 'Не знаю';
       widget.provider.controllerByName('skill_power').text =
           index != null ? skillList[index!]['power']! : '';
-      widget.provider.updateValue('skill_name', index != null ? skillList[index!]['name']! : '');
-      widget.provider.updateValue('skill_level', index != null ? skillList[index!]['level']! : '');
+      widget.provider.updateValue('skill_name', index != null ? skillList[index]['name']! : '');
+      widget.provider.updateValue('skill_level', index != null ? skillList[index]['level']! : '');
       widget.provider
-          .updateValue('skill_type', index != null ? skillList[index!]['type']! : 'Не знаю');
-      widget.provider.updateValue('skill_power', index != null ? skillList[index!]['power']! : '');
+          .updateValue('skill_type', index != null ? skillList[index]['type']! : 'Не знаю');
+      widget.provider.updateValue('skill_power', index != null ? skillList[index]['power']! : '');
     });
   }
 
@@ -112,14 +129,7 @@ class StepFiveState extends StateStep<StepFive> {
     });
   }
 
-  List<String>? get skills => [
-        'Пишу на Java',
-        'Пишу на PHP',
-        'Бухучет',
-        'Вожу самосвал',
-        'В детстве водил мотоцикл',
-        'Управление метлой'
-      ];
+  List<String>? get skills => _skill_options;
 
   List<PopupDropdownItem<String>> get levels => [
         PopupDropdownItem(value: '1', label: '1'),

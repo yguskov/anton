@@ -45,7 +45,6 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
     super.initState();
     _controller = widget.provider.controllerByName(widget.fieldName);
     _controller.addListener(_onTextChanged);
-    _options = widget.options ?? [];
     onValueChanged = (_) {
       print(_controller.text);
       widget.provider.updateValue(widget.fieldName, _controller.text);
@@ -95,6 +94,8 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
+
+    _options = widget.options ?? []; // for future ajax loading
 
     if (widget.label != null) {
       children.add(Container(

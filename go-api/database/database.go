@@ -29,13 +29,25 @@ func InitDB(dataSourceName string) error {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         guid VARCHAR(20) NOT NULL,
         user_data JSON
-    )`
+    ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
 
     _, err = DB.Exec(createTableSQL)
     if err != nil {
         return fmt.Errorf("error creating user table: %v", err)
     }
+    
+    // Создаем таблицу пользователей
+    createTableSQL = `
+    CREATE TABLE IF NOT EXISTS hint (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        name VARCHAR(255) UNIQUE NOT NULL,
+        category VARCHAR(255) NOT NULL
+    ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
 
+    _, err = DB.Exec(createTableSQL)
+    if err != nil {
+        return fmt.Errorf("error creating hint table: %v", err)
+    }
     fmt.Println("Database connected and table ensured")
     return nil
 }

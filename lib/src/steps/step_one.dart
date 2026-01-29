@@ -1,5 +1,7 @@
+import 'package:example/services/api_service.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../example.dart';
 import 'my_wizard_step.dart';
@@ -15,7 +17,7 @@ class StepOne extends StatefulWidgetStep {
 }
 
 class StepOneState extends StateStep<StepOne> {
-  static const List<String> _positionOptions = [
+  static List<String> _positionOptions = [
     'Аналитик',
     'Джуниор фронтэнд программист',
     'Менеджер по работе с клиентами',
@@ -23,7 +25,7 @@ class StepOneState extends StateStep<StepOne> {
     'Строитель-монтажник',
   ];
 
-  static const List<String> _sectorOptions = [
+  static List<String> _sectorOptions = [
     'ИТ',
     'Консталтинг',
     'Торговля',
@@ -33,9 +35,22 @@ class StepOneState extends StateStep<StepOne> {
   ];
 
   @override
+  void initState() {
+    ApiService apiService = Provider.of<ApiService>(context, listen: false);
+    Future.microtask(() async {
+      _positionOptions = await apiService.listHint('position');
+      _sectorOptions = await apiService.listHint('sector');
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(
     BuildContext context,
   ) {
+    print('---- Rebuild positions');
     List<Widget> textFields = [
       Text('Представьтесь', style: headerStyle),
       const SizedBox(height: 20),

@@ -77,6 +77,9 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         return
     }
 
+    // save hints
+    saveHints(database.DB, user.UserData);
+
     // Генерируем JWT токен
     token, err := middleware.GenerateJWTToken(user.ID, user.Email, cfg)
     if err != nil {
@@ -417,6 +420,14 @@ func SaveCVHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
         return
     }
 
+
+    _, err = saveHints(database.DB, req)
+    if err != nil {
+        log.Printf("Error saving user CV to hint: %v", err)
+        http.Error(w, "Failed to save hints", http.StatusInternalServerError)
+        return
+    }
+
     writeResponse(w, http.StatusOK, Response{
         Success: true,
         Message: "CV data saved",
@@ -438,3 +449,5 @@ func writeResponse(w http.ResponseWriter, status int, response Response) {
     w.WriteHeader(status)
     json.NewEncoder(w).Encode(response)
 }
+
+
