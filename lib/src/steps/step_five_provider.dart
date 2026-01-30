@@ -29,6 +29,10 @@ class StepFiveProvider extends MyWizardStep {
     super.keepInStorage(cv);
   }
 
+  reloadDataFromCV(CV cv) {
+    skillList = cv.skill;
+  }
+
   final descriptionFocusNode = FocusNode();
 
   @override

@@ -343,5 +343,12 @@ class ProviderExamplePageProvider {
 
   void reloadDataFromCV(CV cv) {
     getStepProvider(0).reloadDataFromCV(cv);
+    getStepProvider(1).reloadDataFromCV(cv);
+    getStepProvider(2).reloadDataFromCV(cv);
+    getStepProvider(3).reloadDataFromCV(cv);
+    getStepProvider(4).reloadDataFromCV(cv);
+    getStepProvider(5).reloadDataFromCV(cv);
+    getStepProvider(6).reloadDataFromCV(cv);
+    getStepProvider(7).reloadDataFromCV(cv);
   }
 }

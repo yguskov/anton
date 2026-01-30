@@ -26,6 +26,10 @@ class StepSevenProvider extends MyWizardStep {
     keepInStorage(cv);
   }
 
+  reloadDataFromCV(CV cv) {
+    achieveList = cv.achieve;
+  }
+
   final descriptionFocusNode = FocusNode();
 
   @override

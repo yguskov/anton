@@ -26,6 +26,10 @@ class StepFourProvider extends MyWizardStep {
     keepInStorage(cv);
   }
 
+  reloadDataFromCV(CV cv) {
+    dutyList = cv.duty;
+  }
+
   final descriptionFocusNode = FocusNode();
 
   @override

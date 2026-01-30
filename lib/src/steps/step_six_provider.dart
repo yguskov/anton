@@ -30,6 +30,11 @@ class StepSixProvider extends MyWizardStep {
     keepInStorage(cv);
   }
 
+  reloadDataFromCV(CV cv) {
+    knowList = cv.know;
+    updateValue('want_tip', cv.getValue('want_tip'));
+  }
+
   final descriptionFocusNode = FocusNode();
 
   @override
