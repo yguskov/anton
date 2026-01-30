@@ -236,8 +236,8 @@ class ApiService {
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
 
-      print('----body-------${response.body}----------');
-      print('----data-------${data}----------');
+      // print('----body-------${response.body}----------');
+      // print('----data-------${data}----------');
 
       return data.map((item) => item.toString()).toList();
 

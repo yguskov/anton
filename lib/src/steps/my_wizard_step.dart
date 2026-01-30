@@ -20,7 +20,7 @@ abstract class StatefulWidgetStep extends StatefulWidget {
 }
 
 /**
- * Base class of steps widget with predefined field text autocomplete, dropdown box and radio list
+ * @book Base class of steps state with predefined field text autocomplete, dropdown box and radio list
  */
 abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
   final StreamController<String> _streamController = StreamController<String>();
@@ -138,6 +138,16 @@ abstract class MyWizardStep with WizardStep {
       cv.setValue(key, value.value);
     });
     keepInStorage(cv);
+  }
+
+  reloadDataFromCV(CV cv) {
+    for (var item in _field.entries) {
+      String name = item.key;
+      _field[name]!.add(cv.getValue(name) ?? '');
+      if (_controller[name] != null) {
+        if (cv.getValue(name) != null) _controller[name]!.text = cv.getValue(name)!;
+      }
+    }
   }
 
 /**

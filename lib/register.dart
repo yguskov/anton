@@ -45,17 +45,22 @@ class ProviderExamplePage extends StatelessWidget {
   ) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
     if (first) {
+      print('----first load user-----');
       if (authProvider.currentUser?.guid != null) {
         Future.microtask(() async {
-          final provider = Provider.of<AuthProvider>(context, listen: false);
-          await provider.loadUserCV(authProvider.currentUser!.guid);
-          cv = provider.userCV ?? CV.instance;
+          await authProvider.loadUserCV(authProvider.currentUser!.guid);
+          cv = authProvider.userCV ?? CV.instance;
+          ProviderExamplePageProvider pageProvider =
+              Provider.of<ProviderExamplePageProvider>(context, listen: false);
+          pageProvider.reloadDataFromCV(cv);
+          print('----load cv with ${CV.instance.getValue('fio')}-----'); // @book load CV
         });
         first = false;
         return CircularProgressIndicator();
       } else {
         // try to load from local storage
         if (window.localStorage['cv'] != null) cv = CV.fromJson(window.localStorage['cv']!);
+        print('----got  cv from LS ${CV.instance.getValue('fio')}-----');
       }
     }
 
@@ -334,5 +339,9 @@ class ProviderExamplePageProvider {
     stepSixProvider.dispose();
     stepSevenProvider.dispose();
     stepFinishProvider.dispose();
+  }
+
+  void reloadDataFromCV(CV cv) {
+    getStepProvider(0).reloadDataFromCV(cv);
   }
 }
