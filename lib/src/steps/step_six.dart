@@ -25,16 +25,18 @@ class StepSixState extends StateStep<StepSix> {
   int? _selectedKnow;
 // List<PopupDropdownItem<String>>
   List<PopupDropdownItem<String>> get skill_list {
-    // StepFourProvider fourProvider = widget.myProvider.wizardController
-    //     .stepControllers[3].step as StepFourProvider;
-
     StepFiveProvider fiveProvider = providerOfStep(4) as StepFiveProvider;
-    return fiveProvider.skillList
+
+    List<PopupDropdownItem<String>> optionList;
+
+    optionList = fiveProvider.skillList
         .map((item) => PopupDropdownItem(value: item['name']!, label: item['name']!))
         // .where((name) => name != null)
         .cast<PopupDropdownItem<String>>()
         .toList()
       ..sort((a, b) => a.value.compareTo(b.value));
+    optionList.add(PopupDropdownItem(value: 'не знаю', label: 'Не знаю'));
+    return optionList;
   }
 
   List<PopupDropdownItem<String>> get period_list => [
@@ -50,7 +52,6 @@ class StepSixState extends StateStep<StepSix> {
         print('${item.value} == $val');
         return item.value == val;
       }));
-      print('------>|$val|');
       return period_list.singleWhere((item) => item.value == val).label;
     } catch (e) {
       return '-';
