@@ -11,7 +11,7 @@ class StepFiveProvider extends MyWizardStep {
         super({
           'skill_name': BehaviorSubject<String>.seeded(''),
           'skill_level': BehaviorSubject<String>.seeded(''),
-          'skill_type': BehaviorSubject<String>.seeded('Не знаю'),
+          'skill_type': BehaviorSubject<String>.seeded(''),
           'skill_power': BehaviorSubject<String>.seeded(''),
           'duty_name': BehaviorSubject<String>.seeded(''),
         }, {

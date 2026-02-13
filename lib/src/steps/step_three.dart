@@ -74,7 +74,7 @@ class StepThreeState extends StateStep<StepThree> {
           _salary_update_items),
       const SizedBox(height: 16),
       buildDropdownSection(
-          'Какой у вас формат работы?', 'месяц назад', 'work_from', _work_from_items),
+          'Какой у вас формат работы?', 'Офис|Удаленная|Гибрид', 'work_from', _work_from_items),
       const SizedBox(height: 16),
       TextBar('В каком регионе работаете?'),
       const SizedBox(height: 16),

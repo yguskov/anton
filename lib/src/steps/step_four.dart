@@ -150,6 +150,11 @@ class StepFourState extends StateStep<StepFour> {
     );
   }
 
+  String? ucfirst(String? str) {
+    if (str == null) return null;
+    return str[0].toUpperCase() + str.substring(1);
+  }
+
   @override
   Widget build(
     BuildContext context,
@@ -224,7 +229,7 @@ class StepFourState extends StateStep<StepFour> {
 
   Widget _cardWidget(item, index) {
     return CustomSquareCard(
-      title: '${item['name'] ?? ''} , ${item['period'] ?? ''}',
+      title: '${item['name'] ?? ''}\n${ucfirst(item['period']) ?? ''}',
       leftText: attitudeShortText(item['attitude']!),
       leftColor: attitudeColor(item['attitude']!),
       rightText:

@@ -62,12 +62,12 @@ class CustomSquareCard extends StatelessWidget {
       ));
     }
 
-    if (rightText != null) {
+    if (rightText != null && rightText != '') {
       children.add(Positioned(
         bottom: 0,
         right: 0,
         child: Container(
-          width: 100,
+          // width: 100,
           height: 20,
           decoration: BoxDecoration(
             color: Colors.white70,
@@ -79,7 +79,7 @@ class CustomSquareCard extends StatelessWidget {
           ),
           child: Center(
             child: Text(
-              rightText!,
+              ' $rightText ',
               style: TextStyle(fontSize: 12, color: rightColor),
             ),
           ),

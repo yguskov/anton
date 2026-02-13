@@ -38,8 +38,6 @@ class StepFiveState extends StateStep<StepFive> {
   @override
   void initState() {
     super.initState();
-    // default values
-    widget.provider.controllerByName('skill_type').text = 'Не знаю';
     // Подписываемся на изменения всех полей
     widget.provider.controllerByName('skill_name').addListener(_rebuild);
     widget.provider.controllerByName('skill_level').addListener(_rebuild);
@@ -62,13 +60,12 @@ class StepFiveState extends StateStep<StepFive> {
       widget.provider.controllerByName('skill_level').text =
           index != null ? skillList[index!]['level']! : '';
       widget.provider.controllerByName('skill_type').text =
-          index != null ? skillList[index!]['type']! : 'Не знаю';
+          index != null ? skillList[index!]['type']! : '';
       widget.provider.controllerByName('skill_power').text =
           index != null ? skillList[index!]['power']! : '';
       widget.provider.updateValue('skill_name', index != null ? skillList[index]['name']! : '');
       widget.provider.updateValue('skill_level', index != null ? skillList[index]['level']! : '');
-      widget.provider
-          .updateValue('skill_type', index != null ? skillList[index]['type']! : 'Не знаю');
+      widget.provider.updateValue('skill_type', index != null ? skillList[index]['type']! : '');
       widget.provider.updateValue('skill_power', index != null ? skillList[index]['power']! : '');
     });
   }
@@ -77,6 +74,9 @@ class StepFiveState extends StateStep<StepFive> {
   void _save() {
     Map<String, String> currentSkill;
     setState(() {
+      if (widget.provider.getValue('skill_type').isEmpty) {
+        widget.provider.updateValue('skill_type', 'не знаю');
+      }
       currentSkill = {
         'name': widget.provider.getValue('skill_name'),
         'level': widget.provider.getValue('skill_level'),
@@ -92,11 +92,11 @@ class StepFiveState extends StateStep<StepFive> {
 
       widget.provider.controllerByName('skill_name').text = '';
       widget.provider.controllerByName('skill_level').text = '';
-      widget.provider.controllerByName('skill_type').text = 'Не знаю';
+      widget.provider.controllerByName('skill_type').text = '';
       widget.provider.controllerByName('skill_power').text = '';
       widget.provider.updateValue('skill_name', '');
       widget.provider.updateValue('skill_level', '');
-      widget.provider.updateValue('skill_type', 'Не знаю');
+      widget.provider.updateValue('skill_type', '');
       widget.provider.updateValue('skill_power', '');
     });
 
@@ -142,8 +142,7 @@ class StepFiveState extends StateStep<StepFive> {
 
   bool get saveEnabled =>
       widget.provider.getValue('skill_name').isNotEmpty &&
-      widget.provider.getValue('skill_level').isNotEmpty &&
-      widget.provider.getValue('skill_type').isNotEmpty;
+      widget.provider.getValue('skill_level').isNotEmpty;
 
   bool get removeEnabled {
     if (_selectedSkill == null) return false;
@@ -182,8 +181,8 @@ class StepFiveState extends StateStep<StepFive> {
         buildRadioList('Я считаю это своим:', 'skill_power',
             ['Сильным навыком', 'Слабым навыком', 'Не знаю'], null, 1.3),
         const SizedBox(height: 16),
-        buildTextFieldWithLabel(
-            'К какому типу относится навык?', 'hard|soft|другое', 'skill_type', ['hard', 'soft']),
+        buildTextFieldWithLabel('К какому типу относится навык?', 'hard|soft|другое|не знаю',
+            'skill_type', ['hard', 'soft']),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -233,10 +232,11 @@ class StepFiveState extends StateStep<StepFive> {
 
   Widget _cardWidget(item, index) {
     return CustomSquareCard(
-      title: '${item['name'] ?? ''} , Тип навыка: ${item['type'] ?? ''}',
+      title: '${item['name'] ?? ''}, Тип навыка: ${item['type'] ?? ''}',
       leftText: powerShortText(item['power']!),
       leftColor: powerColor(item['power']!),
-      rightText: 'Уровень: ${skillList[index]['level']}',
+      rightText:
+          'Уровень: ${skillList[index]['level'] != '0' ? skillList[index]['level'] : 'Не знаю'}',
       rightColor: Color(0xFF5B32332), // Colors.green.shade800
       selected: _selectedSkill == index,
     );

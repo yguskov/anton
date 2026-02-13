@@ -206,9 +206,8 @@ class StepSevenState extends StateStep<StepSeven> {
 
   Widget _cardWidget(item, index) {
     return CustomSquareCard(
-      height: 60,
       title: item['name'] ?? '',
-      bottomText: item['result'] ?? '',
+      bottomText: (item['result']?.trim().isNotEmpty ?? false) ? 'Польза: ${item['result']}' : null,
       leftText: '',
       // leftColor: resultColor(item['result']!),
       rightText: get_period_by_value(item['when']),

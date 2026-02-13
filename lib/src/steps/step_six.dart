@@ -236,7 +236,6 @@ class StepSixState extends StateStep<StepSix> {
 
   Widget _cardWidget(item, index) {
     return CustomSquareCard(
-      height: 60,
       title: '${item['name'] ?? ''} (Навык: ${item['skill'] ?? ''})',
       bottomText:
           (item['result']?.trim().isNotEmpty ?? false) ? 'Результат: ${item['result']}' : null,
