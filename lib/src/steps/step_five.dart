@@ -228,40 +228,17 @@ class StepFiveState extends StateStep<StepFive> {
   }
 
   _buildSkillList(BoxConstraints constraints) {
-    double boxWidth;
-    print(constraints);
-    if (constraints.maxWidth < 600) {
-      boxWidth = constraints.maxWidth;
-    } else {
-      boxWidth = constraints.maxWidth / 2 - 5;
-    }
+    return listCard(constraints, skillList, _onSelect, _cardWidget);
+  }
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => _onSelect(null),
-      child: Wrap(
-        spacing: 10, // горизонтальный отступ между блоками
-        runSpacing: 10, // вертикальный отступ между строками
-        children: List.generate(skillList.length, (index) {
-          return MouseRegion(
-            cursor: MaterialStateMouseCursor.clickable,
-            child: GestureDetector(
-              onTap: () => _onSelect(index),
-              child: CustomSquareCard(
-                width: boxWidth,
-                height: 60,
-                title:
-                    '${skillList.elementAt(index)['name'] ?? ''} , Тип навыка: ${skillList.elementAt(index)['type'] ?? ''}',
-                leftText: powerShortText(skillList.elementAt(index)['power']!),
-                leftColor: powerColor(skillList.elementAt(index)['power']!),
-                rightText: 'Уровень: ${skillList[index]['level']}',
-                rightColor: Color(0xFF5B32332), // Colors.green.shade800
-                selected: _selectedSkill == index,
-              ),
-            ),
-          );
-        }),
-      ),
+  Widget _cardWidget(item, index) {
+    return CustomSquareCard(
+      title: '${item['name'] ?? ''} , Тип навыка: ${item['type'] ?? ''}',
+      leftText: powerShortText(item['power']!),
+      leftColor: powerColor(item['power']!),
+      rightText: 'Уровень: ${skillList[index]['level']}',
+      rightColor: Color(0xFF5B32332), // Colors.green.shade800
+      selected: _selectedSkill == index,
     );
   }
 

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:example/models/cv.dart';
+import 'package:example/src/constants.dart';
 import 'package:example/src/widgets/just_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
@@ -89,6 +90,32 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
             }),
         Expanded(child: Text(label, maxLines: 2, overflow: TextOverflow.visible, softWrap: true))
       ],
+    );
+  }
+
+  Widget listCard(
+      BoxConstraints constraints, List<Map<String, String>> dutyList, _onSelect, cardItem) {
+    return GestureDetector(
+      behavior: HitTestBehavior.translucent,
+      onTap: () => _onSelect(null),
+      child: Wrap(
+        spacing: cardSpace10,
+        runSpacing: cardSpace10,
+        children: List.generate(dutyList.length, (index) {
+          return MouseRegion(
+            cursor: MaterialStateMouseCursor.clickable,
+            child: GestureDetector(
+              onTap: () => _onSelect(index),
+              child: SizedBox(
+                width: constraints.maxWidth > screenSide600
+                    ? (constraints.maxWidth - cardSpace10) / 2
+                    : constraints.maxWidth,
+                child: cardItem(dutyList[index], index),
+              ),
+            ),
+          );
+        }),
+      ),
     );
   }
 }

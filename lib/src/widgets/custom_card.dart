@@ -6,7 +6,7 @@ class CustomSquareCard extends StatelessWidget {
   final String? rightText;
   final String? bottomTitle;
   final String? bottomText;
-  final double width;
+  // final double width;
   final double height;
   final Color? leftColor;
   final Color? rightColor;
@@ -15,8 +15,8 @@ class CustomSquareCard extends StatelessWidget {
   const CustomSquareCard({
     Key? key,
     required this.title,
-    this.width = 250,
-    this.height = 100,
+    width = 250,
+    this.height = 60,
     this.leftText,
     this.rightText,
     this.leftColor = Colors.grey,
@@ -29,21 +29,13 @@ class CustomSquareCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    children.add(Align(
-      alignment: Alignment.topLeft,
-      child: Padding(
-        padding: EdgeInsets.only(top: 10, left: 5),
-        child: Text(
-          title,
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 15,
-            fontWeight: FontWeight.normal,
-            color: Colors.black87,
-          ),
-        ),
-      ),
-    ));
+    // children.add(Align(
+    //   alignment: Alignment.topLeft,
+    //   child: Padding(
+    //     padding: EdgeInsets.only(top: 10, left: 5),
+    //     child: ,
+    //   ),
+    // ));
 
     if (leftText != null && leftText != '') {
       children.add(Positioned(
@@ -96,90 +88,94 @@ class CustomSquareCard extends StatelessWidget {
     }
 
     Widget mainContainer = Container(
-      width: width,
-      height: height,
+      // width: width,
+      height: 20,
       decoration: BoxDecoration(
-        color: Colors.grey[300], // серый фон
-        border: Border.all(
-          color: selected ? Colors.red.shade300 : Colors.blueGrey,
-          width: selected ? 2 : 1.2,
-        ),
-        borderRadius: BorderRadius.circular(4), // скругление
-      ),
+          // color: Colors.grey[300], // серый фон
+          // border: Border.all(
+          //   color: selected ? Colors.red.shade300 : Colors.blueGrey,
+          //   width: selected ? 2 : 1.2,
+          // ),
+          // borderRadius: BorderRadius.circular(4), // скругление
+          ),
       child: Stack(
         children: children,
       ),
     );
 
-    if (bottomText == null) {
-      return mainContainer;
-    } else {
-      var borderSide = BorderSide(
-        color: selected ? Colors.red.shade300 : Colors.blueGrey,
-        width: selected ? 2 : 1.2,
-      );
-      Widget bottomContainer = Container(
-        width: width,
-        height: height,
+    return ConstrainedBox(
+      // Минимальная высота блока
+      constraints: const BoxConstraints(
+        minHeight: 60,
+      ),
+      child: Container(
+        // padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: Colors.grey[300], // серый фон
-          border: Border(
-              top: BorderSide(
-                color: Colors.blueGrey,
-                width: 0.6,
-              ),
-              left: borderSide,
-              bottom: borderSide,
-              right: borderSide),
-          borderRadius: BorderRadius.circular(4), // скругление
+          color: Color.fromARGB(255, 189, 193, 197),
+          borderRadius: BorderRadius.circular(4.0),
+          border: Border.all(
+            color: selected ? Color.fromARGB(255, 207, 87, 87) : Colors.blueGrey,
+            width: selected ? 2 : 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: const Offset(0, 1),
+            ),
+          ],
         ),
-        child: Stack(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min, // Высота колонки подстраивается под контент
           children: [
-            Positioned(
-              top: 0,
-              left: 0,
-              child: Container(
-                width: 100,
-                height: 20,
-                decoration: BoxDecoration(
-                  color: Colors.white70,
-                  border: Border.all(
-                    color: Colors.green.shade800,
-                    width: 1,
-                  ),
-                  borderRadius: BorderRadius.circular(1),
-                ),
-                child: Center(
+            mainContainer,
+            const SizedBox(height: 2),
+            // Flexible позволяет тексту занимать всю доступную высоту
+            Flexible(
+              child: Align(
+                alignment: Alignment.topLeft,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
                   child: Text(
-                    bottomTitle ?? ' ',
-                    style:
-                        TextStyle(fontSize: 12, color: Colors.green.shade800),
+                    title,
+                    style: const TextStyle(
+                      fontSize: 15,
+                      // fontWeight: FontWeight.bold,
+                      // color: Colors.blue,
+                    ),
                   ),
                 ),
               ),
             ),
-            Align(
-              alignment: Alignment.topLeft,
-              child: Padding(
-                padding: EdgeInsets.only(top: 20, left: 5),
-                child: Text(
-                  bottomText!,
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                    color: Colors.black87,
-                  ),
-                ),
-              ),
-            )
+            const SizedBox(height: 5),
+            bottomText != null
+                ? Flexible(
+                    child: Align(
+                      alignment: Alignment.topLeft,
+                      child: Padding(
+                        padding: EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 10),
+                        child: Text(
+                          bottomText!,
+                          style: const TextStyle(
+                            fontSize: 15,
+                            // fontWeight: FontWeight.bold,
+                            // color: Colors.blue,
+                          ),
+                        ),
+                      ),
+                    ),
+                  )
+                : Container()
           ],
         ),
-      );
-      // second long text
-      return Column(
-        children: [mainContainer, bottomContainer],
-      );
-    }
+      ),
+    );
+
+    // var borderSide = BorderSide(
+    //   color: selected ? Colors.red.shade300 : Colors.blueGrey,
+    //   width: selected ? 2 : 1.2,
+    // );
   }
 }

@@ -201,40 +201,19 @@ class StepSevenState extends StateStep<StepSeven> {
   }
 
   _buildAchieveList(BoxConstraints constraints) {
-    double boxWidth;
-    print(constraints);
-    if (constraints.maxWidth < 600) {
-      boxWidth = constraints.maxWidth;
-    } else {
-      boxWidth = constraints.maxWidth / 2 - 5;
-    }
+    return listCard(constraints, achieveList, _onSelect, _cardWidget);
+  }
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => _onSelect(null),
-      child: Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: List.generate(achieveList.length, (index) {
-          return MouseRegion(
-            cursor: MaterialStateMouseCursor.clickable,
-            child: GestureDetector(
-              onTap: () => _onSelect(index),
-              child: CustomSquareCard(
-                width: boxWidth,
-                height: 60,
-                title:
-                    '${achieveList.elementAt(index)['name'] ?? ''}\n ${achieveList.elementAt(index)['result'] ?? ''} ',
-                leftText: '',
-                // leftColor: resultColor(achieveList.elementAt(index)['result']!),
-                rightText: get_period_by_value(achieveList[index]['when']),
-                rightColor: Colors.green.shade800,
-                selected: _selectedAchieve == index,
-              ),
-            ),
-          );
-        }),
-      ),
+  Widget _cardWidget(item, index) {
+    return CustomSquareCard(
+      height: 60,
+      title: item['name'] ?? '',
+      bottomText: item['result'] ?? '',
+      leftText: '',
+      // leftColor: resultColor(item['result']!),
+      rightText: get_period_by_value(item['when']),
+      rightColor: Colors.green.shade800,
+      selected: _selectedAchieve == index,
     );
   }
 

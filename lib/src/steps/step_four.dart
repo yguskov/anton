@@ -2,7 +2,6 @@ import 'dart:js_interop';
 
 import 'package:example/services/api_service.dart';
 import 'package:example/src/steps/step_four_provider.dart';
-import 'package:example/src/widgets/adaptive_card.dart';
 import 'package:example/src/widgets/dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -220,114 +219,18 @@ class StepFourState extends StateStep<StepFour> {
   }
 
   _buildDutyList(BoxConstraints constraints) {
-    double boxWidth;
-    if (constraints.maxWidth < 600) {
-      boxWidth = constraints.maxWidth;
-    } else {
-      boxWidth = constraints.maxWidth / 2 - 5;
-    }
-
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => _onSelect(null),
-      child: Wrap(
-        spacing: 10, // горизонтальный отступ между блоками
-        runSpacing: 10, // вертикальный отступ между строками
-        children: List.generate(dutyList.length, (index) {
-          return MouseRegion(
-            cursor: MaterialStateMouseCursor.clickable,
-            child: GestureDetector(
-              onTap: () => _onSelect(index),
-              child: SizedBox(
-                width: constraints.maxWidth > 600
-                    ? (constraints.maxWidth - 16.0) / 2 // минус отступ между колонками
-                    : constraints.maxWidth,
-                child: AdaptiveBlock(
-                  title: 'Адаптивная карточка',
-                  content:
-                      '${dutyList.elementAt(index)['name'] ?? ''} , ${dutyList.elementAt(index)['period'] ?? ''}',
-                ),
-              )
-
-              /* CustomSquareCard(
-                width: boxWidth,
-                height: 60,
-                title:
-                    '${dutyList.elementAt(index)['name'] ?? ''} , ${dutyList.elementAt(index)['period'] ?? ''}',
-                leftText: attitudeShortText(dutyList.elementAt(index)['attitude']!),
-                leftColor: attitudeColor(dutyList.elementAt(index)['attitude']!),
-                rightText: dutyList[index]['type'] == 'new'
-                    ? 'Новая'
-                    : (dutyList[index]['type'] == 'extra' ? 'Дополнительная' : ''),
-                rightColor:
-                    dutyList[index]['type'] == 'new' ? Colors.green.shade800 : Color(0xFF5801fd),
-                selected: _selectedDuty == index,
-              ) */
-              ,
-            ),
-          );
-        }),
-      ),
-    );
+    return listCard(constraints, dutyList, _onSelect, _cardWidget);
   }
 
-  _buildDutyListWrap(BoxConstraints constraints) {
-    double boxWidth;
-    if (constraints.maxWidth < 600) {
-      boxWidth = constraints.maxWidth;
-    } else {
-      boxWidth = constraints.maxWidth / 2 - 5;
-    }
-
-    final crossAxisCount = constraints.maxWidth > 600 ? 2 : 1;
-
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => _onSelect(null),
-      child: GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: crossAxisCount,
-            crossAxisSpacing: 16.0,
-            mainAxisSpacing: 16.0,
-            childAspectRatio: constraints.maxWidth > 600 ? 1.5 : 2.0, // соотношение сторон
-          ),
-          itemCount: dutyList.length,
-          itemBuilder: (context, index) {
-            return MouseRegion(
-              cursor: MaterialStateMouseCursor.clickable,
-              child: GestureDetector(
-                onTap: () => _onSelect(index),
-                child: SizedBox(
-                  width: constraints.maxWidth > 600
-                      ? (constraints.maxWidth - 16.0) / 2 // минус отступ между колонками
-                      : constraints.maxWidth,
-                  child: AdaptiveBlock(
-                    title: 'Адаптивная карточка',
-                    content:
-                        '${dutyList.elementAt(index)['name'] ?? ''} , ${dutyList.elementAt(index)['period'] ?? ''}',
-                  ),
-                )
-
-                /* CustomSquareCard(
-                width: boxWidth,
-                height: 60,
-                title:
-                    '${dutyList.elementAt(index)['name'] ?? ''} , ${dutyList.elementAt(index)['period'] ?? ''}',
-                leftText: attitudeShortText(dutyList.elementAt(index)['attitude']!),
-                leftColor: attitudeColor(dutyList.elementAt(index)['attitude']!),
-                rightText: dutyList[index]['type'] == 'new'
-                    ? 'Новая'
-                    : (dutyList[index]['type'] == 'extra' ? 'Дополнительная' : ''),
-                rightColor:
-                    dutyList[index]['type'] == 'new' ? Colors.green.shade800 : Color(0xFF5801fd),
-                selected: _selectedDuty == index,
-              ) */
-                ,
-              ),
-            );
-          }),
+  Widget _cardWidget(item, index) {
+    return CustomSquareCard(
+      title: '${item['name'] ?? ''} , ${item['period'] ?? ''}',
+      leftText: attitudeShortText(item['attitude']!),
+      leftColor: attitudeColor(item['attitude']!),
+      rightText:
+          item['type'] == 'new' ? 'Новая' : (item['type'] == 'extra' ? 'Дополнительная' : ''),
+      rightColor: item['type'] == 'new' ? Colors.green.shade800 : Color(0xFF5801fd),
+      selected: _selectedDuty == index,
     );
   }
 
