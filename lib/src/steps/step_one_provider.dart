@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:example/src/steps/my_wizard_step.dart';
+import 'package:example/src/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -41,6 +42,7 @@ class StepOneProvider extends MyWizardStep {
 
   bool verifyData() {
     if (getValue('fio') == '') addError('fio');
+    if (!checkEmail(getValue('boss_email'))) addError('boss_email');
 
     return !hasAnyError;
   }

@@ -86,13 +86,21 @@ class _JustTextFieldState extends State<JustTextField> {
         filled: true,
         fillColor: Colors.grey[200],
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+          borderSide: BorderSide(
+              color: widget.provider.hasError(widget.fieldName)
+                  ? Colors.red.shade600
+                  : Colors.grey[600]!,
+              width: 1.5),
           borderRadius: const BorderRadius.all(
             Radius.circular(4),
           ),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+          borderSide: BorderSide(
+              color: widget.provider.hasError(widget.fieldName)
+                  ? Colors.red.shade600
+                  : Colors.grey[600]!,
+              width: 2.0),
           borderRadius: const BorderRadius.only(
             bottomLeft: Radius.circular(6),
             bottomRight: Radius.circular(6),

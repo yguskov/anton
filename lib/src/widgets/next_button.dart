@@ -32,7 +32,7 @@ class NextButton extends StatelessWidget {
 
               // показать уведомление
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                  content: Text('Заполните данные'),
+                  content: Text('Заполните правильно данные, пожалуйста!'),
                   backgroundColor: Theme.of(context).colorScheme.primary));
             }
           },

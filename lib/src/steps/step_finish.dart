@@ -1,4 +1,5 @@
 import 'package:example/src/steps/steps.dart';
+import 'package:example/src/utils.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -80,7 +81,7 @@ class StepFinishState extends StateStep<StepFinish> {
             validator: (value) {
               if (value == null || value.isEmpty) {
                 return 'Укажите почту';
-              }
+              } else if (!checkEmail(value)) return 'Не похоже на почту';
               return null;
             },
           ),
