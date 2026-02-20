@@ -28,15 +28,21 @@ func InitDB(dataSourceName string) error {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         guid VARCHAR(20) NOT NULL,
-        user_data JSON
+        user_data JSON,
+        fio_virtual VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.fio'))) VIRTUAL,
+        position_virtual VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.position'))) VIRTUAL,
+        sector_virtual VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.sector'))) VIRTUAL,
+        INDEX idx_fio (fio_virtual),
+        INDEX idx_sector (sector_virtual),
+        INDEX idx_position (position_virtual)
     ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
 
     _, err = DB.Exec(createTableSQL)
     if err != nil {
         return fmt.Errorf("error creating user table: %v", err)
     }
-    
-    // Создаем таблицу пользователей
+
+    // Создаем таблицу подсказок
     createTableSQL = `
     CREATE TABLE IF NOT EXISTS hint (
         id INT AUTO_INCREMENT PRIMARY KEY,

@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:example/profile.dart';
 import 'package:example/show.dart';
 import 'package:example/src/app_bar_with_menu.dart';
+import 'package:example/users.dart';
 import 'login.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
@@ -41,6 +42,8 @@ class MyApp extends StatelessWidget {
         return MaterialPageRoute(builder: (context) => ProfilePage());
       case '/register':
         return MaterialPageRoute(builder: (context) => ProviderExamplePage.provider());
+      case '/users':
+        return MaterialPageRoute(builder: (context) => userPage());
 
       case '':
       case '/':

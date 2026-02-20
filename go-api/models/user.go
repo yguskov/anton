@@ -66,3 +66,15 @@ type UserResponse struct {
     CreatedAt string   `json:"created_at"`
     Guid      string   `json:"guid"`
 }
+
+type UserGridResponse struct {
+    Data  []UserGridItem `json:"data"`
+    Total int            `json:"total"`
+}
+
+type UserGridItem struct {
+    ID       int    `json:"id"`
+    Fio      string `json:"fio"`
+    Position string `json:"position"`
+    Sector   string `json:"sector"`
+}

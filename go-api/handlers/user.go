@@ -12,6 +12,8 @@ import (
     "go-api/models"
     "golang.org/x/crypto/bcrypt"
     "github.com/rs/xid"
+    "fmt"
+    "strconv"
 )
 
 type AuthResponse struct {
@@ -176,7 +178,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
     // json.NewEncoder(w).Encode(response)
 }
 
-func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
+func GetUsersHandlerOld(w http.ResponseWriter, r *http.Request) {
     rows, err := database.DB.Query("SELECT id, email, user_data, created_at FROM user")
     if err != nil {
         http.Error(w, "Error fetching users", http.StatusInternalServerError)
@@ -442,6 +444,88 @@ func SaveCVHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
         Message: "Change password successful",
         Data:    authResponse,
     }) */
+}
+
+func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
+
+    // page, _ := strconv.Atoi(r.URL.Query().Get("page"))     // default 1
+    // limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))   // default 20
+    page, _ := strconv.Atoi("1")     // default 1
+    limit := 20   // default 20
+    sortBy := r.URL.Query().Get("sortBy")                  // fio, position, sector
+    sortOrder := r.URL.Query().Get("sortOrder")            // asc, desc
+    search := r.URL.Query().Get("search")                  // текст поиска
+
+    // Валидация sortBy (защита от SQL инъекций)
+    allowedSorts := map[string]bool{"fio_virtual": true, "position_virtual": true, "sector_virtual": true, "created_at": true}
+    sortCol := "created_at"
+    if allowedSorts[sortBy] { sortCol = sortBy }
+    if sortOrder != "desc" { sortOrder = "asc" }
+
+    offset := (page - 1) * limit
+
+    // 2. Построение запроса
+    // Используем подготовленные выражения для search, но сортировку вставляем аккуратно
+    queryCount := "SELECT COUNT(*) FROM user"
+    // queryData := "SELECT id, user_data->>'$.fio' as fio, user_data->>'$.position' as position, user_data->>'$.sector' as sector FROM user"
+    queryData := "SELECT id, JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.fio')) as fio, JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.position')) as position, JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.sector')) as sector FROM user"
+    
+    args := []interface{}{}
+    whereClause := ""
+
+    if search != "" {
+        whereClause = " WHERE (fio_virtual LIKE ? OR position_virtual LIKE ? OR sector_virtual LIKE ?)"
+        searchParam := "%" + search + "%"
+        args = append(args, searchParam, searchParam, searchParam)
+    }
+
+    // Получаем общее количество
+    var total int
+    database.DB.QueryRow(queryCount + whereClause, args...).Scan(&total)
+
+    // Получаем данные страницы
+    queryData += whereClause + fmt.Sprintf(" ORDER BY %s %s LIMIT ? OFFSET ?", sortCol, sortOrder)
+    args = append(args, limit, offset)
+
+    rows, err := database.DB.Query(queryData, args...); 
+    
+    if err != nil {
+        log.Printf(" --- error %v in sql: %s", err, queryData)
+        http.Error(w, "Database user selection error", http.StatusInternalServerError)
+        return
+    }
+
+    defer rows.Close() // Обязательно закрываем rows, чтобы не утекали соединения
+
+    items := make([]models.UserGridItem, 0, limit) // Предварительное выделение памяти
+
+    for rows.Next() {
+        var item models.UserGridItem
+        var fio, position, sector sql.NullString // Используем NullString для безопасной работы с NULL из JSON
+
+        // Сканируем колонки в том же порядке, что и в SELECT
+        // id, fio, position, sector
+        err := rows.Scan(&item.ID, &fio, &position, &sector)
+        if err != nil {
+            log.Printf("Error scanning row: %v", err)
+            continue // Пропускаем битую строку или возвращаем ошибку, в зависимости от требований
+        }
+
+        // Обрабатываем NULL значения (если ключа в JSON нет, MySQL вернет NULL)
+        item.Fio = fio.String
+        item.Position = position.String
+        item.Sector = sector.String
+
+        items = append(items, item)
+    }
+
+    // Проверяем ошибки итерации (например, обрыв соединения во время чтения)
+    if err := rows.Err(); err != nil {
+        http.Error(w, "Database iteration error", http.StatusInternalServerError)
+        return
+    }
+
+    json.NewEncoder(w).Encode(models.UserGridResponse{Data: items, Total: total})
 }
 
 func writeResponse(w http.ResponseWriter, status int, response Response) {

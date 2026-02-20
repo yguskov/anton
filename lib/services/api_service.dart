@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:html';
+import 'package:example/models/user_data_source.dart';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
 
@@ -99,7 +100,12 @@ class ApiService {
     clearToken();
   }
 
-  Future<List<User>> getUsers() async {
+  Future<UsersResponse> getUsers(
+      {int page = 0,
+      int limit = 20,
+      String sortBy = 'fio',
+      String sortOrder = 'asc',
+      String search = ''}) async {
     final response = await client.get(
       Uri.parse('$baseUrl/users'),
       headers: _getHeaders(),
@@ -107,9 +113,11 @@ class ApiService {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      return UsersResponse.fromJson(data);
       if (data['success'] == true) {
-        final List<dynamic> usersJson = data['data'];
-        return usersJson.map((json) => User.fromJson(json)).toList();
+        return data;
+        // final List<dynamic> usersJson = data['data'];
+        // return usersJson.map((json) => User.fromJson(json)).toList();
       } else {
         throw Exception(data['error'] ?? 'Failed to load users');
       }
