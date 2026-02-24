@@ -93,7 +93,7 @@ class _ProfilePageState extends State<ProfilePage> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ElevatedButton(onPressed: edit, child: Text('Предпросмотр')),
+                                  ElevatedButton(onPressed: view, child: Text('Предпросмотр')),
                                   SizedBox(width: h20),
                                   ElevatedButton(
                                       onPressed: copyLink,
@@ -245,6 +245,13 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void edit() {
     Navigator.pushNamed(context, '/register');
+  }
+
+  void view() {
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+    if (authProvider.currentUser?.guid != null) {
+      Navigator.pushNamed(context, '/review/' + authProvider.currentUser!.guid);
+    }
   }
 
   InputDecoration inputDecorattion(String label) {
