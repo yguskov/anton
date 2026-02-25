@@ -41,7 +41,7 @@ class ServerUserDataSource extends DataTableSource {
 
   List<UserGridItem> _users = [];
   int _totalUsers = 0;
-  int _rowsPerPage = 20;
+  int _rowsPerPage = 2;
 
   // Параметры запроса
   int _currentPage = 1;
@@ -50,6 +50,8 @@ class ServerUserDataSource extends DataTableSource {
   bool _sortAscending = false;
 
   ServerUserDataSource(this._api);
+
+  num get rowsPerPage => _rowsPerPage;
 
   // Метод для обновления параметров и перезагрузки
   Future<void> updateParams({
@@ -64,6 +66,7 @@ class ServerUserDataSource extends DataTableSource {
     if (sortAscending != null) _sortAscending = sortAscending;
 
     await _fetchData();
+    print('---- after fetch page=${_currentPage} ------ ');
     notifyListeners(); // Обновляет таблицу
   }
 
@@ -77,7 +80,7 @@ class ServerUserDataSource extends DataTableSource {
         search: _searchQuery,
       );
 
-      print('---- user responce ------ : ${response}');
+      // print('---- user responce ------ : ${response}');
       _users = response.data;
       _totalUsers = response.total;
     } catch (e) {
@@ -89,8 +92,18 @@ class ServerUserDataSource extends DataTableSource {
 
   @override
   DataRow getRow(int index) {
-    // if (index >= _users.length) return DataRow.empty();
-    final user = _users[index];
+    final startIndex = (_currentPage - 1) * _rowsPerPage;
+    final localIndex = index - startIndex;
+    print(
+        '----index=${index}  local=${localIndex} limit = ${_rowsPerPage} current page=${_currentPage}');
+    if (localIndex < 0 || localIndex >= _users.length)
+      return DataRow(cells: [
+        DataCell(Text('')),
+        DataCell(Text('')),
+        DataCell(Text('')),
+      ]);
+
+    final user = _users[localIndex];
     return DataRow(cells: [
       DataCell(Text(user.fio)),
       DataCell(Text(user.position)),

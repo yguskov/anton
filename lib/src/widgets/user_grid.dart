@@ -53,7 +53,7 @@ class _UserGridWidgetState extends State<UserGridWidget> {
       children: [
         // Поиск
         Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(6.0),
           child: TextField(
             controller: _searchController,
             decoration: InputDecoration(
@@ -68,15 +68,18 @@ class _UserGridWidgetState extends State<UserGridWidget> {
         ),
         Expanded(
           child: PaginatedDataTable(
-            header: Text('Сотрудники'),
+            // header: Text('Сотрудники'),
             source: _dataSource,
-            rowsPerPage: 20,
-            // 3. Передаем состояние сортировки в таблицу
+            rowsPerPage: 2,
+            dataRowMinHeight: 30,
+            dataRowMaxHeight: 33,
+
             sortColumnIndex: _sortColumnIndex,
             sortAscending: _sortAscending,
 
-            onPageChanged: (page) {
-              _loadData(page: page + 1); // API обычно с 1, виджет с 0
+            onPageChanged: (int firstRowIndex) {
+              final page = (firstRowIndex ~/ _dataSource.rowsPerPage) + 1;
+              _loadData(page: page);
             },
 
             columns: [
@@ -102,7 +105,7 @@ class _UserGridWidgetState extends State<UserGridWidget> {
                 },
               ),
               DataColumn(
-                label: Text('Сектор'),
+                label: Text('Индустрия'),
                 onSort: (columnIndex, ascending) {
                   setState(() {
                     _sortColumnIndex = columnIndex;

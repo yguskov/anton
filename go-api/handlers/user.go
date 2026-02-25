@@ -13,7 +13,7 @@ import (
     "golang.org/x/crypto/bcrypt"
     "github.com/rs/xid"
     "fmt"
-    "strconv"
+    // "strconv"
 )
 
 type AuthResponse struct {
@@ -446,15 +446,50 @@ func SaveCVHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
     }) */
 }
 
-func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
+func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+    // Извлекаем из контекста
+    userID, ok := middleware.GetUserIDFromContext(r.Context())
+    if !ok {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error when define admin",
+        })
+        return
+    }
+
+    // проверяем есть ли такой юзер
+    var exists bool
+    err := database.DB.QueryRow(
+        "SELECT EXISTS(SELECT 1 FROM user WHERE id = ?)", // @todo filter with role admin
+        userID,
+    ).Scan(&exists)
+
+    if err != nil {
+        log.Printf("Check admin error: %v", err)
+        http.Error(w, "Database error", http.StatusInternalServerError)
+        return
+    }
+
+    if !exists {
+        http.Error(w, "Admin not found", http.StatusNotFound)
+        return
+    }
+
+    var req models.UserGridRequest
+    err = json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    } 
 
     // page, _ := strconv.Atoi(r.URL.Query().Get("page"))     // default 1
     // limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))   // default 20
-    page, _ := strconv.Atoi("1")     // default 1
-    limit := 20   // default 20
-    sortBy := r.URL.Query().Get("sortBy")                  // fio, position, sector
-    sortOrder := r.URL.Query().Get("sortOrder")            // asc, desc
-    search := r.URL.Query().Get("search")                  // текст поиска
+    // page, _ := strconv.Atoi("1")     // default 1
+    page  := req.Page                  // default 1
+    limit := req.Limit                // default 20
+    sortBy := req.SortBy             // fio, position, sector
+    sortOrder := req.SortOrder      // asc, desc
+    search := req.Search           // текст поиска
 
     // Валидация sortBy (защита от SQL инъекций)
     allowedSorts := map[string]bool{"fio_virtual": true, "position_virtual": true, "sector_virtual": true, "created_at": true}

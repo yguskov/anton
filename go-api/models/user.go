@@ -67,6 +67,14 @@ type UserResponse struct {
     Guid      string   `json:"guid"`
 }
 
+type UserGridRequest struct {
+    Page      int    `json:"page"`
+    Limit     int    `json:"limit"`
+    SortBy    string `json:"sortBy"`
+    SortOrder string `json:"sortOrder"`
+    Search    string `json:"search"`
+}
+
 type UserGridResponse struct {
     Data  []UserGridItem `json:"data"`
     Total int            `json:"total"`

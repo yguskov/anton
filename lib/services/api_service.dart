@@ -106,9 +106,16 @@ class ApiService {
       String sortBy = 'fio',
       String sortOrder = 'asc',
       String search = ''}) async {
-    final response = await client.get(
+    final response = await client.post(
       Uri.parse('$baseUrl/users'),
       headers: _getHeaders(),
+      body: json.encode({
+        'page': page,
+        'limit': limit,
+        'sortBy': sortBy,
+        'sortOrder': sortOrder,
+        'search': search
+      }),
     );
 
     if (response.statusCode == 200) {

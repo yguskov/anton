@@ -32,24 +32,21 @@ class userPage extends StatelessWidget {
               children: [
                 Expanded(
                   child: Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 640),
-                      child: Container(
-                        // color: Colors.grey[300],
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
-                          child: UserGridWidget(),
-                        ),
+                    child: Container(
+                      // color: Colors.grey[300],
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
+                        child: UserGridWidget(),
                       ),
                     ),
                   ),
                 ),
 
                 // Нижняя панель
-                Container(
-                  height: 10,
-                  color: Colors.white,
-                ),
+                // Container(
+                //   height: 10,
+                //   color: Colors.white,
+                // ),
               ],
             );
           },
