@@ -29,12 +29,14 @@ func InitDB(dataSourceName string) error {
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         guid VARCHAR(20) NOT NULL,
         user_data JSON,
+        is_hr TINYINT(1) DEFAULT 0,
         fio_virtual VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.fio'))) VIRTUAL,
         position_virtual VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.position'))) VIRTUAL,
         sector_virtual VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.sector'))) VIRTUAL,
         INDEX idx_fio (fio_virtual),
         INDEX idx_sector (sector_virtual),
-        INDEX idx_position (position_virtual)
+        INDEX idx_position (position_virtual),
+        INDEX idx_is_hr (is_hr)
     ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
 
     _, err = DB.Exec(createTableSQL)
@@ -53,6 +55,22 @@ func InitDB(dataSourceName string) error {
     _, err = DB.Exec(createTableSQL)
     if err != nil {
         return fmt.Errorf("error creating hint table: %v", err)
+    }
+
+    // Создаем таблицу связей обработки 
+    createTableSQL = `
+    CREATE TABLE IF NOT EXISTS process (
+        hr_id INT NOT NULL,
+        user_id INT NOT NULL,
+        proccessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (hr_id, user_id),
+        FOREIGN KEY (hr_id) REFERENCES user(id),
+        FOREIGN KEY (user_id) REFERENCES user(id)
+    );`
+
+    _, err = DB.Exec(createTableSQL)
+    if err != nil {
+        return fmt.Errorf("error creating process: %v", err)
     }
     fmt.Println("Database connected and table ensured")
     return nil

@@ -447,7 +447,6 @@ func SaveCVHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 }
 
 func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
-    // Извлекаем из контекста
     userID, ok := middleware.GetUserIDFromContext(r.Context())
     if !ok {
         writeResponse(w, http.StatusInternalServerError, Response{
@@ -457,10 +456,9 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         return
     }
 
-    // проверяем есть ли такой юзер
     var exists bool
     err := database.DB.QueryRow(
-        "SELECT EXISTS(SELECT 1 FROM user WHERE id = ?)", // @todo filter with role admin
+        "SELECT EXISTS(SELECT 1 FROM user WHERE id = ? and is_hr = 1)",
         userID,
     ).Scan(&exists)
 
@@ -480,46 +478,68 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
     if err != nil {
         http.Error(w, "Invalid request body", http.StatusBadRequest)
         return
-    } 
+    }
 
-    // page, _ := strconv.Atoi(r.URL.Query().Get("page"))     // default 1
-    // limit, _ := strconv.Atoi(r.URL.Query().Get("limit"))   // default 20
-    // page, _ := strconv.Atoi("1")     // default 1
-    page  := req.Page                  // default 1
-    limit := req.Limit                // default 20
-    sortBy := req.SortBy             // fio, position, sector
-    sortOrder := req.SortOrder      // asc, desc
-    search := req.Search           // текст поиска
+    page := req.Page
+    if page < 1 { page = 1 }
+    limit := req.Limit
+    if limit < 1 { limit = 10 }
 
-    // Валидация sortBy (защита от SQL инъекций)
-    allowedSorts := map[string]bool{"fio_virtual": true, "position_virtual": true, "sector_virtual": true, "created_at": true}
+    sortBy := req.SortBy
+    sortOrder := req.SortOrder
+    search := req.Search
+
+    allowedSorts := map[string]bool{
+        "fio_virtual": true, 
+        "position_virtual": true, 
+        "sector_virtual": true, 
+        "created_at": true,
+    }
     sortCol := "created_at"
-    if allowedSorts[sortBy] { sortCol = sortBy }
-    if sortOrder != "desc" { sortOrder = "asc" }
+    if allowedSorts[sortBy] { 
+        sortCol = sortBy 
+    }
+    if sortOrder != "desc" { 
+        sortOrder = "asc" 
+    }
 
     offset := (page - 1) * limit
 
-    // 2. Построение запроса
-    // Используем подготовленные выражения для search, но сортировку вставляем аккуратно
-    queryCount := "SELECT COUNT(*) FROM user"
-    // queryData := "SELECT id, user_data->>'$.fio' as fio, user_data->>'$.position' as position, user_data->>'$.sector' as sector FROM user"
-    queryData := "SELECT id, JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.fio')) as fio, JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.position')) as position, JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.sector')) as sector FROM user"
-    
+    baseQuery := `
+        FROM user u
+        WHERE 1 = 1
+    `
+
     args := []interface{}{}
-    whereClause := ""
 
     if search != "" {
-        whereClause = " WHERE (fio_virtual LIKE ? OR position_virtual LIKE ? OR sector_virtual LIKE ?)"
+        baseQuery += " AND (u.fio_virtual LIKE ? OR u.position_virtual LIKE ? OR u.sector_virtual LIKE ?)"
         searchParam := "%" + search + "%"
         args = append(args, searchParam, searchParam, searchParam)
     }
 
-    // Получаем общее количество
-    var total int
-    database.DB.QueryRow(queryCount + whereClause, args...).Scan(&total)
+    if req.New == 1 {
+        baseQuery += ` AND NOT EXISTS (
+            SELECT 1 FROM process p 
+            WHERE p.hr_id = ? AND p.user_id = u.id
+        )`
+        args = append(args, userID)
+    }
 
-    // Получаем данные страницы
-    queryData += whereClause + fmt.Sprintf(" ORDER BY %s %s LIMIT ? OFFSET ?", sortCol, sortOrder)
+    queryCount := "SELECT COUNT(*) " + baseQuery
+
+    queryData := fmt.Sprintf(`
+        SELECT u.id, 
+            JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.fio')) as fio, 
+            JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.position')) as position, 
+            JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.sector')) as sector 
+        %s
+    `, baseQuery)
+
+    var total int
+    database.DB.QueryRow(queryCount, args...).Scan(&total)
+
+    queryData += fmt.Sprintf(" ORDER BY %s %s LIMIT ? OFFSET ?", sortCol, sortOrder)
     args = append(args, limit, offset)
 
     rows, err := database.DB.Query(queryData, args...); 
@@ -530,9 +550,9 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         return
     }
 
-    defer rows.Close() // Обязательно закрываем rows, чтобы не утекали соединения
+    defer rows.Close()
 
-    items := make([]models.UserGridItem, 0, limit) // Предварительное выделение памяти
+    items := make([]models.UserGridItem, 0, limit)
 
     for rows.Next() {
         var item models.UserGridItem
@@ -554,7 +574,6 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         items = append(items, item)
     }
 
-    // Проверяем ошибки итерации (например, обрыв соединения во время чтения)
     if err := rows.Err(); err != nil {
         http.Error(w, "Database iteration error", http.StatusInternalServerError)
         return
@@ -568,5 +587,3 @@ func writeResponse(w http.ResponseWriter, status int, response Response) {
     w.WriteHeader(status)
     json.NewEncoder(w).Encode(response)
 }
-
-

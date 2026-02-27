@@ -73,6 +73,7 @@ type UserGridRequest struct {
     SortBy    string `json:"sortBy"`
     SortOrder string `json:"sortOrder"`
     Search    string `json:"search"`
+    New       int    `json:"new"`
 }
 
 type UserGridResponse struct {

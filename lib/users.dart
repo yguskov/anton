@@ -7,11 +7,11 @@ import 'package:provider/provider.dart';
 class userPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
+    // final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
 
     return Scaffold(
       appBar: AntAppBar(
-        title: "Список юзеров для ${authProvider.currentUser?.email}",
+        title: "Список юзеров",
       ),
       body: Theme(
         data: Theme.of(context).copyWith(

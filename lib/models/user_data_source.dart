@@ -46,8 +46,10 @@ class ServerUserDataSource extends DataTableSource {
   // Параметры запроса
   int _currentPage = 1;
   String _searchQuery = '';
+  int _onlyNew = 0;
   String _sortColumn = 'created_at';
   bool _sortAscending = false;
+  String error = '';
 
   ServerUserDataSource(this._api);
 
@@ -59,14 +61,16 @@ class ServerUserDataSource extends DataTableSource {
     String? search,
     String? sortColumn,
     bool? sortAscending,
+    required int onlyNew,
   }) async {
     if (page != null) _currentPage = page;
     if (search != null) _searchQuery = search;
+    _onlyNew = onlyNew;
     if (sortColumn != null) _sortColumn = sortColumn;
     if (sortAscending != null) _sortAscending = sortAscending;
 
     await _fetchData();
-    print('---- after fetch page=${_currentPage} ------ ');
+    print('---- after fetch ${error} ------ ');
     notifyListeners(); // Обновляет таблицу
   }
 
@@ -75,6 +79,7 @@ class ServerUserDataSource extends DataTableSource {
       final response = await _api.getUsers(
         page: _currentPage,
         limit: _rowsPerPage,
+        onlyNew: _onlyNew,
         sortBy: _sortColumn,
         sortOrder: _sortAscending ? 'asc' : 'desc',
         search: _searchQuery,
@@ -83,9 +88,11 @@ class ServerUserDataSource extends DataTableSource {
       // print('---- user responce ------ : ${response}');
       _users = response.data;
       _totalUsers = response.total;
+      error = '';
     } catch (e) {
       _users = [];
-      _totalUsers = 0;
+      _totalUsers = 1;
+      error = e.toString().substring(10);
       print('Error ${e}');
     }
   }
@@ -99,7 +106,7 @@ class ServerUserDataSource extends DataTableSource {
     if (localIndex < 0 || localIndex >= _users.length)
       return DataRow(cells: [
         DataCell(Text('')),
-        DataCell(Text('')),
+        DataCell(Text(localIndex == 0 ? error : '')),
         DataCell(Text('')),
       ]);
 

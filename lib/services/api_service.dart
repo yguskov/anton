@@ -103,6 +103,7 @@ class ApiService {
   Future<UsersResponse> getUsers(
       {int page = 0,
       int limit = 20,
+      int onlyNew = 20,
       String sortBy = 'fio',
       String sortOrder = 'asc',
       String search = ''}) async {
@@ -112,6 +113,7 @@ class ApiService {
       body: json.encode({
         'page': page,
         'limit': limit,
+        'new': onlyNew,
         'sortBy': sortBy,
         'sortOrder': sortOrder,
         'search': search
@@ -129,7 +131,7 @@ class ApiService {
         throw Exception(data['error'] ?? 'Failed to load users');
       }
     } else if (response.statusCode == 401) {
-      throw Exception('Unauthorized - please login again');
+      throw Exception('Unauthorized - please login');
     } else {
       throw Exception('Failed to load users');
     }
@@ -149,7 +151,7 @@ class ApiService {
         throw Exception(data['error'] ?? 'Failed to load profile');
       }
     } else if (response.statusCode == 401) {
-      throw Exception('Unauthorized - please login again');
+      throw Exception('Unauthorized - please login');
     } else {
       throw Exception('Failed to load profile');
     }
