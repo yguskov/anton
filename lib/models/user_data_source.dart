@@ -41,7 +41,7 @@ class ServerUserDataSource extends DataTableSource {
 
   List<UserGridItem> _users = [];
   int _totalUsers = 0;
-  int _rowsPerPage = 2;
+  int _rowsPerPage = 10;
 
   // Параметры запроса
   int _currentPage = 1;

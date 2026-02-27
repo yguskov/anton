@@ -70,7 +70,7 @@ class _UserGridWidgetState extends State<UserGridWidget> {
           child: PaginatedDataTable(
             // header: Text('Сотрудники'),
             source: _dataSource,
-            rowsPerPage: 2,
+            rowsPerPage: 10,
             dataRowMinHeight: 30,
             dataRowMaxHeight: 33,
 
