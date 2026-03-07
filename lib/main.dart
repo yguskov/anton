@@ -89,6 +89,12 @@ class MyApp extends StatelessWidget {
             error: Colors.redAccent,
             onError: Colors.white,
           ),
+          appBarTheme: AppBarTheme(
+            backgroundColor: Color(0xFFF9FAFB),
+            // You can also set other properties
+            elevation: 0, // Removes shadow
+            foregroundColor: Colors.black, // Text/icon color
+          ),
           progressIndicatorTheme: ProgressIndicatorThemeData(
             linearTrackColor: Colors.orange.shade100,
             color: Colors.orange,

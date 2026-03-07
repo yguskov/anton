@@ -111,6 +111,7 @@ class ProviderExamplePage extends StatelessWidget {
                   return Text("Анкета - шаг ${snapshot.data! + 1}");
                 },
               ),
+              elevation: 3,
             ),
             body: WizardEventListener(
               listener: (context, event) {
@@ -142,7 +143,7 @@ class ProviderExamplePage extends StatelessWidget {
                             maxWidth: 1024,
                           ),
                           child: Container(
-                            color: Colors.grey[200],
+                            color: groundColor,
                             padding: const EdgeInsets.all(10),
                             child: _buildWizard(
                               context,
@@ -266,6 +267,7 @@ class ProviderExamplePage extends StatelessWidget {
   Widget _buildProgressIndicator(
     BuildContext context,
   ) {
+    return Container();
     return StreamBuilder<int>(
       stream: context.wizardController.indexStream,
       initialData: context.wizardController.index,
