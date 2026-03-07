@@ -1,7 +1,9 @@
+import 'package:example/services/api_service.dart';
 import 'package:example/src/widgets/dropdown_field.dart';
 import 'package:example/src/widgets/raw_autocomplete_example.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'my_wizard_step.dart';
 import 'step_three_provider.dart';
@@ -13,10 +15,10 @@ class StepThree extends StatefulWidgetStep {
   }) : super(key: key, provider: provider);
 
   @override
-  State<StepThree> createState() => _StepThreeState();
+  State<StepThree> createState() => StepThreeState();
 }
 
-class _StepThreeState extends StateStep<StepThree> {
+class StepThreeState extends StateStep<StepThree> {
   final List<PopupDropdownItem<String>> _salary_update_items = [
     PopupDropdownItem(value: '1', label: 'месяц назад'),
     PopupDropdownItem(value: '3', label: 'квартал назад'),
@@ -39,6 +41,24 @@ class _StepThreeState extends StateStep<StepThree> {
     'Новосибирск',
   ];
 
+  List<String> country_items = [
+    'Москва',
+    'Санкт-Петербург',
+    'Новосибирск',
+  ];
+
+  @override
+  void initState() {
+    ApiService apiService = Provider.of<ApiService>(context, listen: false);
+    Future.microtask(() async {
+      region_items = await apiService.listHint('office_location');
+      country_items = await apiService.listHint('office_country');
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
   @override
   Widget build(
     BuildContext context,
@@ -46,17 +66,15 @@ class _StepThreeState extends StateStep<StepThree> {
     List<Widget> textFields = [
       Text('Текущие зарплаты', style: headerStyle),
       const SizedBox(height: 6),
-      Text('Будем предлагать лучшее время и размер для повышение зарплаты',
-          style: headerStyle2),
+      Text('Будем предлагать лучшее время и размер для повышение зарплаты', style: headerStyle2),
       const SizedBox(height: 16),
-      buildTextFieldWithLabel(
-          'Какая у вас сейчас зарплата?', '15000', 'salary'),
+      buildTextFieldWithLabel('Какая у вас сейчас зарплата?', '15000', 'salary'),
       const SizedBox(height: 16),
-      buildDropdownSection('Когда последний раз вам ее повышали?',
-          'месяц назад', 'last_upgrade', _salary_update_items),
+      buildDropdownSection('Когда последний раз вам ее повышали?', 'месяц назад', 'last_upgrade',
+          _salary_update_items),
       const SizedBox(height: 16),
-      buildDropdownSection('Какой у вас формат работы?', 'месяц назад',
-          'work_from', _work_from_items),
+      buildDropdownSection(
+          'Какой у вас формат работы?', 'Офис|Удаленная|Гибрид', 'work_from', _work_from_items),
       const SizedBox(height: 16),
       TextBar('В каком регионе работаете?'),
       const SizedBox(height: 16),
@@ -64,15 +82,13 @@ class _StepThreeState extends StateStep<StepThree> {
         children: [
           Expanded(
               flex: 6,
-              child: buildTextFieldWithLabel(
-                  null, 'Москва', 'office_location', region_items)),
+              child: buildTextFieldWithLabel(null, 'Москва', 'office_location', region_items)),
           const SizedBox(
             width: 10,
           ),
           Expanded(
             flex: 5,
-            child: buildTextFieldWithLabel(
-                null, 'Россия', 'office_country', ['Россия', 'Казахстан']),
+            child: buildTextFieldWithLabel(null, 'Россия', 'office_country', country_items),
           ),
         ],
       ),

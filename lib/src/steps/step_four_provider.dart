@@ -17,10 +17,17 @@ class StepFourProvider extends MyWizardStep {
           'duty_period': TextEditingController(),
           'duty_attitude': TextEditingController(),
           'duty_type': TextEditingController(),
-        });
+        }) {
+    dutyList = CV.instance.duty;
+  }
 
   updateCV(CV cv) {
     cv.setValue('duty', dutyList);
+    keepInStorage(cv);
+  }
+
+  reloadDataFromCV(CV cv) {
+    dutyList = cv.duty;
   }
 
   final descriptionFocusNode = FocusNode();

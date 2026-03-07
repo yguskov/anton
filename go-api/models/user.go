@@ -66,3 +66,24 @@ type UserResponse struct {
     CreatedAt string   `json:"created_at"`
     Guid      string   `json:"guid"`
 }
+
+type UserGridRequest struct {
+    Page      int    `json:"page"`
+    Limit     int    `json:"limit"`
+    SortBy    string `json:"sortBy"`
+    SortOrder string `json:"sortOrder"`
+    Search    string `json:"search"`
+    New       int    `json:"new"`
+}
+
+type UserGridResponse struct {
+    Data  []UserGridItem `json:"data"`
+    Total int            `json:"total"`
+}
+
+type UserGridItem struct {
+    ID       int    `json:"id"`
+    Fio      string `json:"fio"`
+    Position string `json:"position"`
+    Sector   string `json:"sector"`
+}

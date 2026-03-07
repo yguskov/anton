@@ -17,10 +17,10 @@ class StepSeven extends StatefulWidgetStep {
         super(key: key, provider: provider);
 
   @override
-  State<StepSeven> createState() => _StepSevenState();
+  State<StepSeven> createState() => StepSevenState();
 }
 
-class _StepSevenState extends StateStep<StepSeven> {
+class StepSevenState extends StateStep<StepSeven> {
   List<Map<String, String>> get achieveList => widget.myProvider.achieveList;
   int? _selectedAchieve;
 
@@ -61,12 +61,12 @@ class _StepSevenState extends StateStep<StepSeven> {
           index != null ? achieveList[index!]['result']! : '';
       widget.provider.controllerByName('achieve_when').text =
           index != null ? achieveList[index!]['when']! : '';
-      widget.provider.updateValue(
-          'achieve_name', index != null ? achieveList[index!]['name']! : '');
-      widget.provider.updateValue('achieve_result',
-          index != null ? achieveList[index!]['result']! : '');
-      widget.provider.updateValue(
-          'achieve_when', index != null ? achieveList[index!]['when']! : '');
+      widget.provider
+          .updateValue('achieve_name', index != null ? achieveList[index!]['name']! : '');
+      widget.provider
+          .updateValue('achieve_result', index != null ? achieveList[index!]['result']! : '');
+      widget.provider
+          .updateValue('achieve_when', index != null ? achieveList[index!]['when']! : '');
     });
   }
 
@@ -147,8 +147,7 @@ class _StepSevenState extends StateStep<StepSeven> {
       List<Widget> textFields = [
         Text('Ваши успехи и достижения', style: headerStyle),
         const SizedBox(height: 6),
-        Text(
-            'Напомните реальными примерами какую пользу вы принесли и как повлияли на других',
+        Text('Напомните реальными примерами какую пользу вы принесли и как повлияли на других',
             style: headerStyle2),
         const SizedBox(height: 16),
         buildTextFieldWithLabel('Каких выдающихся успехов вы добились?',
@@ -158,8 +157,8 @@ class _StepSevenState extends StateStep<StepSeven> {
         buildTextFieldWithLabel(' Какую пользу это принесло компании?',
             'Увеличил продуктивность на 15%', 'achieve_result'),
         const SizedBox(height: 16),
-        buildDropdownSection('Когда это произошло?', 'Х месяцев назад',
-            'achieve_when', period_list),
+        buildDropdownSection(
+            'Когда это произошло?', 'Х месяцев назад', 'achieve_when', period_list),
         const SizedBox(height: 12),
         Row(
           children: [
@@ -169,8 +168,7 @@ class _StepSevenState extends StateStep<StepSeven> {
                 child: const Text("Удалить"),
                 onPressed: removeEnabled ? _remove : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      removeEnabled ? Color(0xFFF76D12) : Colors.black87,
+                  backgroundColor: removeEnabled ? Color(0xFFF76D12) : Colors.black87,
                   foregroundColor: Colors.white,
                 ),
               ),
@@ -184,8 +182,7 @@ class _StepSevenState extends StateStep<StepSeven> {
                 child: const Text("Сохранить"),
                 onPressed: saveEnabled ? _save : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      saveEnabled ? Color(0xFFF76D12) : Colors.black87,
+                  backgroundColor: saveEnabled ? Color(0xFFF76D12) : Colors.black87,
                   foregroundColor: Colors.white,
                 ),
               ),
@@ -204,40 +201,18 @@ class _StepSevenState extends StateStep<StepSeven> {
   }
 
   _buildAchieveList(BoxConstraints constraints) {
-    double boxWidth;
-    print(constraints);
-    if (constraints.maxWidth < 600) {
-      boxWidth = constraints.maxWidth;
-    } else {
-      boxWidth = constraints.maxWidth / 2 - 5;
-    }
+    return listCard(constraints, achieveList, _onSelect, _cardWidget);
+  }
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => _onSelect(null),
-      child: Wrap(
-        spacing: 10,
-        runSpacing: 10,
-        children: List.generate(achieveList.length, (index) {
-          return MouseRegion(
-            cursor: MaterialStateMouseCursor.clickable,
-            child: GestureDetector(
-              onTap: () => _onSelect(index),
-              child: CustomSquareCard(
-                width: boxWidth,
-                height: 60,
-                title:
-                    '${achieveList.elementAt(index)['name'] ?? ''}\n ${achieveList.elementAt(index)['result'] ?? ''} ',
-                leftText: '',
-                // leftColor: resultColor(achieveList.elementAt(index)['result']!),
-                rightText: get_period_by_value(achieveList[index]['when']),
-                rightColor: Colors.green.shade800,
-                selected: _selectedAchieve == index,
-              ),
-            ),
-          );
-        }),
-      ),
+  Widget _cardWidget(item, index) {
+    return CustomSquareCard(
+      title: item['name'] ?? '',
+      bottomText: (item['result']?.trim().isNotEmpty ?? false) ? 'Польза: ${item['result']}' : null,
+      leftText: '',
+      // leftColor: resultColor(item['result']!),
+      rightText: get_period_by_value(item['when']),
+      rightColor: Colors.green.shade800,
+      selected: _selectedAchieve == index,
     );
   }
 

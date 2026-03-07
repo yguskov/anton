@@ -12,6 +12,8 @@ import (
     "go-api/models"
     "golang.org/x/crypto/bcrypt"
     "github.com/rs/xid"
+    "fmt"
+    // "strconv"
 )
 
 type AuthResponse struct {
@@ -76,6 +78,9 @@ func RegisterHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         http.Error(w, "Error retrieving user", http.StatusInternalServerError)
         return
     }
+
+    // save hints
+    saveHints(database.DB, user.UserData);
 
     // Генерируем JWT токен
     token, err := middleware.GenerateJWTToken(user.ID, user.Email, cfg)
@@ -173,7 +178,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
     // json.NewEncoder(w).Encode(response)
 }
 
-func GetUsersHandler(w http.ResponseWriter, r *http.Request) {
+func GetUsersHandlerOld(w http.ResponseWriter, r *http.Request) {
     rows, err := database.DB.Query("SELECT id, email, user_data, created_at FROM user")
     if err != nil {
         http.Error(w, "Error fetching users", http.StatusInternalServerError)
@@ -367,6 +372,214 @@ func PasswordHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         Message: "Change password successful",
         Data:    authResponse,
     })
+}
+
+func SaveCVHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+    // Извлекаем из контекста
+    userID, ok := middleware.GetUserIDFromContext(r.Context())
+    if !ok {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error when define user",
+        })
+        return
+    }
+
+    // проверяем есть ли такой юзер
+    var exists bool
+    err := database.DB.QueryRow(
+        "SELECT EXISTS(SELECT 1 FROM user WHERE id = ?)",
+        userID,
+    ).Scan(&exists)
+
+    if err != nil {
+        log.Printf("Check user error: %v", err)
+        http.Error(w, "Database error", http.StatusInternalServerError)
+        return
+    }
+
+    if !exists {
+        http.Error(w, "User not found", http.StatusNotFound)
+        return
+    }    
+
+    var req models.UserData
+    err = json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+    // Меняем CV
+    _, err = database.DB.Exec(
+        "UPDATE user SET user_data = ? WHERE id = ?",
+        req, userID, 
+    )
+
+    if err != nil {
+        // Обработка ошибки SQL (например, сбой подключения, синтаксис и т.д.)
+        http.Error(w, "Database error", http.StatusUnauthorized)
+        return
+    }
+
+
+    _, err = saveHints(database.DB, req)
+    if err != nil {
+        log.Printf("Error saving user CV to hint: %v", err)
+        http.Error(w, "Failed to save hints", http.StatusInternalServerError)
+        return
+    }
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "CV data saved",
+    })
+
+/*     authResponse := AuthResponse{
+        Token: token,
+    }
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "Change password successful",
+        Data:    authResponse,
+    }) */
+}
+
+func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+    userID, ok := middleware.GetUserIDFromContext(r.Context())
+    if !ok {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error when define admin",
+        })
+        return
+    }
+
+    var exists bool
+    err := database.DB.QueryRow(
+        "SELECT EXISTS(SELECT 1 FROM user WHERE id = ? and is_hr = 1)",
+        userID,
+    ).Scan(&exists)
+
+    if err != nil {
+        log.Printf("Check admin error: %v", err)
+        http.Error(w, "Database error", http.StatusInternalServerError)
+        return
+    }
+
+    if !exists {
+        http.Error(w, "Admin not found", http.StatusNotFound)
+        return
+    }
+
+    var req models.UserGridRequest
+    err = json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+    page := req.Page
+    if page < 1 { page = 1 }
+    limit := req.Limit
+    if limit < 1 { limit = 10 }
+
+    sortBy := req.SortBy
+    sortOrder := req.SortOrder
+    search := req.Search
+
+    allowedSorts := map[string]bool{
+        "fio_virtual": true, 
+        "position_virtual": true, 
+        "sector_virtual": true, 
+        "created_at": true,
+    }
+    sortCol := "created_at"
+    if allowedSorts[sortBy] { 
+        sortCol = sortBy 
+    }
+    if sortOrder != "desc" { 
+        sortOrder = "asc" 
+    }
+
+    offset := (page - 1) * limit
+
+    baseQuery := `
+        FROM user u
+        WHERE 1 = 1
+    `
+
+    args := []interface{}{}
+
+    if search != "" {
+        baseQuery += " AND (u.fio_virtual LIKE ? OR u.position_virtual LIKE ? OR u.sector_virtual LIKE ?)"
+        searchParam := "%" + search + "%"
+        args = append(args, searchParam, searchParam, searchParam)
+    }
+
+    if req.New == 1 {
+        baseQuery += ` AND NOT EXISTS (
+            SELECT 1 FROM process p 
+            WHERE p.hr_id = ? AND p.user_id = u.id
+        )`
+        args = append(args, userID)
+    }
+
+    queryCount := "SELECT COUNT(*) " + baseQuery
+
+    queryData := fmt.Sprintf(`
+        SELECT u.id, 
+            JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.fio')) as fio, 
+            JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.position')) as position, 
+            JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.sector')) as sector 
+        %s
+    `, baseQuery)
+
+    var total int
+    database.DB.QueryRow(queryCount, args...).Scan(&total)
+
+    queryData += fmt.Sprintf(" ORDER BY %s %s LIMIT ? OFFSET ?", sortCol, sortOrder)
+    args = append(args, limit, offset)
+
+    rows, err := database.DB.Query(queryData, args...); 
+    
+    if err != nil {
+        log.Printf(" --- error %v in sql: %s", err, queryData)
+        http.Error(w, "Database user selection error", http.StatusInternalServerError)
+        return
+    }
+
+    defer rows.Close()
+
+    items := make([]models.UserGridItem, 0, limit)
+
+    for rows.Next() {
+        var item models.UserGridItem
+        var fio, position, sector sql.NullString // Используем NullString для безопасной работы с NULL из JSON
+
+        // Сканируем колонки в том же порядке, что и в SELECT
+        // id, fio, position, sector
+        err := rows.Scan(&item.ID, &fio, &position, &sector)
+        if err != nil {
+            log.Printf("Error scanning row: %v", err)
+            continue // Пропускаем битую строку или возвращаем ошибку, в зависимости от требований
+        }
+
+        // Обрабатываем NULL значения (если ключа в JSON нет, MySQL вернет NULL)
+        item.Fio = fio.String
+        item.Position = position.String
+        item.Sector = sector.String
+
+        items = append(items, item)
+    }
+
+    if err := rows.Err(); err != nil {
+        http.Error(w, "Database iteration error", http.StatusInternalServerError)
+        return
+    }
+
+    json.NewEncoder(w).Encode(models.UserGridResponse{Data: items, Total: total})
 }
 
 func writeResponse(w http.ResponseWriter, status int, response Response) {

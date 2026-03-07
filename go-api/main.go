@@ -16,6 +16,8 @@ import (
     
     "github.com/gorilla/mux"
     "github.com/rs/cors"
+
+
 )
 
 func main() {
@@ -60,16 +62,22 @@ func main() {
     }).Methods("POST")
 
 	public.HandleFunc("/health", healthHandler).Methods("GET")
+	public.HandleFunc("/hint", hintHandler).Methods("GET")
 
 
     // Защищенные routes - требуют аутентификации
     protected := router.PathPrefix("/api").Subrouter()
     protected.Use(middleware.AuthMiddleware(cfg))
-    protected.HandleFunc("/users", handlers.GetUsersHandler).Methods("GET")
     protected.HandleFunc("/profile", handlers.GetProfileHandler).Methods("GET")	
     protected.HandleFunc("/password", func(w http.ResponseWriter, r *http.Request) {
         handlers.PasswordHandler(w, r, cfg)
     }).Methods("POST")	
+    protected.HandleFunc("/save", func(w http.ResponseWriter, r *http.Request) {
+        handlers.SaveCVHandler(w, r, cfg)
+    }).Methods("POST")	
+    protected.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
+        handlers.GetUsersHandler(w, r, cfg)
+    }).Methods("POST")
     
     // Настраиваем CORS для Flutter Web
     c := cors.New(cors.Options{
@@ -122,6 +130,54 @@ func healthHandler(w http.ResponseWriter, r *http.Request) {
         "status":  "ok",
         "message": "Server is healthy",
     })
+}
+
+func hintHandler(w http.ResponseWriter, r *http.Request) {
+    // Проверяем соединение с базой данных
+    if err := database.DB.Ping(); err != nil {
+        http.Error(w, `{"status":"error","message":"Database connection failed"}`, http.StatusServiceUnavailable)
+        return
+    }
+
+    // Получаем все query параметры как map
+    query := r.URL.Query()
+    
+    // Получить конкретный параметр
+    category := query.Get("category")
+
+    log.Printf("category = %s", category)
+/*     var req map[string]interface{}
+    if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+        http.Error(w, `{"status":"error","message":"Invalid request body"}`, http.StatusServiceUnavailable)
+        return
+    }
+ */
+    rows, err := database.DB.Query(
+        "SELECT name FROM hint WHERE category = ?",
+        category,
+    )
+    if err != nil {
+        http.Error(w, "query failed", http.StatusInternalServerError)            
+    }
+    defer rows.Close()
+    
+    var hints []string
+   
+    for rows.Next() {
+        var name string
+        if err := rows.Scan(&name); err != nil {
+            http.Error(w, "scan failed", http.StatusInternalServerError)            
+        }
+        hints = append(hints, name)
+    }
+    
+    if err := rows.Err(); err != nil {
+        http.Error(w, "rows iteration error", http.StatusInternalServerError)
+    }
+
+    w.Header().Set("Content-Type", "application/json; charset=utf-8")
+    w.WriteHeader(http.StatusOK)
+    json.NewEncoder(w).Encode(hints)
 }
 
 func loggingMiddleware(next http.Handler) http.Handler {

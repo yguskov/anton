@@ -20,11 +20,19 @@ class StepSixProvider extends MyWizardStep {
           'know_when': TextEditingController(),
           'know_result': TextEditingController(),
           'want_tip': TextEditingController(),
-        });
+        }) {
+    knowList = CV.instance.know;
+  }
 
   updateCV(CV cv) {
     cv.setValue('know', knowList);
     cv.setValue('want_tip', getValue('want_tip'));
+    keepInStorage(cv);
+  }
+
+  reloadDataFromCV(CV cv) {
+    knowList = cv.know;
+    updateValue('want_tip', cv.getValue('want_tip'));
   }
 
   final descriptionFocusNode = FocusNode();

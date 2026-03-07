@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:example/models/cv.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
+import 'package:example/src/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -38,6 +38,13 @@ class StepOneProvider extends MyWizardStep {
     if (descriptionFocusNode.hasFocus) {
       descriptionFocusNode.unfocus();
     }
+  }
+
+  bool verifyData() {
+    if (getValue('fio') == '') addError('fio');
+    if (!checkEmail(getValue('boss_email'))) addError('boss_email');
+
+    return !hasAnyError;
   }
 
   void dispose() {

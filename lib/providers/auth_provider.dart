@@ -22,8 +22,7 @@ class AuthProvider with ChangeNotifier {
 
   CV? get userCV => _userCV;
 
-  Future<bool> register(
-      String email, String password, Map<String, dynamic> userData) async {
+  Future<bool> register(String email, String password, Map<String, dynamic> userData) async {
     _isLoading = true;
     _error = null;
     notifyListeners();
@@ -110,8 +109,27 @@ class AuthProvider with ChangeNotifier {
     notifyListeners();
 
     try {
-      dynamic response = await _apiService
-          .changePassword({'old': oldPassword, 'new': newPassword});
+      dynamic response = await _apiService.changePassword({'old': oldPassword, 'new': newPassword});
+      print(response);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      print(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> saveCV(Map<String, dynamic> userData) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      dynamic response = await _apiService.save(userData);
       print(response);
       _isLoading = false;
       notifyListeners();

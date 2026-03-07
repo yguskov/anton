@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:html';
+import 'package:example/models/user_data_source.dart';
 import 'package:http/http.dart' as http;
 import '../models/user.dart';
 
@@ -15,8 +16,7 @@ class ApiService {
           'API_URL',
           defaultValue: 'http://localhost:8993/api',
         ) {
-    if (window.localStorage['token'] != null)
-      _token = window.localStorage['token']!;
+    if (window.localStorage['token'] != null) _token = window.localStorage['token']!;
   }
 
   // Сохраняем токен
@@ -100,22 +100,38 @@ class ApiService {
     clearToken();
   }
 
-  Future<List<User>> getUsers() async {
-    final response = await client.get(
+  Future<UsersResponse> getUsers(
+      {int page = 0,
+      int limit = 20,
+      int onlyNew = 20,
+      String sortBy = 'fio',
+      String sortOrder = 'asc',
+      String search = ''}) async {
+    final response = await client.post(
       Uri.parse('$baseUrl/users'),
       headers: _getHeaders(),
+      body: json.encode({
+        'page': page,
+        'limit': limit,
+        'new': onlyNew,
+        'sortBy': sortBy,
+        'sortOrder': sortOrder,
+        'search': search
+      }),
     );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
+      return UsersResponse.fromJson(data);
       if (data['success'] == true) {
-        final List<dynamic> usersJson = data['data'];
-        return usersJson.map((json) => User.fromJson(json)).toList();
+        return data;
+        // final List<dynamic> usersJson = data['data'];
+        // return usersJson.map((json) => User.fromJson(json)).toList();
       } else {
         throw Exception(data['error'] ?? 'Failed to load users');
       }
     } else if (response.statusCode == 401) {
-      throw Exception('Unauthorized - please login again');
+      throw Exception('Unauthorized - please login');
     } else {
       throw Exception('Failed to load users');
     }
@@ -135,14 +151,13 @@ class ApiService {
         throw Exception(data['error'] ?? 'Failed to load profile');
       }
     } else if (response.statusCode == 401) {
-      throw Exception('Unauthorized - please login again');
+      throw Exception('Unauthorized - please login');
     } else {
       throw Exception('Failed to load profile');
     }
   }
 
-  Future<Map<String, dynamic>> changePassword(
-      Map<String, dynamic> request) async {
+  Future<Map<String, dynamic>> changePassword(Map<String, dynamic> request) async {
     final response = await client.post(
       Uri.parse('$baseUrl/password'),
       headers: _getHeaders(),
@@ -164,6 +179,29 @@ class ApiService {
     }
   }
 
+  // Save CV Data
+  Future<Map<String, dynamic>> save(Map<String, dynamic> userData) async {
+    final response = await client.post(
+      Uri.parse('$baseUrl/save'),
+      headers: _getHeaders(),
+      body: json.encode(userData),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        return {
+          'success': true,
+          'message': data['message'] ?? 'Ok',
+        };
+      } else {
+        throw Exception(data['error'] ?? 'Ошибка сохранения');
+      }
+    } else {
+      throw Exception('Cервер вернул ошибку: ${response.body}');
+    }
+  }
+
   Future<Map<String, dynamic>> getUserCV(String id) async {
     final response = await client.post(
       Uri.parse('$baseUrl/cv'),
@@ -180,6 +218,51 @@ class ApiService {
       }
     } else {
       throw Exception('Failed to change password: ${response.body}');
+    }
+  }
+
+  Future<List<String>> listHint(String category) async {
+    // Разбираем базовый URL
+    final baseUri = Uri.parse(baseUrl);
+
+    // Создаем новый URL
+    final url = Uri(
+      scheme: baseUri.scheme, // 'http'
+      host: baseUri.host, // 'localhost'
+      port: baseUri.port, // 8993
+      path: '${baseUri.path}/hint', // '/api/hints'
+      queryParameters: {'category': category},
+    );
+
+/* 
+    final url = Uri.https(
+      baseUrl,
+      '/hints',
+      {
+        'category': category,
+        // 'limit': '10',
+        // 'sort': 'desc',
+      },
+    );
+ */
+    final response = await client.get(
+      url,
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> data = json.decode(response.body);
+
+      // print('----body-------${response.body}----------');
+      // print('----data-------${data}----------');
+
+      return data.map((item) => item.toString()).toList();
+
+      // final data = json.decode(response.body);
+      // return data as List<String>;
+      // final List<dynamic> json = data as List<String>;
+    } else {
+      return List<String>.from([]);
     }
   }
 }

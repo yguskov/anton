@@ -17,25 +17,26 @@ class StepSix extends StatefulWidgetStep {
         super(key: key, provider: provider);
 
   @override
-  State<StepSix> createState() => _StepSixState();
+  State<StepSix> createState() => StepSixState();
 }
 
-class _StepSixState extends StateStep<StepSix> {
+class StepSixState extends StateStep<StepSix> {
   List<Map<String, String>> get knowList => widget.myProvider.knowList;
   int? _selectedKnow;
 // List<PopupDropdownItem<String>>
   List<PopupDropdownItem<String>> get skill_list {
-    // StepFourProvider fourProvider = widget.myProvider.wizardController
-    //     .stepControllers[3].step as StepFourProvider;
-
     StepFiveProvider fiveProvider = providerOfStep(4) as StepFiveProvider;
-    return fiveProvider.skillList
-        .map((item) =>
-            PopupDropdownItem(value: item['name']!, label: item['name']!))
+
+    List<PopupDropdownItem<String>> optionList;
+
+    optionList = fiveProvider.skillList
+        .map((item) => PopupDropdownItem(value: item['name']!, label: item['name']!))
         // .where((name) => name != null)
         .cast<PopupDropdownItem<String>>()
         .toList()
       ..sort((a, b) => a.value.compareTo(b.value));
+    optionList.add(PopupDropdownItem(value: 'не знаю', label: 'Не знаю'));
+    return optionList;
   }
 
   List<PopupDropdownItem<String>> get period_list => [
@@ -51,7 +52,6 @@ class _StepSixState extends StateStep<StepSix> {
         print('${item.value} == $val');
         return item.value == val;
       }));
-      print('------>|$val|');
       return period_list.singleWhere((item) => item.value == val).label;
     } catch (e) {
       return '-';
@@ -80,14 +80,10 @@ class _StepSixState extends StateStep<StepSix> {
           index != null ? knowList[index!]['when']! : '';
       widget.provider.controllerByName('know_result').text =
           index != null ? knowList[index!]['result']! : '';
-      widget.provider.updateValue(
-          'know_name', index != null ? knowList[index!]['name']! : '');
-      widget.provider.updateValue(
-          'know_skill', index != null ? knowList[index!]['skill']! : '');
-      widget.provider.updateValue(
-          'know_when', index != null ? knowList[index!]['when']! : '');
-      widget.provider.updateValue(
-          'know_result', index != null ? knowList[index!]['result']! : '');
+      widget.provider.updateValue('know_name', index != null ? knowList[index!]['name']! : '');
+      widget.provider.updateValue('know_skill', index != null ? knowList[index!]['skill']! : '');
+      widget.provider.updateValue('know_when', index != null ? knowList[index!]['when']! : '');
+      widget.provider.updateValue('know_result', index != null ? knowList[index!]['result']! : '');
     });
   }
 
@@ -177,17 +173,13 @@ class _StepSixState extends StateStep<StepSix> {
             'Покажите, что в вас стоит вкладываться ресурсами ради вашего роста и повышения эффективности',
             style: headerStyle2),
         const SizedBox(height: 16),
-        buildTextFieldWithLabel(
-            'Укажите какое новое знание вы получили',
-            'Прочитал книгу “Программирование для чайников”',
-            'know_name',
-            knows),
+        buildTextFieldWithLabel('Укажите какое новое знание вы получили',
+            'Прочитал книгу “Программирование для чайников”', 'know_name', knows),
         const SizedBox(height: 16),
-        buildDropdownSection('Какой навык это развивает?',
-            'Выбрать навык из имеющихся', 'know_skill', skill_list),
+        buildDropdownSection(
+            'Какой навык это развивает?', 'Выбрать навык из имеющихся', 'know_skill', skill_list),
         const SizedBox(height: 16),
-        buildDropdownSection('Когда вы это изучали?', 'Х месяцев назад',
-            'know_when', period_list),
+        buildDropdownSection('Когда вы это изучали?', 'Х месяцев назад', 'know_when', period_list),
         const SizedBox(height: 16),
         // result
         buildTextFieldWithLabel('Что принесло вам новое знание?',
@@ -201,9 +193,8 @@ class _StepSixState extends StateStep<StepSix> {
                 child: const Text("Удалить"),
                 onPressed: removeEnabled ? _remove : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: removeEnabled
-                      ? Color(0xFFF76D12)
-                      : Colors.black87, // Основной цвет фона
+                  backgroundColor:
+                      removeEnabled ? Color(0xFFF76D12) : Colors.black87, // Основной цвет фона
                   foregroundColor: Colors.white, // Цвет текста и иконки
                 ),
               ),
@@ -217,9 +208,8 @@ class _StepSixState extends StateStep<StepSix> {
                 child: const Text("Сохранить"),
                 onPressed: saveEnabled ? _save : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: saveEnabled
-                      ? Color(0xFFF76D12)
-                      : Colors.black87, // Основной цвет фона
+                  backgroundColor:
+                      saveEnabled ? Color(0xFFF76D12) : Colors.black87, // Основной цвет фона
                   foregroundColor: Colors.white, // Цвет текста и иконки
                 ),
               ),
@@ -242,40 +232,19 @@ class _StepSixState extends StateStep<StepSix> {
   }
 
   _buildKnowList(BoxConstraints constraints) {
-    double boxWidth;
-    print(constraints);
-    if (constraints.maxWidth < 600) {
-      boxWidth = constraints.maxWidth;
-    } else {
-      boxWidth = constraints.maxWidth / 2 - 5;
-    }
+    return listCard(constraints, knowList, _onSelect, _cardWidget);
+  }
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => _onSelect(null),
-      child: Wrap(
-        spacing: 10, // горизонтальный отступ между блоками
-        runSpacing: 10, // вертикальный отступ между строками
-        children: List.generate(knowList.length, (index) {
-          return MouseRegion(
-            cursor: MaterialStateMouseCursor.clickable,
-            child: GestureDetector(
-              onTap: () => _onSelect(index),
-              child: CustomSquareCard(
-                width: boxWidth,
-                height: 60,
-                title:
-                    '${knowList.elementAt(index)['name'] ?? ''} Навык: ${knowList.elementAt(index)['skill'] ?? ''}\n${knowList.elementAt(index)['result'] ?? ''} ',
-                leftText: '',
-                // leftColor: resultColor(knowList.elementAt(index)['result']!),
-                rightText: get_period_by_value(knowList[index]['when']),
-                rightColor: Colors.green.shade800,
-                selected: _selectedKnow == index,
-              ),
-            ),
-          );
-        }),
-      ),
+  Widget _cardWidget(item, index) {
+    return CustomSquareCard(
+      title: '${item['name'] ?? ''} (Навык: ${item['skill'] ?? ''})',
+      bottomText:
+          (item['result']?.trim().isNotEmpty ?? false) ? 'Результат: ${item['result']}' : null,
+      leftText: '',
+      // leftColor: resultColor(item['result']!),
+      rightText: get_period_by_value(item['when']),
+      rightColor: Colors.green.shade800,
+      selected: _selectedKnow == index,
     );
   }
 

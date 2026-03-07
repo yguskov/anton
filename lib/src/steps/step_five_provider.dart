@@ -11,7 +11,7 @@ class StepFiveProvider extends MyWizardStep {
         super({
           'skill_name': BehaviorSubject<String>.seeded(''),
           'skill_level': BehaviorSubject<String>.seeded(''),
-          'skill_type': BehaviorSubject<String>.seeded('Не знаю'),
+          'skill_type': BehaviorSubject<String>.seeded(''),
           'skill_power': BehaviorSubject<String>.seeded(''),
           'duty_name': BehaviorSubject<String>.seeded(''),
         }, {
@@ -20,10 +20,17 @@ class StepFiveProvider extends MyWizardStep {
           'skill_type': TextEditingController(),
           'skill_power': TextEditingController(),
           'duty_name': TextEditingController(),
-        });
+        }) {
+    skillList = CV.instance.skill;
+  }
 
   updateCV(CV cv) {
     cv.setValue('skill', skillList);
+    super.keepInStorage(cv);
+  }
+
+  reloadDataFromCV(CV cv) {
+    skillList = cv.skill;
   }
 
   final descriptionFocusNode = FocusNode();

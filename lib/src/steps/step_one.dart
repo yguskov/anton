@@ -1,5 +1,7 @@
+import 'package:example/services/api_service.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../example.dart';
 import 'my_wizard_step.dart';
@@ -11,11 +13,11 @@ class StepOne extends StatefulWidgetStep {
   }) : super(key: key, provider: provider);
 
   @override
-  StateStep<StepOne> createState() => _StepOneState();
+  StateStep<StepOne> createState() => StepOneState();
 }
 
-class _StepOneState extends StateStep<StepOne> {
-  static const List<String> _positionOptions = [
+class StepOneState extends StateStep<StepOne> {
+  static List<String> _positionOptions = [
     'Аналитик',
     'Джуниор фронтэнд программист',
     'Менеджер по работе с клиентами',
@@ -23,7 +25,7 @@ class _StepOneState extends StateStep<StepOne> {
     'Строитель-монтажник',
   ];
 
-  static const List<String> _sectorOptions = [
+  static List<String> _sectorOptions = [
     'ИТ',
     'Консталтинг',
     'Торговля',
@@ -33,19 +35,31 @@ class _StepOneState extends StateStep<StepOne> {
   ];
 
   @override
+  void initState() {
+    ApiService apiService = Provider.of<ApiService>(context, listen: false);
+    Future.microtask(() async {
+      _positionOptions = await apiService.listHint('position');
+      _sectorOptions = await apiService.listHint('sector');
+      setState(() {});
+    });
+
+    super.initState();
+  }
+
+  @override
   Widget build(
     BuildContext context,
   ) {
+    print('---- Rebuild positions');
     List<Widget> textFields = [
       Text('Представьтесь', style: headerStyle),
       const SizedBox(height: 20),
       buildTextFieldWithLabel('Ваши Фамилия и Имя', 'Михайлов Петр', 'fio'),
       const SizedBox(height: 16),
-      buildTextFieldWithLabel('Какая у вас [должность/профессия]?',
-          'Джуниор фронтэнд программист', 'position', _positionOptions),
+      buildTextFieldWithLabel('Какая у вас [должность/профессия]?', 'Джуниор фронтэнд программист',
+          'position', _positionOptions),
       const SizedBox(height: 16),
-      buildTextFieldWithLabel(
-          'В какой [индустрии] работаете?', 'ИТ', 'sector', _sectorOptions),
+      buildTextFieldWithLabel('В какой [индустрии] работаете?', 'ИТ', 'sector', _sectorOptions),
       const SizedBox(height: 16),
       TextBar('Как вы обращаетесь к начальнику? Какая у него почта?'),
       const SizedBox(height: 5),

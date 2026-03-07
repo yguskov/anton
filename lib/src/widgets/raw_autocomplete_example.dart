@@ -10,6 +10,7 @@ class RawAutocompleteExample extends StatefulWidget {
   final String fieldName;
   final List<String>? options;
   final MyWizardStep provider;
+  final bool hasError;
 
   const RawAutocompleteExample({
     super.key,
@@ -20,6 +21,7 @@ class RawAutocompleteExample extends StatefulWidget {
     // TextField parameters
     required this.provider,
     this.focusNode,
+    required this.hasError,
   });
 
   // TextEditingController get controller => provider.controllerByName(fieldName);
@@ -43,7 +45,6 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
     super.initState();
     _controller = widget.provider.controllerByName(widget.fieldName);
     _controller.addListener(_onTextChanged);
-    _options = widget.options ?? [];
     onValueChanged = (_) {
       print(_controller.text);
       widget.provider.updateValue(widget.fieldName, _controller.text);
@@ -66,8 +67,8 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
       });
     } else {
       setState(() {
-        _currentOptions = _options.where(
-            (option) => option.toLowerCase().contains(text.toLowerCase()));
+        _currentOptions =
+            _options.where((option) => option.toLowerCase().contains(text.toLowerCase()));
         _isOptionsVisible = _currentOptions.isNotEmpty;
       });
     }
@@ -93,6 +94,8 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
+
+    _options = widget.options ?? []; // for future ajax loading
 
     if (widget.label != null) {
       children.add(Container(
@@ -127,8 +130,8 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
       onSelected: (String selection) {
         _handleOptionSelected(selection);
       },
-      optionsViewBuilder: (BuildContext context,
-          AutocompleteOnSelected<String> onSelected, Iterable<String> options) {
+      optionsViewBuilder: (BuildContext context, AutocompleteOnSelected<String> onSelected,
+          Iterable<String> options) {
         if (!_isOptionsVisible || options.isEmpty) {
           return const SizedBox.shrink();
         }
@@ -156,10 +159,8 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
           ),
         );
       },
-      fieldViewBuilder: (BuildContext context,
-          TextEditingController textEditingController,
-          FocusNode focusNode,
-          VoidCallback onFieldSubmitted) {
+      fieldViewBuilder: (BuildContext context, TextEditingController textEditingController,
+          FocusNode focusNode, VoidCallback onFieldSubmitted) {
         return TextField(
           controller: textEditingController,
           focusNode: focusNode,
@@ -169,13 +170,21 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
             filled: true,
             fillColor: Colors.grey[200],
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+              borderSide: BorderSide(
+                  color: widget.provider.hasError(widget.fieldName)
+                      ? Colors.red.shade600
+                      : Colors.grey[600]!,
+                  width: 1.5), // @todo change color when no error
               borderRadius: const BorderRadius.all(
                 Radius.circular(4),
               ),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+              borderSide: BorderSide(
+                  color: widget.provider.hasError(widget.fieldName)
+                      ? Colors.red.shade600
+                      : Colors.grey[800]!,
+                  width: 2.0),
               borderRadius: const BorderRadius.only(
                 bottomLeft: Radius.circular(6),
                 bottomRight: Radius.circular(6),

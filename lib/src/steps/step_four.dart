@@ -1,8 +1,10 @@
 import 'dart:js_interop';
 
+import 'package:example/services/api_service.dart';
 import 'package:example/src/steps/step_four_provider.dart';
 import 'package:example/src/widgets/dropdown_field.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/custom_card.dart';
 import 'my_wizard_step.dart';
@@ -17,12 +19,14 @@ class StepFour extends StatefulWidgetStep {
         super(key: key, provider: provider);
 
   @override
-  State<StepFour> createState() => _StepFourState();
+  State<StepFour> createState() => StepFourState();
 }
 
-class _StepFourState extends StateStep<StepFour> {
+class StepFourState extends StateStep<StepFour> {
   List<Map<String, String>> get dutyList => widget.myProvider.dutyList;
   int? _selectedDuty;
+
+  List<String> _duty_options = [];
 
   @override
   void initState() {
@@ -31,6 +35,12 @@ class _StepFourState extends StateStep<StepFour> {
     widget.provider.controllerByName('duty_name').addListener(_rebuild);
     widget.provider.controllerByName('duty_period').addListener(_rebuild);
     widget.provider.controllerByName('duty_attitude').addListener(_rebuild);
+
+    ApiService apiService = Provider.of<ApiService>(context, listen: false);
+    Future.microtask(() async {
+      _duty_options = await apiService.listHint('duty');
+      setState(() {});
+    });
   }
 
   // select paticular duty
@@ -45,14 +55,11 @@ class _StepFourState extends StateStep<StepFour> {
           index != null ? dutyList[index!]['attitude']! : '';
       widget.provider.controllerByName('duty_type').text =
           index != null ? dutyList[index!]['type']! : '';
-      widget.provider.updateValue(
-          'duty_name', index != null ? dutyList[index!]['name']! : '');
-      widget.provider.updateValue(
-          'duty_period', index != null ? dutyList[index!]['period']! : '');
-      widget.provider.updateValue(
-          'duty_attitude', index != null ? dutyList[index!]['attitude']! : '');
-      widget.provider.updateValue(
-          'duty_type', index != null ? dutyList[index!]['type']! : '');
+      widget.provider.updateValue('duty_name', index != null ? dutyList[index!]['name']! : '');
+      widget.provider.updateValue('duty_period', index != null ? dutyList[index!]['period']! : '');
+      widget.provider
+          .updateValue('duty_attitude', index != null ? dutyList[index!]['attitude']! : '');
+      widget.provider.updateValue('duty_type', index != null ? dutyList[index!]['type']! : '');
     });
   }
 
@@ -109,16 +116,10 @@ class _StepFourState extends StateStep<StepFour> {
     });
   }
 
-  List<String>? get duites =>
-      ['Чистка конюшен', 'Разработка приложений', 'Тестирование'];
+  List<String>? get duties => _duty_options;
 
-  List<String>? get periods => [
-        'каждый день',
-        '2 раза в неделю',
-        'раз в неделю',
-        'раз в две недели',
-        'раз в месяц'
-      ];
+  List<String>? get periods =>
+      ['каждый день', '2 раза в неделю', 'раз в неделю', 'раз в две недели', 'раз в месяц'];
 
   List<PopupDropdownItem<String>> get attitudes => [
         PopupDropdownItem(value: '1', label: 'Предпочитаю выполнять'),
@@ -149,6 +150,11 @@ class _StepFourState extends StateStep<StepFour> {
     );
   }
 
+  String? ucfirst(String? str) {
+    if (str == null) return null;
+    return str[0].toUpperCase() + str.substring(1);
+  }
+
   @override
   Widget build(
     BuildContext context,
@@ -162,23 +168,15 @@ class _StepFourState extends StateStep<StepFour> {
                 'Какую новую ответственность вы готовы на себя взять для повышение зарплаты? ',
             style: headerStyle2),
         const SizedBox(height: 16),
-        buildTextFieldWithLabel(
-            'Мои обязанности', 'Чистка конюшен', 'duty_name', duites),
+        buildTextFieldWithLabel('Мои обязанности', 'Чистка конюшен', 'duty_name', duties),
         const SizedBox(height: 16),
-        buildTextFieldWithLabel(
-            'Как часто?', '2 раза в неделю', 'duty_period', periods),
+        buildTextFieldWithLabel('Как часто?', '2 раза в неделю', 'duty_period', periods),
         const SizedBox(height: 16),
-        buildDropdownSection(
-            'Как вы относитесь к этой обязанности?',
-            'Нравится выполнять|Не нравится выполнять|Нейтрально',
-            'duty_attitude',
-            attitudes),
+        buildDropdownSection('Как вы относитесь к этой обязанности?',
+            'Нравится выполнять|Не нравится выполнять|Нейтрально', 'duty_attitude', attitudes),
         const SizedBox(height: 16),
-        buildDropdownSection(
-            'Эта обязанность является',
-            'Основной|Дополнительной|Новой(Готов взять на себя)',
-            'duty_type',
-            types),
+        buildDropdownSection('Эта обязанность является',
+            'Основной|Дополнительной|Новой(Готов взять на себя)', 'duty_type', types),
         const SizedBox(height: 16),
         Row(
           children: [
@@ -188,8 +186,7 @@ class _StepFourState extends StateStep<StepFour> {
                 child: const Text("Удалить"),
                 onPressed: removeEnabled ? _remove : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      removeEnabled ? Color(0xFFF76D12) : Colors.black87,
+                  backgroundColor: removeEnabled ? Color(0xFFF76D12) : Colors.black87,
                   foregroundColor: Colors.white,
                 ),
               ),
@@ -203,9 +200,8 @@ class _StepFourState extends StateStep<StepFour> {
                 child: const Text("Сохранить"),
                 onPressed: saveEnabled ? _save : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: saveEnabled
-                      ? Color(0xFFF76D12)
-                      : Colors.black87, // Основной цвет фона
+                  backgroundColor:
+                      saveEnabled ? Color(0xFFF76D12) : Colors.black87, // Основной цвет фона
                   foregroundColor: Colors.white, // Цвет текста и иконки
                 ),
               ),
@@ -228,47 +224,18 @@ class _StepFourState extends StateStep<StepFour> {
   }
 
   _buildDutyList(BoxConstraints constraints) {
-    double boxWidth;
-    if (constraints.maxWidth < 600) {
-      boxWidth = constraints.maxWidth;
-    } else {
-      boxWidth = constraints.maxWidth / 2 - 5;
-    }
+    return listCard(constraints, dutyList, _onSelect, _cardWidget);
+  }
 
-    return GestureDetector(
-      behavior: HitTestBehavior.translucent,
-      onTap: () => _onSelect(null),
-      child: Wrap(
-        spacing: 10, // горизонтальный отступ между блоками
-        runSpacing: 10, // вертикальный отступ между строками
-        children: List.generate(dutyList.length, (index) {
-          return MouseRegion(
-            cursor: MaterialStateMouseCursor.clickable,
-            child: GestureDetector(
-              onTap: () => _onSelect(index),
-              child: CustomSquareCard(
-                width: boxWidth,
-                height: 60,
-                title:
-                    '${dutyList.elementAt(index)['name'] ?? ''} , ${dutyList.elementAt(index)['period'] ?? ''}',
-                leftText:
-                    attitudeShortText(dutyList.elementAt(index)['attitude']!),
-                leftColor:
-                    attitudeColor(dutyList.elementAt(index)['attitude']!),
-                rightText: dutyList[index]['type'] == 'new'
-                    ? 'Новая'
-                    : (dutyList[index]['type'] == 'extra'
-                        ? 'Дополнительная'
-                        : ''),
-                rightColor: dutyList[index]['type'] == 'new'
-                    ? Colors.green.shade800
-                    : Color(0xFF5801fd),
-                selected: _selectedDuty == index,
-              ),
-            ),
-          );
-        }),
-      ),
+  Widget _cardWidget(item, index) {
+    return CustomSquareCard(
+      title: '${item['name'] ?? ''}\n${ucfirst(item['period']) ?? ''}',
+      leftText: attitudeShortText(item['attitude']!),
+      leftColor: attitudeColor(item['attitude']!),
+      rightText:
+          item['type'] == 'new' ? 'Новая' : (item['type'] == 'extra' ? 'Дополнительная' : ''),
+      rightColor: item['type'] == 'new' ? Colors.green.shade800 : Color(0xFF5801fd),
+      selected: _selectedDuty == index,
     );
   }
 

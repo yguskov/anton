@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
 import 'package:provider/provider.dart';
 
-import '../../main.dart';
+import '../../register.dart';
 import '../steps/step_finish_provider.dart';
 
 class FinishedButton extends StatelessWidget {
