@@ -132,15 +132,19 @@ class ProviderExamplePage extends StatelessWidget {
               },
               child: LayoutBuilder(
                 builder: (context, constraints) {
+                  final narrow = constraints.maxWidth <= 800;
+
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Container(
-                        color: const Color(0xff202938),
-                        width: 220,
-                        child: StepsOverview(),
-                      ),
+                      narrow
+                          ? Container()
+                          : Container(
+                              color: const Color(0xff202938),
+                              width: 220,
+                              child: StepsOverview(),
+                            ),
                       Expanded(
                         child: Container(
                           color: const Color(0xfff9fafb),
