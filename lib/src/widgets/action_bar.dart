@@ -17,7 +17,7 @@ class ActionBar extends StatelessWidget {
           padding: const EdgeInsets.only(
               top: kSmallPadding, right: 10, bottom: kSmallPadding, left: 10),
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (narrow) const Expanded(child: PreviousButton()),
               if (!narrow) const PreviousButton(),
