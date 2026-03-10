@@ -78,7 +78,7 @@ class StepOneState extends StateStep<StepOne> {
           ),
         ],
       ),
-      // ActionBar(),
+      ActionBar(),
       // _buildDropdownSection('Как вы обращаетесь к начальнику?', 'Петров Михаил', 'boss_fio', categories),
       // const SizedBox(height: 16),
       // _buildRadioList('Какая у вас цель?', 'Я хочу', 'aim', aimList),

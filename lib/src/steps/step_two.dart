@@ -44,6 +44,7 @@ class StepTwoState extends StateStep<StepTwo> {
       const SizedBox(height: 16),
       buildRadioList('Я этого заслуживаю (Цель) потому, что я:', 'why', whyList, 30, 1.3, 'Другое'),
       const SizedBox(height: 16),
+      ActionBar(),
     ];
 
     // return ListView(

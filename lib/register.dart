@@ -1,6 +1,7 @@
 import 'dart:html';
 
 import 'package:example/providers/auth_provider.dart';
+import 'package:example/src/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:example/models/cv.dart';
@@ -146,33 +147,39 @@ class ProviderExamplePage extends StatelessWidget {
                               child: StepsOverview(),
                             ),
                       Expanded(
-                        child: Container(
-                          color: const Color(0xfff9fafb),
-                          padding: const EdgeInsets.all(10),
-                          child: Center(
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(
-                                maxHeight: constraints.maxHeight,
-                                maxWidth: 800,
-                              ),
-                              child: Flex(
-                                direction: Axis.vertical,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Flexible(
-                                    flex: 1,
-                                    child: _buildWizard(
-                                      context,
-                                      provider: provider,
-                                      constraints: constraints,
-                                      orientation: orientation,
+                        child: Column(
+                          children: [
+                            Expanded(
+                              child: Container(
+                                color: const Color(0xfff9fafb),
+                                padding: const EdgeInsets.all(10),
+                                child: Center(
+                                  child: ConstrainedBox(
+                                    constraints: BoxConstraints(
+                                      maxHeight: constraints.maxHeight,
+                                      maxWidth: 800,
+                                    ),
+                                    child: Flex(
+                                      direction: Axis.vertical,
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Flexible(
+                                          flex: 1,
+                                          child: _buildWizard(
+                                            context,
+                                            provider: provider,
+                                            constraints: constraints,
+                                            orientation: orientation,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
-                                  Container(child: const ActionBar()),
-                                ],
+                                ),
                               ),
                             ),
-                          ),
+                            BottomBar()
+                          ],
                         ),
                       ),
                     ],
@@ -208,57 +215,72 @@ class ProviderExamplePage extends StatelessWidget {
         builder: (context, snapshot) {
           final index = snapshot.data!;
           // const ActionBar(),
-          return Wizard(
-            stepBuilder: (context, state) {
-              switch (index) {
-                case 0:
-                  return StepOne(
-                    provider: provider.stepOneProvider,
-                    key: stepGlobalKey[0],
-                  );
+          return Theme(
+            data: Theme.of(context).copyWith(
+              elevatedButtonTheme: ElevatedButtonThemeData(
+                style: ElevatedButton.styleFrom(
+                  elevation: 0.5,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 19,
+                  ),
+                  // backgroundColor: Colors.green,
+                  // foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+            child: Wizard(
+              stepBuilder: (context, state) {
+                switch (index) {
+                  case 0:
+                    return StepOne(
+                      provider: provider.stepOneProvider,
+                      key: stepGlobalKey[0],
+                    );
 
-                case 1:
-                  return StepTwo(
-                    provider: provider.stepTwoProvider,
-                    key: stepGlobalKey[1],
-                  );
+                  case 1:
+                    return StepTwo(
+                      provider: provider.stepTwoProvider,
+                      key: stepGlobalKey[1],
+                    );
 
-                case 2:
-                  return StepThree(
-                    provider: provider.stepThreeProvider,
-                    // key: stepGlobalKey[3],
-                  );
+                  case 2:
+                    return StepThree(
+                      provider: provider.stepThreeProvider,
+                      // key: stepGlobalKey[3],
+                    );
 
-                case 3:
-                  return StepFour(
-                    provider: provider.stepFourProvider,
-                  );
+                  case 3:
+                    return StepFour(
+                      provider: provider.stepFourProvider,
+                    );
 
-                case 4:
-                  return StepFive(
-                    provider: provider.stepFiveProvider,
-                  );
+                  case 4:
+                    return StepFive(
+                      provider: provider.stepFiveProvider,
+                    );
 
-                case 5:
-                  return StepSix(
-                    provider: provider.stepSixProvider,
-                  );
+                  case 5:
+                    return StepSix(
+                      provider: provider.stepSixProvider,
+                    );
 
-                case 6:
-                  return StepSeven(
-                    provider: provider.stepSevenProvider,
-                  );
+                  case 6:
+                    return StepSeven(
+                      provider: provider.stepSevenProvider,
+                    );
 
-                case 7:
-                  return StepFinish(
-                    provider: provider.stepFinishProvider,
-                    key: stepFinishKey,
-                  );
+                  case 7:
+                    return StepFinish(
+                      provider: provider.stepFinishProvider,
+                      key: stepFinishKey,
+                    );
 
-                default:
-                  return Container();
-              }
-            },
+                  default:
+                    return Container();
+                }
+              },
+            ),
           );
         });
     return wizard;

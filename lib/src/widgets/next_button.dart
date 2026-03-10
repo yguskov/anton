@@ -1,4 +1,5 @@
 import 'package:example/register.dart';
+import 'package:example/src/src.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
@@ -20,7 +21,7 @@ class NextButton extends StatelessWidget {
         }
         final enabled = snapshot.data!;
         return ElevatedButton(
-          child: const Text("Сохранить >"),
+          child: const Text("Далее"),
           onPressed: () {
             if (enabled && verifyStepData(context)) {
               context.wizardController.goNext();
@@ -37,8 +38,8 @@ class NextButton extends StatelessWidget {
             }
           },
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFFF76D12), // Основной цвет фона
-            foregroundColor: Colors.white, // Цвет текста и иконки
+            backgroundColor: secondaryColor,
+            foregroundColor: Colors.white,
           ),
         );
       },

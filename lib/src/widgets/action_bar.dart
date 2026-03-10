@@ -12,17 +12,19 @@ class ActionBar extends StatelessWidget {
   ) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        final narrow = constraints.maxWidth <= 500;
+        final narrow = constraints.maxWidth <= 800;
         return Padding(
-          padding: const EdgeInsets.only(
-              top: kSmallPadding, right: 10, bottom: kSmallPadding, left: 10),
+          padding: const EdgeInsets.only(top: kRegularPadding, bottom: kRegularPadding),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              if (narrow) const Expanded(child: PreviousButton()),
-              if (!narrow) const PreviousButton(),
+              Expanded(flex: 7, child: _buildPreviewButton(context)),
               const SizedBox(width: kRegularPadding),
-              if (narrow) Expanded(child: _buildForwardButton(context)),
+              if (narrow && context.wizardController.index > 0)
+                const Expanded(flex: 4, child: PreviousButton()),
+              if (!narrow && context.wizardController.index > 0) const PreviousButton(),
+              const SizedBox(width: kRegularPadding),
+              if (narrow) Expanded(flex: 4, child: _buildForwardButton(context)),
               if (!narrow) _buildForwardButton(context),
             ],
           ),
@@ -47,6 +49,19 @@ class ActionBar extends StatelessWidget {
         }
         return const NextButton();
       },
+    );
+  }
+
+  _buildPreviewButton(BuildContext context) {
+    return ElevatedButton(
+      child: const Text("Предпросмотр"),
+      onPressed: () => false,
+      style: OutlinedButton.styleFrom(
+        // backgroundColor: Color(0xFF5801fd), // Цвет фона
+        foregroundColor: Colors.black54, // Цвет текста
+        // foregroundColor: Colors.white, // Цвет текста
+        side: BorderSide(color: Colors.black12), // Цвет границы
+      ),
     );
   }
 }

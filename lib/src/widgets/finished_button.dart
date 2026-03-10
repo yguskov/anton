@@ -1,3 +1,4 @@
+import 'package:example/src/src.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
 import 'package:provider/provider.dart';
@@ -28,7 +29,7 @@ class FinishedButton extends StatelessWidget {
                 }
               : null,
           style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFFF76D12), // Основной цвет фона
+            backgroundColor: secondaryColor, // Основной цвет фона
             foregroundColor: Colors.white, // Цвет текста и иконки
           ),
         );

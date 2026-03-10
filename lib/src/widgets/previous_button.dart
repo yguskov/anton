@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
 
+import '../constants.dart';
+
 class PreviousButton extends StatelessWidget {
   const PreviousButton({Key? key}) : super(key: key);
 
@@ -16,14 +18,12 @@ class PreviousButton extends StatelessWidget {
           return const SizedBox.shrink();
         }
         final enabled = snapshot.data!;
-        return OutlinedButton(
-          child: const Text("< Назад"),
+        return ElevatedButton(
+          child: const Text("Назад"),
           onPressed: enabled ? context.wizardController.goBack : null,
-          style: OutlinedButton.styleFrom(
-            // backgroundColor: Color(0xFF5801fd), // Цвет фона
-            foregroundColor: Color(0xFF5801fd), // Цвет текста
-            // foregroundColor: Colors.white, // Цвет текста
-            side: BorderSide(color: Colors.black54), // Цвет границы
+          style: ElevatedButton.styleFrom(
+            backgroundColor: secondaryColor,
+            foregroundColor: Colors.white,
           ),
         );
       },

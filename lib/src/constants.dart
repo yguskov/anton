@@ -6,4 +6,9 @@ const double kRegularPadding = 16.0;
 const double screenSide600 = 600;
 const double cardSpace10 = 10;
 
-var groundColor = Color(0xFFF9FAFB); // #F9FAFB base ground
+const groundColor = Color(0xFFF9FAFB); // #F9FAFB base ground
+
+const bottomGroundColor = Color(0xFFE5E8EA);
+const bottomTextStyle = TextStyle(color: Color(0xFF7C7C7C), fontSize: 12);
+const bottomHeight = 100.0;
+var secondaryColor = Color(0xFF2A70D4);

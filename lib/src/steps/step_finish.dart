@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../../register.dart';
 import '../../providers/auth_provider.dart';
+import '../widgets/action_bar.dart';
 import 'my_wizard_step.dart';
 
 class StepFinish extends StatefulWidgetStep {
@@ -143,7 +144,8 @@ class StepFinishState extends StateStep<StepFinish> {
               key: _formKey,
               child: Column(
                 children: textFields,
-              ))
+              )),
+          ActionBar(),
         ],
       );
     });
