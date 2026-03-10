@@ -137,13 +137,13 @@ class ProviderExamplePage extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: [
                       Container(
-                        color: const Color(0xff202938),  
+                        color: const Color(0xff202938),
                         width: 220,
                         child: StepsOverview(),
                       ),
                       Expanded(
                         child: Container(
-                          color: const Color(0xfff9fafb), 
+                          color: const Color(0xfff9fafb),
                           padding: const EdgeInsets.all(10),
                           child: Center(
                             child: ConstrainedBox(
@@ -164,14 +164,13 @@ class ProviderExamplePage extends StatelessWidget {
                                       orientation: orientation,
                                     ),
                                   ),
-                                  Container(color: Colors.amberAccent, child: const ActionBar()),
+                                  Container(child: const ActionBar()),
                                 ],
                               ),
                             ),
                           ),
                         ),
                       ),
-                      
                     ],
                   );
                 },
@@ -206,59 +205,59 @@ class ProviderExamplePage extends StatelessWidget {
           final index = snapshot.data!;
           // const ActionBar(),
           return Wizard(
-                stepBuilder: (context, state) {
-                  switch (index) {
-                    case 0:
-                      return StepOne(
-                        provider: provider.stepOneProvider,
-                        key: stepGlobalKey[0],
-                      );
+            stepBuilder: (context, state) {
+              switch (index) {
+                case 0:
+                  return StepOne(
+                    provider: provider.stepOneProvider,
+                    key: stepGlobalKey[0],
+                  );
 
-                    case 1:
-                      return StepTwo(
-                        provider: provider.stepTwoProvider,
-                        key: stepGlobalKey[1],
-                      );
+                case 1:
+                  return StepTwo(
+                    provider: provider.stepTwoProvider,
+                    key: stepGlobalKey[1],
+                  );
 
-                    case 2:
-                      return StepThree(
-                        provider: provider.stepThreeProvider,
-                        // key: stepGlobalKey[3],
-                      );
+                case 2:
+                  return StepThree(
+                    provider: provider.stepThreeProvider,
+                    // key: stepGlobalKey[3],
+                  );
 
-                    case 3:
-                      return StepFour(
-                        provider: provider.stepFourProvider,
-                      );
+                case 3:
+                  return StepFour(
+                    provider: provider.stepFourProvider,
+                  );
 
-                    case 4:
-                      return StepFive(
-                        provider: provider.stepFiveProvider,
-                      );
+                case 4:
+                  return StepFive(
+                    provider: provider.stepFiveProvider,
+                  );
 
-                    case 5:
-                      return StepSix(
-                        provider: provider.stepSixProvider,
-                      );
+                case 5:
+                  return StepSix(
+                    provider: provider.stepSixProvider,
+                  );
 
-                    case 6:
-                      return StepSeven(
-                        provider: provider.stepSevenProvider,
-                      );
+                case 6:
+                  return StepSeven(
+                    provider: provider.stepSevenProvider,
+                  );
 
-                    case 7:
-                      return StepFinish(
-                        provider: provider.stepFinishProvider,
-                        key: stepFinishKey,
-                      );
+                case 7:
+                  return StepFinish(
+                    provider: provider.stepFinishProvider,
+                    key: stepFinishKey,
+                  );
 
-                    default:
-                      return Container();
-                  }
-                },
-              );
+                default:
+                  return Container();
+              }
+            },
+          );
         });
-        return wizard;
+    return wizard;
     final narrow = constraints.maxWidth <= 800;
     if (narrow) {
       return wizard;

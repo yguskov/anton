@@ -11,7 +11,7 @@ class StepsOverview extends StatelessWidget {
     BuildContext context,
   ) {
     return Padding(
-      padding: const EdgeInsets.only(top: 20.0),
+      padding: const EdgeInsets.only(left: 20, top: 20.0),
       child: ListView.builder(
         itemCount: context.wizardController.stepControllers.length,
         itemBuilder: (context, index) {
@@ -21,36 +21,28 @@ class StepsOverview extends StatelessWidget {
             initialData: context.wizardController.getIsGoToEnabled(index),
             builder: (context, snapshot) {
               final enabled = snapshot.data!;
-              String title;
-              switch (step.runtimeType) {
-                case StepOneProvider:
-                  title = "Представление";
-                  break;
-                case StepTwoProvider:
-                  title = "Цели";
-                  break;
-                case StepThreeProvider:
-                  title = "Зарплата";
-                  break;
-                case StepFourProvider:
-                  title = "Обязанности";
-                  break;
-                case StepFiveProvider:
-                  title = "Навыки";
-                  break;
-                case StepSixProvider:
-                  title = "Знания";
-                  break;
-                case StepSevenProvider:
-                  title = "Достижения";
-                  break;
-                case StepFinishProvider:
-                  title = "Регистрация";
-                  break;
-                default:
-                  title = "Еще";
-                  break;
-              }
+              const stepTitles = [
+                "Представление",
+                "Цели",
+                "Зарплата",
+                "Обязанности",
+                "Навыки",
+                "Знания",
+                "Достижения",
+                "Регистрация"
+              ];
+              const stepMenuIconFiles = [
+                "menu_introduce.png",
+                "menu_aim.png",
+                "menu_salary.png",
+                "menu_responsibility.png",
+                "menu_skill.png",
+                "menu_knowledge.png",
+                "menu_achievements.png",
+                "menu_final.png",
+              ];
+              String title = stepTitles[index];
+              String iconFile = stepMenuIconFiles[index];
               return StreamBuilder<int>(
                 stream: context.wizardController.indexStream,
                 initialData: context.wizardController.index,
@@ -61,12 +53,15 @@ class StepsOverview extends StatelessWidget {
                     selectedColor: Color(0xffffffff),
                     textColor: Color(0xffb3bdcd),
                     iconColor: Color(0xffb3bdcd),
-                    leading: index == selectedIndex ? Icon(Icons.person) : Icon(Icons.ac_unit_rounded),
-                    // leading: Image.asset('assets/profile.png'),
-    
-                    onTap: enabled
-                        ? () => context.wizardController.goTo(index: index)
-                        : null,
+                    // leading: index == selectedIndex ? Icon(Icons.person) : Icon(Icons.ac_unit_rounded),
+                    leading: ImageIcon(
+                      AssetImage('image/icons/${iconFile}'),
+                      size: 15,
+                    ),
+                    visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                    contentPadding: EdgeInsets.zero,
+                    horizontalTitleGap: -8,
+                    onTap: enabled ? () => context.wizardController.goTo(index: index) : null,
                     enabled: enabled,
                     selected: index == selectedIndex,
                   );
