@@ -224,6 +224,8 @@ class StepSixState extends StateStep<StepSix> {
         _buildKnowList(constraints),
       ];
 
+      return buildLayout(context, textFields);
+
       return ListView(
         controller: _scrollController,
         children: textFields,

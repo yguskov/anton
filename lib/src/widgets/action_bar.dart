@@ -57,10 +57,10 @@ class ActionBar extends StatelessWidget {
       child: const Text("Предпросмотр"),
       onPressed: () => false,
       style: OutlinedButton.styleFrom(
-        // backgroundColor: Color(0xFF5801fd), // Цвет фона
-        foregroundColor: Colors.black54, // Цвет текста
-        // foregroundColor: Colors.white, // Цвет текста
-        side: BorderSide(color: Colors.black12), // Цвет границы
+        // backgroundColor: Color(0xFF5801fd),
+        foregroundColor: Colors.black54,
+        // foregroundColor: Colors.white,
+        side: BorderSide(color: Colors.black12),
       ),
     );
   }

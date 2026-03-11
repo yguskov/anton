@@ -137,6 +137,14 @@ class StepFinishState extends StateStep<StepFinish> {
         authProvider.isLoading ? CircularProgressIndicator() : SizedBox(height: 20),
       ]);
 
+      return buildLayout(context, [
+        Form(
+            key: _formKey,
+            child: Column(
+              children: textFields,
+            )),
+      ]);
+
       return ListView(
         controller: _scrollController,
         children: [

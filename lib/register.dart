@@ -133,7 +133,7 @@ class ProviderExamplePage extends StatelessWidget {
               },
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  final narrow = constraints.maxWidth <= 800;
+                  final narrow = constraints.maxWidth <= 820;
 
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -147,39 +147,11 @@ class ProviderExamplePage extends StatelessWidget {
                               child: StepsOverview(),
                             ),
                       Expanded(
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Container(
-                                color: const Color(0xfff9fafb),
-                                padding: const EdgeInsets.all(10),
-                                child: Center(
-                                  child: ConstrainedBox(
-                                    constraints: BoxConstraints(
-                                      maxHeight: constraints.maxHeight,
-                                      maxWidth: 800,
-                                    ),
-                                    child: Flex(
-                                      direction: Axis.vertical,
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Flexible(
-                                          flex: 1,
-                                          child: _buildWizard(
-                                            context,
-                                            provider: provider,
-                                            constraints: constraints,
-                                            orientation: orientation,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            BottomBar()
-                          ],
+                        child: _buildWizard(
+                          context,
+                          provider: provider,
+                          constraints: constraints,
+                          orientation: orientation,
                         ),
                       ),
                     ],
@@ -225,7 +197,8 @@ class ProviderExamplePage extends StatelessWidget {
                     vertical: 19,
                   ),
                   // backgroundColor: Colors.green,
-                  // foregroundColor: Colors.white,
+
+                  foregroundColor: Colors.black54,
                 ),
               ),
             ),

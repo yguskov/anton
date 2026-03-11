@@ -212,6 +212,8 @@ class StepFourState extends StateStep<StepFour> {
         _buildDutyList(constraints),
       ];
 
+      return buildLayout(context, textFields);
+
       return ListView(
         controller: _scrollController,
         children: textFields,

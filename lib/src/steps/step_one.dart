@@ -78,13 +78,12 @@ class StepOneState extends StateStep<StepOne> {
           ),
         ],
       ),
-      ActionBar(),
       // _buildDropdownSection('Как вы обращаетесь к начальнику?', 'Петров Михаил', 'boss_fio', categories),
       // const SizedBox(height: 16),
       // _buildRadioList('Какая у вас цель?', 'Я хочу', 'aim', aimList),
     ];
 
-    return ListView(children: textFields);
+    return buildLayout(context, textFields);
 
     return Column(
       children: textFields,
@@ -110,9 +109,3 @@ class StepOneState extends StateStep<StepOne> {
     */
   }
 }
-
-
-// Классы из предыдущего примера (должны быть в том же файле или импортированы)
-
-
-

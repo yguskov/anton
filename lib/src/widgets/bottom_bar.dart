@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_wizard/flutter_wizard.dart';
-
 import '../../example.dart';
 
 class BottomBar extends StatelessWidget {
@@ -10,37 +8,64 @@ class BottomBar extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    Widget sponsorBox = Container(
-      height: bottomHeight,
-      padding: EdgeInsets.all(15),
-      color: bottomGroundColor,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text('Если вам нравится наш сайт, то оставьте серверу на кофе',
-              style: bottomTextStyle, textAlign: TextAlign.center),
-          ElevatedButton(onPressed: () => false, child: Text('Стать спонсором'))
-        ],
-      ),
-    );
-    Widget mailBox = Container(
-      height: bottomHeight,
-      padding: EdgeInsets.all(15),
-      color: bottomGroundColor,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-              child: Text('По вопросам сотрудничества или просто для связи пишите',
-                  style: bottomTextStyle, textAlign: TextAlign.center)),
-          ElevatedButton(onPressed: () => false, child: Text('mail@mail.ru'))
-        ],
-      ),
-    );
-
     return LayoutBuilder(
       builder: (context, constraints) {
         final narrow = constraints.maxWidth <= 600;
+        double _buttonWidth = 340;
+
+        Widget sponsorBox = Container(
+          height: bottomHeight,
+          padding: EdgeInsets.all(5),
+          color: bottomGroundColor,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: _buttonWidth,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Text('Если вам нравится наш сайт, то оставьте серверу на кофе',
+                      style: bottomTextStyle, textAlign: TextAlign.center),
+                  ElevatedButton(
+                    onPressed: () => false,
+                    child: Text('Стать спонсором', style: bottomButtonTextStyle),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+
+        Widget mailBox = Container(
+          height: bottomHeight,
+          padding: EdgeInsets.all(5),
+          color: bottomGroundColor,
+          child: Center(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                maxWidth: _buttonWidth,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text('По вопросам сотрудничества или просто для связи пишите',
+                      style: bottomTextStyle, textAlign: TextAlign.center),
+                  ElevatedButton(
+                    onPressed: () => false,
+                    child: Text(
+                      'mail@mail.ru',
+                      style: bottomButtonTextStyle,
+                    ),
+                  )
+                ],
+              ),
+            ),
+          ),
+        );
+
         return !narrow
             ? Container(
                 color: bottomGroundColor,
@@ -49,29 +74,32 @@ class BottomBar extends StatelessWidget {
                   children: [
                     Expanded(flex: 1, child: sponsorBox),
                     Container(
-                      height: 80,
                       width: 1,
-                      color: Colors.black,
+                      height: 80,
+                      color: bottomDividerColor,
                     ),
                     Expanded(flex: 1, child: mailBox)
                   ],
                 ),
               )
-            : Container();
+            : Container(
+                color: bottomGroundColor,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    sponsorBox,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Container(
+                        height: 1,
+                        color: bottomDividerColor,
+                      ),
+                    ),
+                    mailBox
+                  ],
+                ),
+              );
       },
-    );
-  }
-
-  _buildPreviewButton(BuildContext context) {
-    return ElevatedButton(
-      child: const Text("Предпросмотр"),
-      onPressed: () => false,
-      style: OutlinedButton.styleFrom(
-        // backgroundColor: Color(0xFF5801fd), // Цвет фона
-        foregroundColor: Colors.black54, // Цвет текста
-        // foregroundColor: Colors.white, // Цвет текста
-        side: BorderSide(color: Colors.black12), // Цвет границы
-      ),
     );
   }
 }

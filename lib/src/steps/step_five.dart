@@ -219,6 +219,8 @@ class StepFiveState extends StateStep<StepFive> {
         _buildSkillList(constraints),
       ];
 
+      return buildLayout(context, textFields);
+
       return ListView(
         controller: _scrollController,
         children: textFields,

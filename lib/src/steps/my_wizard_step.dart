@@ -3,6 +3,8 @@ import 'dart:html';
 
 import 'package:example/models/cv.dart';
 import 'package:example/src/constants.dart';
+import 'package:example/src/widgets/action_bar.dart';
+import 'package:example/src/widgets/bottom_bar.dart';
 import 'package:example/src/widgets/just_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
@@ -117,6 +119,33 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
         }),
       ),
     );
+  }
+
+  Widget buildLayout(BuildContext context, List<Widget> rows) {
+    rows.add(ActionBar());
+    return LayoutBuilder(builder: (context, constraints) {
+      final narrow = constraints.maxWidth <= 820;
+      return ListView(children: [
+        Expanded(
+          child: Container(
+            color: const Color(0xfff9fafb),
+            padding: const EdgeInsets.all(10),
+            child: Center(
+              child: ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: constraints.maxHeight -
+                      bottomHeight -
+                      20, // @FIXME if bottom in two rows should be - 2 * bottomHeight
+                  maxWidth: 820,
+                ),
+                child: Column(mainAxisSize: MainAxisSize.max, children: rows),
+              ),
+            ),
+          ),
+        ),
+        BottomBar()
+      ]);
+    });
   }
 }
 

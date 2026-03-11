@@ -193,6 +193,7 @@ class StepSevenState extends StateStep<StepSeven> {
         _buildAchieveList(constraints),
       ];
 
+      return buildLayout(context, textFields);
       return ListView(
         controller: _scrollController,
         children: textFields,

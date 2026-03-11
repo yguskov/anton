@@ -98,11 +98,6 @@ class StepThreeState extends StateStep<StepThree> {
           'want_info')
     ];
 
-    return ListView(
-      children: textFields,
-      // mainAxisAlignment: MainAxisAlignment.start,
-      // mainAxisSize: MainAxisSize.min,
-      // crossAxisAlignment: CrossAxisAlignment.start,
-    );
+    return buildLayout(context, textFields);
   }
 }
