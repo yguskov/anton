@@ -6,6 +6,8 @@ const double kRegularPadding = 16.0;
 const double screenSide600 = 600;
 const double cardSpace10 = 10;
 
+const baseScreenWidth = 820.0; // start width of screen to show left menu and 2 cols in form
+
 const groundColor = Color(0xFFF9FAFB); // #F9FAFB base ground
 
 const bottomGroundColor = Color(0xFFE5E8EA);

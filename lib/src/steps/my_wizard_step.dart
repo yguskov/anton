@@ -121,7 +121,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     );
   }
 
-  Widget buildLayout(BuildContext context, List<Widget> rows) {
+  Widget buildLayout(BuildContext context, List<Widget> rows, [Widget? listCard]) {
     rows.add(ActionBar());
     rows = List.generate(
       rows.length,
@@ -132,24 +132,47 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
     // rows.add(_borderBottom());
     return LayoutBuilder(builder: (context, constraints) {
-      final narrow = constraints.maxWidth <= 820;
+      final narrow = constraints.maxWidth <= baseScreenWidth; // 820
       return ListView(children: [
         Expanded(
           child: Container(
             color: const Color(0xfff9fafb),
             padding: const EdgeInsets.all(10),
-            child: Center(
+            child: Align(
+              alignment: Alignment.topRight,
               child: ConstrainedBox(
                 constraints: BoxConstraints(
                   minHeight: constraints.maxHeight -
                       bottomHeight -
                       20, // @FIXME if bottom in two rows should be - 2 * bottomHeight
-                  maxWidth: 820,
+                  maxWidth: baseScreenWidth,
                 ),
-                child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: rows),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // 1-th form column
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        // minHeight: constraints.maxHeight - bottomHeight - 20,
+                        maxWidth: baseScreenWidth / 2,
+                      ),
+                      child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: rows),
+                    ),
+                    // 2-th form column
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        // minHeight: constraints.maxHeight - bottomHeight - 20,
+                        minWidth: baseScreenWidth / 2,
+                        maxWidth: baseScreenWidth / 2,
+                      ),
+                      child: listCard ?? Container(),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

@@ -221,10 +221,9 @@ class StepSixState extends StateStep<StepSix> {
             'Я хочу получать советы по новым знаниям и активностям, которые помогут развивать мои текущие уровни навыков',
             'want_tip'),
         const SizedBox(height: 10),
-        _buildKnowList(constraints),
       ];
 
-      return buildLayout(context, textFields);
+      return buildLayout(context, textFields, _buildKnowList(constraints));
 
       return ListView(
         controller: _scrollController,

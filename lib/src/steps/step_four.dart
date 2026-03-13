@@ -208,11 +208,9 @@ class StepFourState extends StateStep<StepFour> {
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        _buildDutyList(constraints),
       ];
 
-      return buildLayout(context, textFields);
+      return buildLayout(context, textFields, _buildDutyList(constraints));
 
       return ListView(
         controller: _scrollController,

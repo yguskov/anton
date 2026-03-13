@@ -215,11 +215,9 @@ class StepFiveState extends StateStep<StepFive> {
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        _buildSkillList(constraints),
       ];
 
-      return buildLayout(context, textFields);
+      return buildLayout(context, textFields, _buildSkillList(constraints));
 
       return ListView(
         controller: _scrollController,

@@ -189,11 +189,9 @@ class StepSevenState extends StateStep<StepSeven> {
             ),
           ],
         ),
-        const SizedBox(height: 10),
-        _buildAchieveList(constraints),
       ];
 
-      return buildLayout(context, textFields);
+      return buildLayout(context, textFields, _buildAchieveList(constraints));
       return ListView(
         controller: _scrollController,
         children: textFields,
