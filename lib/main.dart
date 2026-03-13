@@ -100,11 +100,18 @@ class MyApp extends StatelessWidget {
             color: Colors.orange,
           ),
           popupMenuTheme: PopupMenuThemeData(
-            textStyle: TextStyle(color: Colors.white, fontSize: 16),
-            color: Color(0xFF5801fd),
+            textStyle: TextStyle(color: Colors.black87, fontSize: 16),
+            color: Colors.white,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(8),
             ),
+          ),
+          textSelectionTheme: TextSelectionThemeData(
+            cursorColor: Colors.black, // Global cursor color for all TextFields
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            filled: true, // Обязательно включите filled
+            fillColor: Colors.white, // Цвет фона для всех TextField
           ),
         ),
       ),

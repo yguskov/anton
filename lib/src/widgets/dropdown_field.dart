@@ -1,3 +1,4 @@
+import 'package:example/src/constants.dart';
 import 'package:flutter/material.dart';
 
 class DropdownField extends StatefulWidget {
@@ -40,26 +41,25 @@ class _DropdownFieldState extends State<DropdownField> {
 
   @override
   Widget build(BuildContext context) {
-    PopupDropdownWithCheckmark<String> dropdown =
-        PopupDropdownWithCheckmark<String>(
-            value: widget.provider.getValue(widget.fieldName),
-            items: widget.items,
-            hint: widget.hint ?? 'Выберите из списка',
-            onSelected: (value) {
-              setState(() {
-                widget.provider.updateValue(widget.fieldName, value);
-                widget.provider.controllerByName(widget.fieldName).text = value;
-              });
-            });
+    PopupDropdownWithCheckmark<String> dropdown = PopupDropdownWithCheckmark<String>(
+        value: widget.provider.getValue(widget.fieldName),
+        items: widget.items,
+        hint: widget.hint ?? 'Выберите из списка',
+        onSelected: (value) {
+          setState(() {
+            widget.provider.updateValue(widget.fieldName, value);
+            widget.provider.controllerByName(widget.fieldName).text = value;
+          });
+        });
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
           width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 1),
           decoration: BoxDecoration(
-            color: Color.fromRGBO(37, 46, 63, 1),
+            // color: Color.fromRGBO(37, 46, 63, 1),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(3),
               topRight: Radius.circular(3),
@@ -69,11 +69,7 @@ class _DropdownFieldState extends State<DropdownField> {
           ),
           child: Text(
             widget.label,
-            style: TextStyle(
-              // fontWeight: FontWeight.w600,
-              fontSize: 14,
-              color: Colors.white,
-            ),
+            style: fieldCaptionFontStyle,
           ),
         ),
         SizedBox(height: 8),
@@ -113,7 +109,7 @@ class PopupDropdownWithCheckmark<T> extends StatelessWidget {
       decoration: BoxDecoration(
           border: Border.all(color: Colors.grey[600]!, width: 1),
           borderRadius: BorderRadius.circular(4),
-          color: Colors.grey[200]),
+          color: Colors.white),
       child: PopupMenuButton<T>(
         elevation: elevation,
         onSelected: onSelected,
@@ -125,8 +121,7 @@ class PopupDropdownWithCheckmark<T> extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(item.label),
-                  if (value == item.value)
-                    Icon(Icons.check, color: Theme.of(context).primaryColor),
+                  if (value == item.value) Icon(Icons.check, color: Theme.of(context).primaryColor),
                 ],
               ),
             );
@@ -140,8 +135,7 @@ class PopupDropdownWithCheckmark<T> extends StatelessWidget {
                 child: Text(
                   value != null ? selectedItem.label : hint,
                   style: TextStyle(
-                    color:
-                        (value ?? '') != '' ? Colors.black : Colors.grey[600],
+                    color: (value ?? '') != '' ? Colors.black : Colors.grey[600],
                     fontSize: 16,
                   ),
                 ),

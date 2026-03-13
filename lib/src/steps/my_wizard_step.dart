@@ -123,6 +123,14 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
   Widget buildLayout(BuildContext context, List<Widget> rows) {
     rows.add(ActionBar());
+    rows = List.generate(
+      rows.length,
+      (index) => _wrapBorder(rows[index], index),
+    );
+    rows.insert(0, _borderUp());
+    rows.add(_borderBottom());
+
+    // rows.add(_borderBottom());
     return LayoutBuilder(builder: (context, constraints) {
       final narrow = constraints.maxWidth <= 820;
       return ListView(children: [
@@ -138,7 +146,10 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                       20, // @FIXME if bottom in two rows should be - 2 * bottomHeight
                   maxWidth: 820,
                 ),
-                child: Column(mainAxisSize: MainAxisSize.max, children: rows),
+                child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: rows),
               ),
             ),
           ),
@@ -146,6 +157,92 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
         BottomBar()
       ]);
     });
+  }
+
+  static const Color borderColor = Color(0xFFAAAAAA);
+  static const double borderWidth = 1.0;
+
+  Widget _borderUp() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(5),
+        ),
+        color: Colors.white,
+        border: Border.all(
+          color: borderColor,
+          width: borderWidth,
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const SizedBox(height: 16),
+          Positioned(
+            bottom: -borderWidth,
+            left: 0,
+            right: 0,
+            child: Container(
+              height: borderWidth,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _borderBottom() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.vertical(
+          bottom: Radius.circular(5),
+        ),
+        color: Colors.white,
+        border: Border.all(
+          color: borderColor,
+          width: borderWidth,
+        ),
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          const SizedBox(height: 16),
+          // Белая полоска, перекрывающая верхнюю границу
+          Positioned(
+            top: -borderWidth, // Смещаем вверх на толщину границы
+            left: 0, // Смещаем влево, чтобы закрыть углы
+            right: 0, // Смещаем вправо, чтобы закрыть углы
+            child: Container(
+              height: borderWidth, // Делаем высоту в 2 раза больше
+              color: Colors.white, // Тот же цвет, что и фон
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _wrapBorder(Widget child, int? index) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 15),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          left: BorderSide(
+            color: borderColor,
+            width: borderWidth,
+          ),
+          right: BorderSide(
+            color: borderColor,
+            width: borderWidth,
+          ),
+        ),
+      ),
+      child: child,
+    );
   }
 }
 

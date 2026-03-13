@@ -1,3 +1,4 @@
+import 'package:example/src/src.dart';
 import 'package:flutter/material.dart';
 
 class TextBar extends StatelessWidget {
@@ -9,9 +10,9 @@ class TextBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 1),
       decoration: BoxDecoration(
-        color: Color.fromRGBO(37, 46, 63, 1),
+        // color: Color.fromRGBO(37, 46, 63, 1),
         borderRadius: const BorderRadius.only(
           topLeft: Radius.circular(3),
           topRight: Radius.circular(3),
@@ -21,11 +22,7 @@ class TextBar extends StatelessWidget {
       ),
       child: Text(
         label,
-        style: TextStyle(
-          // fontWeight: FontWeight.w600,
-          fontSize: 14,
-          color: Colors.white,
-        ),
+        style: fieldCaptionFontStyle,
       ),
     );
   }

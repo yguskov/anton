@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 
+import 'package:example/src/constants.dart';
 import 'package:flutter/material.dart';
 
 class DynamicRadioList extends StatefulWidget {
@@ -109,7 +110,7 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
           decoration: BoxDecoration(
-            color: Color.fromRGBO(37, 46, 63, 1),
+            // color: Color.fromRGBO(37, 46, 63, 1),
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(3),
               topRight: Radius.circular(3),
@@ -119,11 +120,7 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
           ),
           child: Text(
             widget.label,
-            style: TextStyle(
-              // fontWeight: FontWeight.w600,
-              fontSize: 14,
-              color: Colors.white,
-            ),
+            style: fieldCaptionFontStyle,
           ),
         ),
         SizedBox(height: 2),
@@ -140,23 +137,19 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
                   // style: TextStyle(height: 10, fontSize: 8),
                   decoration: InputDecoration(
                     hintText: 'Другое',
-                    filled: true,
-                    fillColor: Colors.grey[200],
+                    // fillColor: Colors.grey[200], // set in main theme
                     enabledBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.grey[600]!, width: 1.5),
+                      borderSide: BorderSide(color: Colors.grey[600]!, width: 1.0),
                       borderRadius: const BorderRadius.all(
                         Radius.circular(4),
                       ),
                     ),
                     focusedBorder: OutlineInputBorder(
-                      borderSide:
-                          BorderSide(color: Colors.grey[800]!, width: 2.0),
+                      borderSide: BorderSide(color: Colors.grey[800]!, width: 1.5),
                       borderRadius: const BorderRadius.all(Radius.circular(6)),
                     ),
                     isDense: true,
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 15, vertical: 15),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
                   ),
                   // onSubmitted: (String value) {
                   //   _handleEnterPressed();

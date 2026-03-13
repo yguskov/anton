@@ -14,3 +14,9 @@ const bottomButtonTextStyle = TextStyle(fontSize: 14);
 const bottomHeight = 100.0;
 const bottomDividerColor = Color(0xFFcecece);
 var secondaryColor = Color(0xFF2A70D4);
+
+const fieldCaptionFontStyle = TextStyle(
+  // color: Colors.white,
+  // fontWeight: FontWeight.w400,
+  fontSize: 16,
+);

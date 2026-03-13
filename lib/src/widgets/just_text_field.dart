@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 
+import 'package:example/src/constants.dart';
 import 'package:flutter/material.dart';
 
 class JustTextField extends StatefulWidget {
@@ -55,9 +56,9 @@ class _JustTextFieldState extends State<JustTextField> {
     if (widget.label != null) {
       rows.add(Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 1),
         decoration: BoxDecoration(
-          color: Color.fromRGBO(37, 46, 63, 1),
+          // color: Color.fromRGBO(37, 46, 63, 1),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(3),
             topRight: Radius.circular(3),
@@ -67,10 +68,7 @@ class _JustTextFieldState extends State<JustTextField> {
         ),
         child: Text(
           widget.label ?? '',
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-          ),
+          style: fieldCaptionFontStyle,
         ),
       ));
 
@@ -83,8 +81,7 @@ class _JustTextFieldState extends State<JustTextField> {
       maxLines: 1,
       decoration: InputDecoration(
         hintText: widget.hint,
-        filled: true,
-        fillColor: Colors.grey[200],
+        // fillColor: Colors.grey[200], set in theme in main.dart
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
               color: widget.provider.hasError(widget.fieldName)

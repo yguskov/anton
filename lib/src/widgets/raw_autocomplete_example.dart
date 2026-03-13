@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 
+import 'package:example/src/constants.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:flutter/material.dart';
 
@@ -100,9 +101,9 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
     if (widget.label != null) {
       children.add(Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 15),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 1),
         decoration: BoxDecoration(
-          color: Color.fromRGBO(37, 46, 63, 1),
+          // color: Color.fromRGBO(37, 46, 63, 1),
           borderRadius: const BorderRadius.only(
             topLeft: Radius.circular(3),
             topRight: Radius.circular(3),
@@ -112,10 +113,7 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
         ),
         child: Text(
           widget.label!,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 14,
-          ),
+          style: fieldCaptionFontStyle,
         ),
       ));
       children.add(const SizedBox(height: 4));
@@ -167,8 +165,7 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
           maxLines: 1,
           decoration: InputDecoration(
             hintText: widget.hint,
-            filled: true,
-            fillColor: Colors.grey[200],
+            // fillColor: Colors.white, // set theme in main.dart
             enabledBorder: OutlineInputBorder(
               borderSide: BorderSide(
                   color: widget.provider.hasError(widget.fieldName)
