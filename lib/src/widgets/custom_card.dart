@@ -39,13 +39,13 @@ class CustomSquareCard extends StatelessWidget {
 
     if (leftText != null && leftText != '') {
       children.add(Positioned(
-        bottom: 0,
-        left: 0,
+        top: -15,
+        left: 10,
         child: Container(
           width: 100,
           height: 20,
           decoration: BoxDecoration(
-            color: Colors.white70,
+            color: Colors.green,
             border: Border.all(
               color: leftColor ?? Colors.grey,
               width: 1,
@@ -99,6 +99,7 @@ class CustomSquareCard extends StatelessWidget {
           // borderRadius: BorderRadius.circular(4), // скругление
           ),
       child: Stack(
+        clipBehavior: Clip.none,
         children: children,
       ),
     );
