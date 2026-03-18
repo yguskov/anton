@@ -1,3 +1,6 @@
+import 'dart:math';
+
+import 'package:example/example.dart';
 import 'package:flutter/material.dart';
 
 class CustomSquareCard extends StatelessWidget {
@@ -39,23 +42,23 @@ class CustomSquareCard extends StatelessWidget {
 
     if (leftText != null && leftText != '') {
       children.add(Positioned(
-        top: -15,
+        top: -10,
         left: 10,
         child: Container(
-          width: 100,
-          height: 20,
+          height: 25,
+          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
           decoration: BoxDecoration(
-            color: Colors.green,
-            border: Border.all(
-              color: leftColor ?? Colors.grey,
-              width: 1,
+            color: leftColor ?? cardColorOk,
+            border:  Border.all(
+              color: (leftColor != cardColorOk) ? Colors.transparent : cardColorOkBorder ,
+              width: 2,
             ),
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(6),
           ),
           child: Center(
             child: Text(
               leftText!,
-              style: TextStyle(fontSize: 12, color: leftColor),
+              style: TextStyle(fontSize: 12, color: (leftColor != cardColorOk) ? Colors.white : cardColorOkBorder),
             ),
           ),
         ),
@@ -64,27 +67,25 @@ class CustomSquareCard extends StatelessWidget {
 
     if (rightText != null && rightText != '') {
       children.add(Positioned(
-        bottom: 0,
-        right: 0,
+        top: -10,
+        right: 60,
         child: Container(
           // width: 100,
-          height: 20,
+          height: 25,
+          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
           decoration: BoxDecoration(
-            color: Colors.white70,
-            border: Border.all(
-              color: rightColor ?? Colors.grey,
-              width: 1,
-            ),
-            borderRadius: BorderRadius.circular(4),
+          color: cardBackColorLevel[min(0, cardColorLevel.indexOf(rightColor ?? cardColorLevel[0]))],
+            
+            borderRadius: BorderRadius.circular(6),
           ),
           child: Center(
             child: Text(
               ' $rightText ',
-              style: TextStyle(fontSize: 12, color: rightColor),
+              style: TextStyle(fontSize: 12, color: (rightColor != cardColorLevel[0]) ? rightColor : cardColorLevel[0])),
             ),
           ),
         ),
-      ));
+      );
     }
 
     Widget mainContainer = Container(
@@ -112,15 +113,15 @@ class CustomSquareCard extends StatelessWidget {
       child: Container(
         // padding: const EdgeInsets.all(16.0),
         decoration: BoxDecoration(
-          color: Color.fromARGB(255, 189, 193, 197),
-          borderRadius: BorderRadius.circular(4.0),
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(9.0),
           border: Border.all(
-            color: selected ? Color.fromARGB(255, 207, 87, 87) : Colors.blueGrey,
-            width: selected ? 2 : 1.2,
+            color: selected ? Color(0xff0042c5) : cardBorderColor,
+            width: selected ? 1 : 1,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
+              color: selected ? Color(0xffc7e4f0) : Colors.white.withOpacity(1.0),
               spreadRadius: 1,
               blurRadius: 3,
               offset: const Offset(0, 1),
@@ -135,34 +136,65 @@ class CustomSquareCard extends StatelessWidget {
             const SizedBox(height: 2),
             // Flexible позволяет тексту занимать всю доступную высоту
             Flexible(
-              child: Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      fontSize: 15,
-                      // fontWeight: FontWeight.bold,
-                      // color: Colors.blue,
+              child: Row(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Flexible(
+                    child: Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          right: BorderSide(
+                            color: cardBorderColor,
+                            width: 1.0,
+                            style: BorderStyle.solid,
+                          ),
+                        ),
+                      ),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          child: Text(
+                            title,
+                            style: const TextStyle(
+                              fontSize: 15,
+                              // fontWeight: FontWeight.bold,
+                              // color: Colors.blue,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                ),
+                  Container( 
+                    width: 50,
+                    child: IconButton(onPressed: () {}, icon: Icon(Icons.delete), color: Color(0xffc4cee0),))
+                ],
               ),
             ),
             const SizedBox(height: 5),
             bottomText != null
                 ? Flexible(
-                    child: Align(
-                      alignment: Alignment.topLeft,
-                      child: Padding(
-                        padding: EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 10),
-                        child: Text(
-                          bottomText!,
-                          style: const TextStyle(
-                            fontSize: 15,
-                            // fontWeight: FontWeight.bold,
-                            // color: Colors.blue,
+                    child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            bottomLeft: Radius.circular(9),
+                            bottomRight: Radius.circular(9),
+                          ),
+                          color: Color(0xff47b33d),
+                        ),
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 5),
+                          child: Text(
+                            bottomText!,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 15,
+                              // fontWeight: FontWeight.bold,
+                              // color: Colors.blue,
+                            ),
                           ),
                         ),
                       ),

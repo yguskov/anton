@@ -1,6 +1,7 @@
 import 'dart:js_interop';
 
 import 'package:example/services/api_service.dart';
+import 'package:example/src/constants.dart';
 import 'package:example/src/steps/step_four_provider.dart';
 import 'package:example/src/widgets/dropdown_field.dart';
 import 'package:flutter/material.dart';
@@ -234,7 +235,7 @@ class StepFourState extends StateStep<StepFour> {
       leftColor: attitudeColor(item['attitude']!),
       rightText:
           item['type'] == 'new' ? 'Новая' : (item['type'] == 'extra' ? 'Дополнительная' : ''),
-      rightColor: item['type'] == 'new' ? Colors.green.shade800 : Color(0xFF5801fd),
+      rightColor: item['type'] == 'new' ? cardColorLevel[3] : cardColorLevel[1],
       selected: _selectedDuty == index,
     );
   }
@@ -262,7 +263,7 @@ class StepFourState extends StateStep<StepFour> {
       case '-1':
         return 'Не нравится';
       case '0':
-        return '';
+        return 'Нейтрально';
       case '1':
         return 'Нравится';
     }
@@ -272,12 +273,12 @@ class StepFourState extends StateStep<StepFour> {
   Color attitudeColor(String value) {
     switch (value) {
       case '-1':
-        return Colors.orange;
+        return cardColorDislike;
       case '0':
-        return Colors.grey;
+        return cardColorOk;
       case '1':
-        return Colors.green.shade800;
+        return cardColorLike;
     }
-    return Colors.grey;
+    return cardColorOk;
   }
 }

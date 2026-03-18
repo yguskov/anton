@@ -148,7 +148,36 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                       2 * paddingFormCol, // @FIXME if bottom in two rows should be - 2 * bottomHeight
                   maxWidth: baseScreenWidth,
                 ),
-                child: Row(
+                child: narrow ?
+                Column(
+                  // crossAxisAlignment: CrossAxisAlignment.start,
+                  // mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    // 1 form column
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        // minHeight: constraints.maxHeight - bottomHeight - 20,
+                        maxWidth: baseScreenWidth,
+                      ),
+                      child: Column(
+                          mainAxisSize: MainAxisSize.max,
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: rows),
+                    ),
+                    // 2 blocks column
+                    ConstrainedBox(
+                      constraints: BoxConstraints(
+                        // minHeight: constraints.maxHeight - bottomHeight - 20,
+                        minWidth: baseScreenWidth,
+                        // maxWidth: baseScreenWidth / 2,
+                      ),
+                      child: Container(
+                          padding: EdgeInsets.only(left: 2 * paddingFormCol, top: 2 * paddingFormCol),
+                          child: listCard ?? Container()),
+                    ),
+                  ],
+                ) 
+                : Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
@@ -171,7 +200,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                         maxWidth: baseScreenWidth / 2,
                       ),
                       child: Container(
-                          padding: EdgeInsets.only(left: 2 * paddingFormCol),
+                          padding: EdgeInsets.only(left: 2 * paddingFormCol, top: 2 * paddingFormCol),
                           child: listCard ?? Container()),
                     ),
                   ],
