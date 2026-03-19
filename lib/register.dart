@@ -133,7 +133,7 @@ class ProviderExamplePage extends StatelessWidget {
               },
               child: LayoutBuilder(
                 builder: (context, constraints) {
-                  final narrow = constraints.maxWidth <= 820;
+                  final narrow = constraints.maxWidth <= baseScreenWidth + wizardOverviewWidth;
 
                   return Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -143,7 +143,7 @@ class ProviderExamplePage extends StatelessWidget {
                           ? Container()
                           : Container(
                               color: const Color(0xff202938),
-                              width: 220,
+                              width: wizardOverviewWidth,
                               child: StepsOverview(),
                             ),
                       Expanded(
