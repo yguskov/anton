@@ -32,14 +32,7 @@ class CustomSquareCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [];
-    // children.add(Align(
-    //   alignment: Alignment.topLeft,
-    //   child: Padding(
-    //     padding: EdgeInsets.only(top: 10, left: 5),
-    //     child: ,
-    //   ),
-    // ));
-
+    // left badge
     if (leftText != null && leftText != '') {
       children.add(Positioned(
         top: -10,
@@ -49,8 +42,8 @@ class CustomSquareCard extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
           decoration: BoxDecoration(
             color: leftColor ?? cardColorOk,
-            border:  Border.all(
-              color: (leftColor != cardColorOk) ? Colors.transparent : cardColorOkBorder ,
+            border: Border.all(
+              color: (leftColor != cardColorOk) ? Colors.transparent : cardColorOkBorder,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(6),
@@ -58,53 +51,49 @@ class CustomSquareCard extends StatelessWidget {
           child: Center(
             child: Text(
               leftText!,
-              style: TextStyle(fontSize: 12, color: (leftColor != cardColorOk) ? Colors.white : cardColorOkBorder),
+              style: TextStyle(
+                  fontSize: 12,
+                  color: (leftColor != cardColorOk) ? Colors.white : cardColorOkBorder),
             ),
           ),
         ),
       ));
     }
-
+    // right badge
     if (rightText != null && rightText != '') {
-      children.add(Positioned(
-        top: -10,
-        right: 60,
-        child: Container(
-          // width: 100,
-          height: 25,
-          padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-          decoration: BoxDecoration(
-          color: cardBackColorLevel[min(0, cardColorLevel.indexOf(rightColor ?? cardColorLevel[0]))],
-            
-            borderRadius: BorderRadius.circular(6),
-          ),
-          child: Center(
-            child: Text(
-              ' $rightText ',
-              style: TextStyle(fontSize: 12, color: (rightColor != cardColorLevel[0]) ? rightColor : cardColorLevel[0])),
+      children.add(
+        Positioned(
+          top: -10,
+          right: cardRemoveButtonWidth + 10,
+          child: Container(
+            height: 25,
+            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+            decoration: BoxDecoration(
+              color: cardBackColorLevel[
+                  max(0, cardColorLevel.indexOf(rightColor ?? cardColorLevel[0]))],
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Center(
+              child: Text(' $rightText ',
+                  style: TextStyle(
+                      fontSize: 12,
+                      color: (rightColor != cardColorLevel[0]) ? rightColor : cardColorLevel[0])),
             ),
           ),
         ),
       );
     }
-
+    // badge stack container
     Widget mainContainer = Container(
-      // width: width,
       height: 20,
-      decoration: BoxDecoration(
-          // color: Colors.grey[300], // серый фон
-          // border: Border.all(
-          //   color: selected ? Colors.red.shade300 : Colors.blueGrey,
-          //   width: selected ? 2 : 1.2,
-          // ),
-          // borderRadius: BorderRadius.circular(4), // скругление
-          ),
+      decoration: BoxDecoration(),
       child: Stack(
         clipBehavior: Clip.none,
         children: children,
       ),
     );
 
+    // card container
     return ConstrainedBox(
       // Минимальная высота блока
       constraints: const BoxConstraints(
@@ -112,6 +101,7 @@ class CustomSquareCard extends StatelessWidget {
       ),
       child: Container(
         // padding: const EdgeInsets.all(16.0),
+        // border arround card
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(9.0),
@@ -132,13 +122,14 @@ class CustomSquareCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisSize: MainAxisSize.min, // Высота колонки подстраивается под контент
           children: [
-            mainContainer,
+            mainContainer, // badges
             const SizedBox(height: 2),
             // Flexible позволяет тексту занимать всю доступную высоту
             Flexible(
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 children: [
+                  // main text container
                   Flexible(
                     child: Container(
                       decoration: BoxDecoration(
@@ -166,9 +157,17 @@ class CustomSquareCard extends StatelessWidget {
                       ),
                     ),
                   ),
-                  Container( 
-                    width: 50,
-                    child: IconButton(onPressed: () {}, icon: Icon(Icons.delete), color: Color(0xffc4cee0),))
+                  // button to delete
+                  Container(
+                      width: cardRemoveButtonWidth,
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: ImageIcon(
+                          AssetImage('image/icons/trash.png'),
+                          size: 20,
+                        ),
+                        color: Color(0xffc4cee0),
+                      ))
                 ],
               ),
             ),
@@ -176,13 +175,13 @@ class CustomSquareCard extends StatelessWidget {
             bottomText != null
                 ? Flexible(
                     child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.only(
-                            bottomLeft: Radius.circular(9),
-                            bottomRight: Radius.circular(9),
-                          ),
-                          color: Color(0xff47b33d),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.only(
+                          bottomLeft: Radius.circular(9),
+                          bottomRight: Radius.circular(9),
                         ),
+                        color: Color(0xff47b33d),
+                      ),
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Padding(
