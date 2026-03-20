@@ -24,7 +24,9 @@ const fieldCaptionFontStyle = TextStyle(
   fontSize: 16,
 );
 
-const Color cardAddButtonColor = Color(0xff47b33d);
+const Color cardAddButtonBackColor = Color(0xff47b33d);
+const Color cardEditButtonBackColor = Color(0xFFF76D12);
+const Color cardDisabledButtonBackColor = Colors.black54;
 const Color cardBorderColor = Color(0xffe6e8ec);
 
 const Color cardColorLike = Color(0xff7bb800);
@@ -51,3 +53,5 @@ const List<Color> cardBackColorLevel = [
 ];
 
 const double cardRemoveButtonWidth = 50.0;
+
+const Color cardBottomTextBackColor = cardAddButtonBackColor; // Color(0xff47b33d)

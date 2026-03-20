@@ -95,6 +95,31 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     );
   }
 
+  Widget buildAddButton(
+      {required void Function() onPressed, required bool enabled, bool isNew = false}) {
+    return ElevatedButton(
+      child: Text(isNew ? "Добавить" : "Сохранить"),
+      onPressed: enabled ? onPressed : null,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: enabled
+            ? (isNew ? cardAddButtonBackColor : cardEditButtonBackColor)
+            : cardDisabledButtonBackColor,
+        foregroundColor: Colors.white,
+      ),
+    );
+  }
+
+  Widget buildRemoveButton({required void Function() onPressed, required bool enabled}) {
+    return ElevatedButton(
+      child: const Text("Удалить"),
+      onPressed: enabled ? onPressed : null,
+      style: ElevatedButton.styleFrom(
+        backgroundColor: enabled ? cardEditButtonBackColor : cardDisabledButtonBackColor,
+        foregroundColor: Colors.white,
+      ),
+    );
+  }
+
   Widget listCard(
       BoxConstraints constraints, List<Map<String, String>> dutyList, _onSelect, cardItem) {
     return GestureDetector(

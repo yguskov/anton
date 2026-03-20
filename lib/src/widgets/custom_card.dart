@@ -172,6 +172,7 @@ class CustomSquareCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 5),
+            // Bottom text
             bottomText != null
                 ? Flexible(
                     child: Container(
@@ -180,12 +181,12 @@ class CustomSquareCard extends StatelessWidget {
                           bottomLeft: Radius.circular(9),
                           bottomRight: Radius.circular(9),
                         ),
-                        color: Color(0xff47b33d),
+                        color: cardBottomTextBackColor,
                       ),
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 0, left: 10, right: 10, bottom: 5),
+                          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
                           child: Text(
                             bottomText!,
                             style: const TextStyle(

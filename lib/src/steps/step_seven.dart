@@ -164,28 +164,14 @@ class StepSevenState extends StateStep<StepSeven> {
           children: [
             Expanded(
               flex: 2,
-              child: ElevatedButton(
-                child: const Text("Удалить"),
-                onPressed: removeEnabled ? _remove : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: removeEnabled ? Color(0xFFF76D12) : Colors.black87,
-                  foregroundColor: Colors.white,
-                ),
-              ),
+              child: buildRemoveButton(onPressed: _remove, enabled: removeEnabled),
             ),
             const SizedBox(
               width: 10,
             ),
             Expanded(
               flex: 2,
-              child: ElevatedButton(
-                child: const Text("Сохранить"),
-                onPressed: saveEnabled ? _save : null,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: saveEnabled ? Color(0xFFF76D12) : Colors.black87,
-                  foregroundColor: Colors.white,
-                ),
-              ),
+              child: buildAddButton(onPressed: _save, enabled: saveEnabled, isNew: !removeEnabled),
             ),
           ],
         ),
