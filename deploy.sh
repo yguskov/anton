@@ -24,6 +24,7 @@ echo "✅ Go deployment completed!"
 echo "🔨 Building WEB ..."
 
 cd $BUILD_DIR
+# flutter build web --profile --base-href /anketa/ --dart-define=API_URL=http://5.187.2.205:8993/api
 flutter build web --release --base-href /anketa/ --dart-define=API_URL=http://5.187.2.205:8993/api
 rsync -avz --delete build/web/ $SERVER:$WEB_DIR
 

@@ -162,78 +162,76 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
       final narrow = constraints.maxWidth <= baseScreenWidth; // 820 1060
       double maxColWidth = baseScreenWidth / 2 - formColPadding;
       return ListView(children: [
-        Expanded(
-          child: Container(
-            color: const Color(0xfff9fafb),
-            padding: const EdgeInsets.all(formColPadding),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  minHeight: constraints.maxHeight -
-                      bottomHeight -
-                      2 * formColPadding, // @FIXME if bottom in two rows should be - 2 * bottomHeight
-                  maxWidth: baseScreenWidth,
-                ),
-                child: narrow
-                    ? Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        // mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          // 1 form column
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              // minHeight: constraints.maxHeight - bottomHeight - 20,
-                              maxWidth: baseScreenWidth,
-                            ),
-                            child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: rows),
-                          ),
-                          // 2 blocks column
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              // minHeight: constraints.maxHeight - bottomHeight - 20,
-                              // minWidth: baseScreenWidth,
-                              maxWidth: baseScreenWidth,
-                            ),
-                            child: Container(
-                                padding: EdgeInsets.only(left: 0, top: 2 * formColPadding),
-                                child: listCard ?? Container()),
-                          ),
-                        ],
-                      )
-                    : Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          // 1 form column
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              // minHeight: constraints.maxHeight - bottomHeight - 20,
-                              maxWidth: maxColWidth,
-                            ),
-                            child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: rows),
-                          ),
-                          // 2 blocks column
-                          ConstrainedBox(
-                            constraints: BoxConstraints(
-                              // minHeight: constraints.maxHeight - bottomHeight - 20,
-                              minWidth: maxColWidth,
-                              maxWidth: maxColWidth,
-                            ),
-                            child: Container(
-                                padding: EdgeInsets.only(
-                                    left: 2 * formColPadding, top: 2 * formColPadding),
-                                child: listCard ?? Container()),
-                          ),
-                        ],
-                      ),
+        Container(
+          color: const Color(0xfff9fafb),
+          padding: const EdgeInsets.all(formColPadding),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(
+                minHeight: constraints.maxHeight -
+                    bottomHeight -
+                    2 * formColPadding, // @FIXME if bottom in two rows should be - 2 * bottomHeight
+                maxWidth: baseScreenWidth,
               ),
+              child: narrow
+                  ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      // mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // 1 form column
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            // minHeight: constraints.maxHeight - bottomHeight - 20,
+                            maxWidth: baseScreenWidth,
+                          ),
+                          child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: rows),
+                        ),
+                        // 2 blocks column
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            // minHeight: constraints.maxHeight - bottomHeight - 20,
+                            // minWidth: baseScreenWidth,
+                            maxWidth: baseScreenWidth,
+                          ),
+                          child: Container(
+                              padding: EdgeInsets.only(left: 0, top: 2 * formColPadding),
+                              child: listCard ?? Container()),
+                        ),
+                      ],
+                    )
+                  : Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        // 1 form column
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            // minHeight: constraints.maxHeight - bottomHeight - 20,
+                            maxWidth: maxColWidth,
+                          ),
+                          child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: rows),
+                        ),
+                        // 2 blocks column
+                        ConstrainedBox(
+                          constraints: BoxConstraints(
+                            // minHeight: constraints.maxHeight - bottomHeight - 20,
+                            minWidth: maxColWidth,
+                            maxWidth: maxColWidth,
+                          ),
+                          child: Container(
+                              padding: EdgeInsets.only(
+                                  left: 2 * formColPadding, top: 2 * formColPadding),
+                              child: listCard ?? Container()),
+                        ),
+                      ],
+                    ),
             ),
           ),
         ),
