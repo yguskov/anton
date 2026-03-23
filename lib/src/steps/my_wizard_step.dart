@@ -3,6 +3,7 @@ import 'dart:html';
 
 import 'package:example/models/cv.dart';
 import 'package:example/src/constants.dart';
+import 'package:example/src/src.dart';
 import 'package:example/src/widgets/action_bar.dart';
 import 'package:example/src/widgets/bottom_bar.dart';
 import 'package:example/src/widgets/just_text_field.dart';
@@ -13,8 +14,8 @@ import '../widgets/dropdown_field.dart';
 import '../widgets/radio_list_field.dart';
 import '../widgets/raw_autocomplete_example.dart';
 
-const headerStyle = TextStyle(fontSize: 18, fontWeight: FontWeight.w700);
-const headerStyle2 = TextStyle(fontSize: 16, fontWeight: FontWeight.w400);
+const headerStyle = TextStyle(height: 1.5, fontSize: 17, fontWeight: FontWeight.w700);
+const headerStyle2 = TextStyle(fontSize: 15, fontWeight: FontWeight.w400);
 
 abstract class StatefulWidgetStep extends StatefulWidget {
   late final MyWizardStep provider;
@@ -146,14 +147,42 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     );
   }
 
-  Widget buildLayout(BuildContext context, List<Widget> rows, [Widget? listCard]) {
-    rows.add(ActionBar());
-    rows = List.generate(
-      rows.length,
-      (index) => _wrapBorder(rows[index], index),
+  Widget buildLayout(BuildContext context, List<Widget> formRows, [Widget? listCard]) {
+    formRows.add(ActionBar()); // buttons
+    List<Widget> rows = List.generate(
+      formRows.length - 5,
+      (index) => _wrapBorder(formRows[index + 5]),
     );
+    // borders
     rows.insert(0, _borderUp());
     rows.add(_borderBottom());
+    // title with
+    rows.insert(
+        0, // @todo progress stack
+        Container(
+          // height: 75,
+          child: Stack(
+            clipBehavior: Clip.none,
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  formRows[0],
+                  formRows[1],
+                  formRows[2],
+                  formRows[3],
+                  formRows[4],
+                ],
+              ),
+              Positioned(
+                child: _buildProgressIndicator(context),
+                right: 0.0,
+                top: 0.0,
+              ),
+            ],
+          ),
+        ));
 
     // rows.add(_borderBottom());
     return LayoutBuilder(builder: (context, constraints) {
@@ -306,7 +335,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     );
   }
 
-  Widget _wrapBorder(Widget child, int? index) {
+  Widget _wrapBorder(Widget child) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 15),
       decoration: BoxDecoration(
@@ -323,6 +352,25 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
         ),
       ),
       child: child,
+    );
+  }
+
+  Widget _buildProgressIndicator(
+    BuildContext context,
+  ) {
+    return StreamBuilder<int>(
+      stream: context.wizardController.indexStream,
+      initialData: context.wizardController.index,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData || snapshot.hasError) {
+          return const SizedBox.shrink();
+        }
+        final index = snapshot.data!;
+        return StepsProgressIndicator(
+          count: context.wizardController.stepCount,
+          index: index,
+        );
+      },
     );
   }
 }

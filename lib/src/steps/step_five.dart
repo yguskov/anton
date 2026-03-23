@@ -171,7 +171,8 @@ class StepFiveState extends StateStep<StepFive> {
         const SizedBox(height: 6),
         Text('Какие навыки позволят использовать ваши умения в максимально эффективных позициях.',
             style: headerStyle2),
-        const SizedBox(height: 16),
+        const SizedBox(height: 10),
+        const SizedBox(height: 0),
         buildTextFieldWithLabel('Мои навыки', 'Управление метлой', 'skill_name', skills),
         const SizedBox(height: 16),
         buildDropdownSection(

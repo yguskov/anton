@@ -11,6 +11,27 @@ const wizardOverviewWidth = 220.0; // menu of wizard of left side
 
 const groundColor = Color(0xFFF9FAFB); // #F9FAFB base ground
 
+const stepTitles = [
+  "Представление",
+  "Цели",
+  "Зарплата",
+  "Обязанности",
+  "Навыки",
+  "Знания",
+  "Достижения",
+  "Регистрация"
+];
+const stepMenuIconFiles = [
+  "menu_introduce.png",
+  "menu_aim.png",
+  "menu_salary.png",
+  "menu_responsibility.png",
+  "menu_skill.png",
+  "menu_knowledge.png",
+  "menu_achievements.png",
+  "menu_final.png",
+];
+
 const bottomGroundColor = Color(0xFFE5E8EA);
 const bottomTextStyle = TextStyle(color: Color(0xFF7C7C7C), fontSize: 12);
 const bottomButtonTextStyle = TextStyle(fontSize: 14);
@@ -55,3 +76,5 @@ const List<Color> cardBackColorLevel = [
 const double cardRemoveButtonWidth = 50.0;
 
 const Color cardBottomTextBackColor = cardAddButtonBackColor; // Color(0xff47b33d)
+
+const Color wizardProgressIconColor = Color(0xFFC4CEE0);

@@ -138,6 +138,11 @@ class StepFinishState extends StateStep<StepFinish> {
       ]);
 
       return buildLayout(context, [
+        Text('Регистрация', style: headerStyle),
+        const SizedBox(height: 6),
+        const SizedBox(height: 0),
+        const SizedBox(height: 0),
+        const SizedBox(height: 0),
         Form(
             key: _formKey,
             child: Column(

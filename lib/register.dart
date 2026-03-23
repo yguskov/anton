@@ -275,26 +275,6 @@ class ProviderExamplePage extends StatelessWidget {
       ],
     );
   }
-
-  Widget _buildProgressIndicator(
-    BuildContext context,
-  ) {
-    return Container();
-    return StreamBuilder<int>(
-      stream: context.wizardController.indexStream,
-      initialData: context.wizardController.index,
-      builder: (context, snapshot) {
-        if (!snapshot.hasData || snapshot.hasError) {
-          return const SizedBox.shrink();
-        }
-        final index = snapshot.data!;
-        return StepsProgressIndicator(
-          count: context.wizardController.stepCount,
-          index: index,
-        );
-      },
-    );
-  }
 }
 
 class ProviderExamplePageProvider {

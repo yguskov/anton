@@ -50,10 +50,13 @@ class StepOneState extends StateStep<StepOne> {
   Widget build(
     BuildContext context,
   ) {
-    print('---- Rebuild positions');
     List<Widget> textFields = [
       Text('Представьтесь', style: headerStyle),
-      const SizedBox(height: 20),
+      const SizedBox(height: 10),
+      const SizedBox(height: 10),
+      const SizedBox(height: 0),
+      const SizedBox(height: 0),
+      // after head (head always 5 items)
       buildTextFieldWithLabel('Ваши Фамилия и Имя', 'Михайлов Петр', 'fio'),
       const SizedBox(height: 16),
       buildTextFieldWithLabel('Какая у вас [должность/профессия]?', 'Джуниор фронтэнд программист',

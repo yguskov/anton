@@ -65,9 +65,11 @@ class StepThreeState extends StateStep<StepThree> {
   ) {
     List<Widget> textFields = [
       Text('Текущие зарплаты', style: headerStyle),
-      const SizedBox(height: 6),
-      Text('Будем предлагать лучшее время и размер для повышение зарплаты', style: headerStyle2),
-      const SizedBox(height: 16),
+      const SizedBox(height: 8),
+      Text('Будем предлагать лучшее время и размер для', style: headerStyle2),
+      Text('повышения зарплаты', style: headerStyle2),
+      const SizedBox(height: 10),
+      // after head (head always 5 items)
       buildTextFieldWithLabel('Какая у вас сейчас зарплата?', '15000', 'salary'),
       const SizedBox(height: 16),
       buildDropdownSection('Когда последний раз вам ее повышали?', 'месяц назад', 'last_upgrade',

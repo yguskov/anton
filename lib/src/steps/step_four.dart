@@ -161,14 +161,24 @@ class StepFourState extends StateStep<StepFour> {
     BuildContext context,
   ) {
     return LayoutBuilder(builder: (context, constraints) {
+      var headerStyle_ = headerStyle;
       List<Widget> textFields = [
-        Text('Круг вашей ответственности', style: headerStyle),
+        Container(
+            constraints: BoxConstraints(
+              maxWidth: 200,
+            ),
+            child: Text(
+              'Круг вашей ответственности',
+              style: headerStyle,
+              softWrap: true,
+            )),
         const SizedBox(height: 6),
         Text(
-            'Опишите ваши обязанности, и какие из них вам нравится или не нравится выполнять.\n' +
-                'Какую новую ответственность вы готовы на себя взять для повышение зарплаты? ',
+            'Опишите ваши обязанности, и какие из них вам нравится или не нравится выполнять\n' +
+                'Какую новую ответственность вы готовы на себя взять для повышение зарплаты?',
             style: headerStyle2),
-        const SizedBox(height: 16),
+        const SizedBox(height: 5),
+        const SizedBox(height: 0),
         buildTextFieldWithLabel('Мои обязанности', 'Чистка конюшен', 'duty_name', duties),
         const SizedBox(height: 16),
         buildTextFieldWithLabel('Как часто?', '2 раза в неделю', 'duty_period', periods),

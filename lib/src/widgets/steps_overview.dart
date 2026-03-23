@@ -21,26 +21,7 @@ class StepsOverview extends StatelessWidget {
             initialData: context.wizardController.getIsGoToEnabled(index),
             builder: (context, snapshot) {
               final enabled = snapshot.data!;
-              const stepTitles = [
-                "Представление",
-                "Цели",
-                "Зарплата",
-                "Обязанности",
-                "Навыки",
-                "Знания",
-                "Достижения",
-                "Регистрация"
-              ];
-              const stepMenuIconFiles = [
-                "menu_introduce.png",
-                "menu_aim.png",
-                "menu_salary.png",
-                "menu_responsibility.png",
-                "menu_skill.png",
-                "menu_knowledge.png",
-                "menu_achievements.png",
-                "menu_final.png",
-              ];
+
               String title = stepTitles[index];
               String iconFile = stepMenuIconFiles[index];
               return StreamBuilder<int>(

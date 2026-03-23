@@ -167,12 +167,17 @@ class StepSixState extends StateStep<StepSix> {
   ) {
     return LayoutBuilder(builder: (context, constraints) {
       List<Widget> textFields = [
-        Text('Ваша мотивация развиваться', style: headerStyle),
+        Container(
+            constraints: BoxConstraints(
+              maxWidth: 200,
+            ),
+            child: Text('Ваша мотивация развиваться', style: headerStyle)),
         const SizedBox(height: 6),
         Text(
             'Покажите, что в вас стоит вкладываться ресурсами ради вашего роста и повышения эффективности',
             style: headerStyle2),
-        const SizedBox(height: 16),
+        const SizedBox(height: 6),
+        const SizedBox(height: 0),
         buildTextFieldWithLabel('Укажите какое новое знание вы получили',
             'Прочитал книгу “Программирование для чайников”', 'know_name', knows),
         const SizedBox(height: 16),
