@@ -31,6 +31,7 @@ class FinishedButton extends StatelessWidget {
           style: ElevatedButton.styleFrom(
             backgroundColor: secondaryColor, // Основной цвет фона
             foregroundColor: Colors.white, // Цвет текста и иконки
+            padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 19),
           ),
         );
       },

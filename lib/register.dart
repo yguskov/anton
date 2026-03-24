@@ -103,7 +103,7 @@ class ProviderExamplePage extends StatelessWidget {
       ],
       // Wrapping with a builder so the context contains the [WizardController]
       child: Container(
-        color: Color(0xFF23B14D),
+        color: Color.fromARGB(255, 225, 229, 233),
         child: Align(
           alignment: Alignment.topCenter,
           child: Container(
