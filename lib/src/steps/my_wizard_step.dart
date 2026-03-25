@@ -138,7 +138,11 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                 width: constraints.maxWidth > screenSide600
                     ? (constraints.maxWidth - 2 * cardSpace10) / 2
                     : constraints.maxWidth,
-                child: cardItem(dutyList[index], index),
+                child: cardItem(dutyList[index], index, () {
+                  setState(() {
+                    dutyList.removeAt(index);
+                  });
+                }),
               ),
             ),
           );

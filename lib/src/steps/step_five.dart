@@ -129,6 +129,23 @@ class StepFiveState extends StateStep<StepFive> {
     });
   }
 
+  void _removeItem() {
+    setState(() {
+      skillList.removeAt(_selectedSkill!);
+      widget.provider.controllerByName('skill_name').text = '';
+      widget.provider.controllerByName('skill_level').text = '';
+      widget.provider.controllerByName('skill_type').text = '';
+      widget.provider.controllerByName('skill_power').text = '';
+      widget.provider.updateValue('skill_name', '');
+      widget.provider.updateValue('skill_level', '');
+      widget.provider.updateValue('skill_type', '');
+      widget.provider.updateValue('skill_power', '');
+      _selectedSkill = null;
+      if (widget.myProvider.skillList.length == 0)
+        widget.provider.wizardController.disableGoNext(4);
+    });
+  }
+
   List<String>? get skills => _skill_options;
 
   List<PopupDropdownItem<String>> get levels => [
@@ -215,7 +232,7 @@ class StepFiveState extends StateStep<StepFive> {
     return listCard(constraints, skillList, _onSelect, _cardWidget);
   }
 
-  Widget _cardWidget(item, index) {
+  Widget _cardWidget(item, index, onDelete) {
     return CustomSquareCard(
       title: '${item['name'] ?? ''}, Тип навыка: ${item['type'] ?? ''}',
       leftText: powerShortText(item['power']!),
@@ -224,6 +241,7 @@ class StepFiveState extends StateStep<StepFive> {
           'Уровень: ${skillList[index]['level'] != '0' ? skillList[index]['level'] : 'Не знаю'}',
       rightColor: Color(0xFF5B32332), // Colors.green.shade800
       selected: _selectedSkill == index,
+      onDelete: onDelete,
     );
   }
 

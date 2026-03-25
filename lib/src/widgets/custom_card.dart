@@ -14,20 +14,22 @@ class CustomSquareCard extends StatelessWidget {
   final Color? leftColor;
   final Color? rightColor;
   final bool selected;
+  final VoidCallback? onDelete;
 
-  const CustomSquareCard({
-    Key? key,
-    required this.title,
-    width = 250,
-    this.height = 60,
-    this.leftText,
-    this.rightText,
-    this.leftColor = Colors.grey,
-    this.rightColor = Colors.grey,
-    this.selected = false,
-    this.bottomTitle,
-    this.bottomText,
-  }) : super(key: key);
+  const CustomSquareCard(
+      {Key? key,
+      required this.title,
+      width = 250,
+      this.height = 60,
+      this.leftText,
+      this.rightText,
+      this.leftColor = Colors.grey,
+      this.rightColor = Colors.grey,
+      this.selected = false,
+      this.bottomTitle,
+      this.bottomText,
+      this.onDelete})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -161,7 +163,7 @@ class CustomSquareCard extends StatelessWidget {
                   Container(
                       width: cardRemoveButtonWidth,
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: onDelete,
                         icon: ImageIcon(
                           AssetImage('image/icons/trash.png'),
                           size: 20,

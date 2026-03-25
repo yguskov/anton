@@ -194,7 +194,7 @@ class StepSevenState extends StateStep<StepSeven> {
     return listCard(constraints, achieveList, _onSelect, _cardWidget);
   }
 
-  Widget _cardWidget(item, index) {
+  Widget _cardWidget(item, index, onDelete) {
     return CustomSquareCard(
       title: item['name'] ?? '',
       bottomText: (item['result']?.trim().isNotEmpty ?? false) ? 'Польза: ${item['result']}' : null,
@@ -203,6 +203,7 @@ class StepSevenState extends StateStep<StepSeven> {
       rightText: get_period_by_value(item['when']),
       rightColor: Colors.green.shade800,
       selected: _selectedAchieve == index,
+      onDelete: onDelete,
     );
   }
 

@@ -225,7 +225,7 @@ class StepSixState extends StateStep<StepSix> {
     return listCard(constraints, knowList, _onSelect, _cardWidget);
   }
 
-  Widget _cardWidget(item, index) {
+  Widget _cardWidget(item, index, onDelete) {
     return CustomSquareCard(
       title: '${item['name'] ?? ''} (Навык: ${item['skill'] ?? ''})',
       bottomText:
@@ -235,6 +235,7 @@ class StepSixState extends StateStep<StepSix> {
       rightText: get_period_by_value(item['when']),
       rightColor: Colors.green.shade800,
       selected: _selectedKnow == index,
+      onDelete: onDelete,
     );
   }
 

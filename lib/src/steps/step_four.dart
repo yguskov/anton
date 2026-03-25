@@ -223,7 +223,7 @@ class StepFourState extends StateStep<StepFour> {
     return listCard(constraints, dutyList, _onSelect, _cardWidget);
   }
 
-  Widget _cardWidget(item, index) {
+  Widget _cardWidget(item, index, onDelete) {
     return CustomSquareCard(
       title: '${item['name'] ?? ''}\n${ucfirst(item['period']) ?? ''}',
       leftText: attitudeShortText(item['attitude']!),
@@ -232,6 +232,7 @@ class StepFourState extends StateStep<StepFour> {
           item['type'] == 'new' ? 'Новая' : (item['type'] == 'extra' ? 'Дополнительная' : ''),
       rightColor: item['type'] == 'new' ? cardColorLevel[3] : cardColorLevel[1],
       selected: _selectedDuty == index,
+      onDelete: onDelete,
     );
   }
 
