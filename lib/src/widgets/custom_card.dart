@@ -3,6 +3,11 @@ import 'dart:math';
 import 'package:example/example.dart';
 import 'package:flutter/material.dart';
 
+enum CardMode {
+  preview,
+  edition,
+}
+
 class CustomSquareCard extends StatelessWidget {
   final String title;
   final String? leftText;
@@ -15,6 +20,7 @@ class CustomSquareCard extends StatelessWidget {
   final Color? rightColor;
   final bool selected;
   final VoidCallback? onDelete;
+  final CardMode mode;
 
   const CustomSquareCard(
       {Key? key,
@@ -28,7 +34,8 @@ class CustomSquareCard extends StatelessWidget {
       this.selected = false,
       this.bottomTitle,
       this.bottomText,
-      this.onDelete})
+      this.onDelete,
+      this.mode = CardMode.edition})
       : super(key: key);
 
   @override
@@ -66,7 +73,7 @@ class CustomSquareCard extends StatelessWidget {
       children.add(
         Positioned(
           top: -10,
-          right: cardRemoveButtonWidth + 10,
+          right: (mode == CardMode.edition ? 1 : 0) * cardRemoveButtonWidth + 10,
           child: Container(
             height: 25,
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
@@ -138,7 +145,7 @@ class CustomSquareCard extends StatelessWidget {
                         border: Border(
                           right: BorderSide(
                             color: cardBorderColor,
-                            width: 1.0,
+                            width: mode == CardMode.edition ? 1.0 : 0.0,
                             style: BorderStyle.solid,
                           ),
                         ),
@@ -160,7 +167,7 @@ class CustomSquareCard extends StatelessWidget {
                     ),
                   ),
                   // button to delete
-                  Container(
+                  mode == CardMode.edition ? Container(
                       width: cardRemoveButtonWidth,
                       child: IconButton(
                         onPressed: onDelete,
@@ -169,7 +176,7 @@ class CustomSquareCard extends StatelessWidget {
                           size: 20,
                         ),
                         color: Color(0xffc4cee0),
-                      ))
+                      )) : Container()
                 ],
               ),
             ),

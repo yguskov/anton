@@ -158,7 +158,7 @@ class CVWidget extends StatelessWidget {
               style: headerStyle,
             ),
           ),
-          SizedBox(height: h1),
+          SizedBox(height: h1), 
           Wrap(spacing: 10, runSpacing: 10, children: [
             for (var item in list)
               CustomSquareCard(
@@ -172,6 +172,7 @@ class CVWidget extends StatelessWidget {
                 bottomTitle: bottomTitleCallBack != null ? bottomTitleCallBack(item) : null,
                 bottomText: bottomTextCallBack != null ? bottomTextCallBack(item) : null,
                 selected: false,
+                mode: CardMode.preview
               )
           ]),
         ],
