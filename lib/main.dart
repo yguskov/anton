@@ -108,6 +108,8 @@ class MyApp extends StatelessWidget {
           ),
           textSelectionTheme: TextSelectionThemeData(
             cursorColor: Colors.black, // Global cursor color for all TextFields
+            selectionColor: Colors.grey.shade400,
+            selectionHandleColor: Colors.grey.shade400,
           ),
           inputDecorationTheme: InputDecorationTheme(
             filled: true, // Обязательно включите filled

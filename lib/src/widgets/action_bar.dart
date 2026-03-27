@@ -15,13 +15,9 @@ class ActionBar extends StatelessWidget {
   Widget build(
     BuildContext context,
   ) {
-    print('before get provider');
-
     final provider = Provider.of<ProviderExamplePageProvider>(
       context,
     );
-    print('after get provider');
-
 
     return LayoutBuilder(
       builder: (context, constraints) {
@@ -80,16 +76,12 @@ class ActionBar extends StatelessWidget {
             // foregroundColor: Colors.white,
             side: BorderSide(color: Colors.black12),
           ),
-        );        
+        );
       },
     );
-
-
-
   }
 
   void _onPreview(BuildContext context, ProviderExamplePageProvider provider) {
-
     Widget cvWidget = Text('No data');
 
     if (provider.cv != null) {
@@ -102,7 +94,7 @@ class ActionBar extends StatelessWidget {
       // CV? cv = authProvider.userCV;
 
       _openFullScreenDialog(context, cvWidget);
-    }  
+    }
   }
 
   void _openFullScreenDialog(BuildContext context, Widget content) {
@@ -123,7 +115,7 @@ class ActionBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Container(
-                width:  min(820.0, MediaQuery.of(context).size.width * 0.9),
+                width: min(820.0, MediaQuery.of(context).size.width * 0.9),
                 constraints: BoxConstraints(
                   maxHeight: MediaQuery.of(context).size.height * 0.9,
                 ),
@@ -138,7 +130,7 @@ class ActionBar extends StatelessWidget {
                         ),
                       ),
                     ),
-                    
+
                     // Кнопка закрытия
                     Positioned(
                       top: 10,
@@ -169,6 +161,4 @@ class ActionBar extends StatelessWidget {
       },
     );
   }
-
-
 }
