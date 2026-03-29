@@ -151,9 +151,10 @@ class AuthProvider with ChangeNotifier {
       var json = await _apiService.getUserCV(id);
       _isLoading = false;
 
-      print('--------json---------------- ${json}');
+      print('--------get-cv---------------- ${json}');
       notifyListeners();
       _userCV = CV.fromJson(jsonEncode(json));
+
     } catch (e) {
       _error = e.toString();
       _isLoading = false;

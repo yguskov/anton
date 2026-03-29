@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:example/src/utils.dart';
 import 'package:example/src/widgets/cv_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
@@ -93,72 +94,9 @@ class ActionBar extends StatelessWidget {
       // context.wizardController.stepControllers[context.wizardController.index].step.updateCV();
       // CV? cv = authProvider.userCV;
 
-      _openFullScreenDialog(context, cvWidget);
+      openFullScreenDialog(context, cvWidget, 820);
     }
   }
 
-  void _openFullScreenDialog(BuildContext context, Widget content) {
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: "Close",
-      barrierColor: Colors.black54, // Полупрозрачный фон
-      transitionDuration: const Duration(milliseconds: 300),
-      pageBuilder: (context, animation, secondaryAnimation) {
-        return Material(
-          color: Colors.transparent,
-          child: SafeArea(
-            child: Dialog(
-              insetPadding: const EdgeInsets.all(20),
-              backgroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Container(
-                width: min(820.0, MediaQuery.of(context).size.width * 0.9),
-                constraints: BoxConstraints(
-                  maxHeight: MediaQuery.of(context).size.height * 0.9,
-                ),
-                child: Stack(
-                  children: [
-                    // Контент с прокруткой
-                    Positioned.fill(
-                      child: Padding(
-                        padding: const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
-                        child: SingleChildScrollView(
-                          child: content,
-                        ),
-                      ),
-                    ),
-
-                    // Кнопка закрытия
-                    Positioned(
-                      top: 10,
-                      right: 10,
-                      child: IconButton(
-                        icon: Icon(Icons.close, size: 28),
-                        onPressed: () => Navigator.of(context).pop(),
-                        splashRadius: 24,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-      transitionBuilder: (context, animation, secondaryAnimation, child) {
-        return ScaleTransition(
-          scale: Tween<double>(begin: 0.8, end: 1.0).animate(
-            CurvedAnimation(parent: animation, curve: Curves.easeOut),
-          ),
-          child: FadeTransition(
-            opacity: animation,
-            child: child,
-          ),
-        );
-      },
-    );
-  }
+  
 }

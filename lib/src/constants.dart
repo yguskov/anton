@@ -45,6 +45,8 @@ const fieldCaptionFontStyle = TextStyle(
   fontSize: 16,
 );
 
+const registerButtonBackColor = Color(0xff48b33d);
+
 const Color cardAddButtonBackColor = Color(0xff47b33d);
 const Color cardEditButtonBackColor = Color(0xFFF76D12);
 const Color cardDisabledButtonBackColor = Colors.black54;

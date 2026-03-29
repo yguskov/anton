@@ -50,6 +50,10 @@ class ProviderExamplePage extends StatelessWidget {
       print('----first load user-----');
       if (authProvider.currentUser?.guid != null) {
         Future.microtask(() async {
+          // if we has token in local storage should we fetch user at start of cv edition?
+          // if (authProvider.currentUser == null) {
+          //   authProvider.fetchCurrentUser();
+          // }
           await authProvider.loadUserCV(authProvider.currentUser!.guid);
           cv = authProvider.userCV ?? CV.instance;
           ProviderExamplePageProvider pageProvider =

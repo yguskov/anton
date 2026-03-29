@@ -2,19 +2,24 @@ import 'dart:async';
 import 'dart:html';
 
 import 'package:example/models/cv.dart';
+import 'package:example/providers/auth_provider.dart';
+import 'package:example/register.dart';
 import 'package:example/src/constants.dart';
 import 'package:example/src/src.dart';
+import 'package:example/src/utils.dart';
 import 'package:example/src/widgets/action_bar.dart';
 import 'package:example/src/widgets/bottom_bar.dart';
 import 'package:example/src/widgets/just_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
+import 'package:provider/provider.dart';
 
 import '../widgets/dropdown_field.dart';
 import '../widgets/radio_list_field.dart';
 import '../widgets/raw_autocomplete_example.dart';
 
-const headerStyle = TextStyle(height: 1.5, fontSize: 17, fontWeight: FontWeight.w700);
+const headerStyle =
+    TextStyle(height: 1.5, fontSize: 17, fontWeight: FontWeight.w700);
 const headerStyle2 = TextStyle(fontSize: 15, fontWeight: FontWeight.w400);
 
 abstract class StatefulWidgetStep extends StatefulWidget {
@@ -31,7 +36,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
   // get another step
   MyWizardStep providerOfStep(int i) {
-    return widget.provider.wizardController.stepControllers[i].step as MyWizardStep;
+    return widget.provider.wizardController.stepControllers[i].step
+        as MyWizardStep;
   }
 
   Widget buildJustTextField(String hint, String fieldName) {
@@ -53,8 +59,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
         hasError: widget.provider.hasError(fieldName));
   }
 
-  Widget buildDropdownSection(
-      String label, String hint, String fieldName, List<PopupDropdownItem<String>> items) {
+  Widget buildDropdownSection(String label, String hint, String fieldName,
+      List<PopupDropdownItem<String>> items) {
     return DropdownField(
       fieldName: fieldName,
       label: label,
@@ -91,13 +97,17 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                 widget.provider.updateValue(fieldName, value! ? '1' : '');
               });
             }),
-        Expanded(child: Text(label, maxLines: 2, overflow: TextOverflow.visible, softWrap: true))
+        Expanded(
+            child: Text(label,
+                maxLines: 2, overflow: TextOverflow.visible, softWrap: true))
       ],
     );
   }
 
   Widget buildAddButton(
-      {required void Function() onPressed, required bool enabled, bool isNew = false}) {
+      {required void Function() onPressed,
+      required bool enabled,
+      bool isNew = false}) {
     return ElevatedButton(
       child: Text(isNew ? "Добавить" : "Сохранить"),
       onPressed: enabled ? onPressed : null,
@@ -110,19 +120,21 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     );
   }
 
-  Widget buildRemoveButton({required void Function() onPressed, required bool enabled}) {
+  Widget buildRemoveButton(
+      {required void Function() onPressed, required bool enabled}) {
     return ElevatedButton(
       child: const Text("Удалить"),
       onPressed: enabled ? onPressed : null,
       style: ElevatedButton.styleFrom(
-        backgroundColor: enabled ? cardEditButtonBackColor : cardDisabledButtonBackColor,
+        backgroundColor:
+            enabled ? cardEditButtonBackColor : cardDisabledButtonBackColor,
         foregroundColor: Colors.white,
       ),
     );
   }
 
-  Widget listCard(
-      BoxConstraints constraints, List<Map<String, String>> dutyList, _onSelect, cardItem) {
+  Widget listCard(BoxConstraints constraints,
+      List<Map<String, String>> dutyList, _onSelect, cardItem) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () => _onSelect(null),
@@ -151,7 +163,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     );
   }
 
-  Widget buildLayout(BuildContext context, List<Widget> formRows, [Widget? listCard]) {
+  Widget buildLayout(BuildContext context, List<Widget> formRows,
+      [Widget? listCard]) {
     formRows.add(ActionBar()); // buttons
     List<Widget> rows = List.generate(
       formRows.length - 5,
@@ -188,6 +201,13 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
           ),
         ));
 
+    double registerContainerHeight = 50.0;
+
+    final authProvider = Provider.of<AuthProvider>(context);
+    if (authProvider.isAuth) {
+      registerContainerHeight = 0;
+    }
+
     // rows.add(_borderBottom());
     return LayoutBuilder(builder: (context, constraints) {
       print('Whole page width = ${constraints.maxWidth}');
@@ -196,6 +216,50 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
       double maxColWidth = baseScreenWidth / 2 - formColPadding;
       return ListView(children: [
         Container(
+            height: registerContainerHeight,
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
+              colors: [
+                Color(0xFF5CCDA1),
+                Color(0xFF295B9F),
+              ],
+            )),
+            child: authProvider.isAuth
+                ? null
+                : Stack(children: [
+                    Center(
+                      child: Text(
+                        constraints.maxWidth > 700
+                            ? 'Для сохранения прогресса заполнения'
+                            : 'Для сохранения',
+                        style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white),
+                      ),
+                    ),
+                    // register button
+                    Positioned(
+                      right: 10,
+                      top: 5,
+                      bottom: 5,
+                      child: Center(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            openRegistrationForm(context, authProvider);
+                          },
+                          child: Text('Зарегистрируйтесь'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Color(0xFF48B33D),
+                            foregroundColor: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ])),
+        Container(
           color: const Color(0xfff9fafb),
           padding: const EdgeInsets.all(formColPadding),
           child: Align(
@@ -203,6 +267,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
             child: ConstrainedBox(
               constraints: BoxConstraints(
                 minHeight: constraints.maxHeight -
+                    registerContainerHeight -
                     bottomHeight -
                     2 * formColPadding, // @FIXME if bottom in two rows should be - 2 * bottomHeight
                 maxWidth: baseScreenWidth,
@@ -231,7 +296,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                             maxWidth: baseScreenWidth,
                           ),
                           child: Container(
-                              padding: EdgeInsets.only(left: 0, top: 2 * formColPadding),
+                              padding: EdgeInsets.only(
+                                  left: 0, top: 2 * formColPadding),
                               child: listCard ?? Container()),
                         ),
                       ],
@@ -260,7 +326,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                           ),
                           child: Container(
                               padding: EdgeInsets.only(
-                                  left: 2 * formColPadding, top: 2 * formColPadding),
+                                  left: 2 * formColPadding,
+                                  top: 2 * formColPadding),
                               child: listCard ?? Container()),
                         ),
                       ],
@@ -377,6 +444,139 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
       },
     );
   }
+
+  void openRegistrationForm(BuildContext context, AuthProvider authProvider) {
+    List<Widget> textFields = [];
+
+    final _formKey = GlobalKey<FormState>();
+    final _emailController = TextEditingController();
+    final _passwordController = TextEditingController();
+    final _nameController = TextEditingController();
+
+    textFields = [
+      SizedBox(height: 25),
+      TextFormField(
+        controller: _emailController,
+        decoration: InputDecoration(
+          labelText: 'Почта',
+          hintText: 'user@mail.com',
+          filled: true,
+          fillColor: Colors.grey[200],
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(4),
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(6),
+              bottomRight: Radius.circular(6),
+            ),
+          ),
+          contentPadding: const EdgeInsets.all(16),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Укажите почту';
+          } else if (!checkEmail(value)) return 'Не похоже на почту';
+          return null;
+        },
+      ),
+      SizedBox(height: 16),
+      TextFormField(
+        controller: _passwordController,
+        decoration: InputDecoration(
+          labelText: 'Пароль',
+          filled: true,
+          fillColor: Colors.grey[200],
+          enabledBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+            borderRadius: const BorderRadius.all(
+              Radius.circular(4),
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(6),
+              bottomRight: Radius.circular(6),
+            ),
+          ),
+          contentPadding: const EdgeInsets.all(16),
+        ),
+        obscureText: true,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Укажите пароль';
+          }
+          if (value.length < 3) {
+            return 'Пароль не может быть меньше 3 символов';
+          }
+          return null;
+        },
+      ),
+      // TextFormField(
+      //   controller: _nameController,
+      //   decoration: InputDecoration(labelText: 'Name'),
+      // ),
+    ];
+
+    textFields.addAll([
+      if (authProvider.error != null)
+        Text(
+          authProvider.error!,
+          style: TextStyle(color: Colors.red),
+        ),
+      SizedBox(height: 20),
+      authProvider.isLoading
+          ? CircularProgressIndicator()
+          : SizedBox(height: 20),
+    ]);
+
+    textFields.add(ElevatedButton(
+      onPressed: () async {
+        final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final wizardProvider =
+            Provider.of<ProviderExamplePageProvider>(context, listen: false);
+
+        bool success = false;
+        final userData = wizardProvider.cv!.data;
+
+        if (_formKey.currentState!.validate()) {
+          success = await authProvider.register(
+            _emailController.text,
+            _passwordController.text,
+            userData,
+          );
+        }
+
+        if (success) {
+          print(
+              '${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
+          Navigator.of(context).pop();
+        } else {
+          print('Error register');
+        }
+      },
+      child: Text('Зарегистрироваться'),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF48B33D),
+          foregroundColor: Colors.white,
+          padding: EdgeInsets.symmetric(vertical: 25)),
+    ));
+
+    openFullScreenDialog(
+        context,
+        Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: textFields,
+            )),
+        600);
+  }
 }
 
 // Step provider
@@ -414,7 +614,8 @@ abstract class MyWizardStep with WizardStep {
   }
 
   TextEditingController controllerByName(String field) {
-    if (!_controller.containsKey(field)) throw Exception('Empty controller with name $field');
+    if (!_controller.containsKey(field))
+      throw Exception('Empty controller with name $field');
     return _controller[field]!;
   }
 
@@ -431,7 +632,8 @@ abstract class MyWizardStep with WizardStep {
       String name = item.key;
       _field[name]!.add(cv.getValue(name) ?? '');
       if (_controller[name] != null) {
-        if (cv.getValue(name) != null) _controller[name]!.text = cv.getValue(name)!;
+        if (cv.getValue(name) != null)
+          _controller[name]!.text = cv.getValue(name)!;
       }
     }
   }

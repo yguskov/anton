@@ -52,7 +52,9 @@ class CustomSquareCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: leftColor ?? cardColorOk,
             border: Border.all(
-              color: (leftColor != cardColorOk) ? Colors.transparent : cardColorOkBorder,
+              color: (leftColor != cardColorOk)
+                  ? Colors.transparent
+                  : cardColorOkBorder,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(6),
@@ -62,7 +64,9 @@ class CustomSquareCard extends StatelessWidget {
               leftText!,
               style: TextStyle(
                   fontSize: 12,
-                  color: (leftColor != cardColorOk) ? Colors.white : cardColorOkBorder),
+                  color: (leftColor != cardColorOk)
+                      ? Colors.white
+                      : cardColorOkBorder),
             ),
           ),
         ),
@@ -73,20 +77,23 @@ class CustomSquareCard extends StatelessWidget {
       children.add(
         Positioned(
           top: -10,
-          right: (mode == CardMode.edition ? 1 : 0) * cardRemoveButtonWidth + 10,
+          right:
+              (mode == CardMode.edition ? 1 : 0) * cardRemoveButtonWidth + 10,
           child: Container(
             height: 25,
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
             decoration: BoxDecoration(
-              color: cardBackColorLevel[
-                  max(0, cardColorLevel.indexOf(rightColor ?? cardColorLevel[0]))],
+              color: cardBackColorLevel[max(
+                  0, cardColorLevel.indexOf(rightColor ?? cardColorLevel[0]))],
               borderRadius: BorderRadius.circular(6),
             ),
             child: Center(
               child: Text(' $rightText ',
                   style: TextStyle(
                       fontSize: 12,
-                      color: (rightColor != cardColorLevel[0]) ? rightColor : cardColorLevel[0])),
+                      color: (rightColor != cardColorLevel[0])
+                          ? rightColor
+                          : cardColorLevel[0])),
             ),
           ),
         ),
@@ -120,7 +127,8 @@ class CustomSquareCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color: selected ? Color(0xffc7e4f0) : Colors.white.withOpacity(1.0),
+              color:
+                  selected ? Color(0xffc7e4f0) : Colors.white.withOpacity(1.0),
               spreadRadius: 1,
               blurRadius: 3,
               offset: const Offset(0, 1),
@@ -129,7 +137,7 @@ class CustomSquareCard extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min, // Высота колонки подстраивается под контент
+          mainAxisSize: MainAxisSize.min,
           children: [
             mainContainer, // badges
             const SizedBox(height: 2),
@@ -153,7 +161,8 @@ class CustomSquareCard extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          padding: EdgeInsets.symmetric(
+                              vertical: 10, horizontal: 10),
                           child: Text(
                             title,
                             style: const TextStyle(
@@ -167,16 +176,18 @@ class CustomSquareCard extends StatelessWidget {
                     ),
                   ),
                   // button to delete
-                  mode == CardMode.edition ? Container(
-                      width: cardRemoveButtonWidth,
-                      child: IconButton(
-                        onPressed: onDelete,
-                        icon: ImageIcon(
-                          AssetImage('image/icons/trash.png'),
-                          size: 20,
-                        ),
-                        color: Color(0xffc4cee0),
-                      )) : Container()
+                  mode == CardMode.edition
+                      ? Container(
+                          width: cardRemoveButtonWidth,
+                          child: IconButton(
+                            onPressed: () => _onDelete(context),
+                            icon: ImageIcon(
+                              AssetImage('image/icons/trash.png'),
+                              size: 20,
+                            ),
+                            color: Color(0xffc4cee0),
+                          ))
+                      : Container()
                 ],
               ),
             ),
@@ -195,7 +206,8 @@ class CustomSquareCard extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Padding(
-                          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
+                          padding: EdgeInsets.only(
+                              top: 10, left: 10, right: 10, bottom: 12),
                           child: Text(
                             bottomText!,
                             style: const TextStyle(
@@ -219,5 +231,53 @@ class CustomSquareCard extends StatelessWidget {
     //   color: selected ? Colors.red.shade300 : Colors.blueGrey,
     //   width: selected ? 2 : 1.2,
     // );
+  }
+
+  // confirm and delete
+  void _onDelete(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          // title: Text(''),
+          content: Padding(padding: EdgeInsets.only(top: 10),
+          child: Text('Пожалуйста, подтвердите удаление')),
+          actions: [
+            Row(children: [
+              SizedBox(width: 20),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(false), // Отмена
+                  style: OutlinedButton.styleFrom(
+                    // backgroundColor: Color(0xFF5801fd),
+                    foregroundColor: Colors.black54,
+                    // foregroundColor: Colors.white,
+                    side: BorderSide(color: Colors.black12),
+                  ),
+                  child: Text('Нет'),
+                ),
+              ),
+              SizedBox(width: 20),
+              Expanded(
+                child: ElevatedButton(
+                  onPressed: () =>
+                      Navigator.of(context).pop(true), // Подтверждение
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: secondaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: Text('Да'),
+                ),
+              ),
+              SizedBox(width: 20),
+            ])
+          ],
+        );
+      },
+    ).then((result) {
+      if (result == true) {
+        onDelete!();
+      }
+    });
   }
 }
