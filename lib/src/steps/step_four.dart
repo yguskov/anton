@@ -220,7 +220,7 @@ class StepFourState extends StateStep<StepFour> {
   }
 
   _buildDutyList(BoxConstraints constraints) {
-    return listCard(constraints, dutyList, _onSelect, _cardWidget);
+    return listCard(constraints, 'Ваши обязанности', dutyList, _onSelect, _cardWidget);
   }
 
   Widget _cardWidget(item, index, onDelete) {

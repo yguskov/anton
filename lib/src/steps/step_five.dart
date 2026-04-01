@@ -229,7 +229,7 @@ class StepFiveState extends StateStep<StepFive> {
   }
 
   _buildSkillList(BoxConstraints constraints) {
-    return listCard(constraints, skillList, _onSelect, _cardWidget);
+    return listCard(constraints, 'Ваши навыки', skillList, _onSelect, _cardWidget);
   }
 
   Widget _cardWidget(item, index, onDelete) {

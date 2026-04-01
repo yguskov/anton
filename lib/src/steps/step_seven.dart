@@ -191,7 +191,7 @@ class StepSevenState extends StateStep<StepSeven> {
   }
 
   _buildAchieveList(BoxConstraints constraints) {
-    return listCard(constraints, achieveList, _onSelect, _cardWidget);
+    return listCard(constraints, 'Ваши достижения', achieveList, _onSelect, _cardWidget);
   }
 
   Widget _cardWidget(item, index, onDelete) {

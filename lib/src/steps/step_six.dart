@@ -222,7 +222,7 @@ class StepSixState extends StateStep<StepSix> {
   }
 
   _buildKnowList(BoxConstraints constraints) {
-    return listCard(constraints, knowList, _onSelect, _cardWidget);
+    return listCard(constraints, 'Ваши знания', knowList, _onSelect, _cardWidget);
   }
 
   Widget _cardWidget(item, index, onDelete) {

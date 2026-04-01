@@ -18,8 +18,7 @@ import '../widgets/dropdown_field.dart';
 import '../widgets/radio_list_field.dart';
 import '../widgets/raw_autocomplete_example.dart';
 
-const headerStyle =
-    TextStyle(height: 1.5, fontSize: 17, fontWeight: FontWeight.w700);
+const headerStyle = TextStyle(height: 1.5, fontSize: 17, fontWeight: FontWeight.w700);
 const headerStyle2 = TextStyle(fontSize: 15, fontWeight: FontWeight.w400);
 
 abstract class StatefulWidgetStep extends StatefulWidget {
@@ -36,8 +35,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
   // get another step
   MyWizardStep providerOfStep(int i) {
-    return widget.provider.wizardController.stepControllers[i].step
-        as MyWizardStep;
+    return widget.provider.wizardController.stepControllers[i].step as MyWizardStep;
   }
 
   Widget buildJustTextField(String hint, String fieldName) {
@@ -59,8 +57,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
         hasError: widget.provider.hasError(fieldName));
   }
 
-  Widget buildDropdownSection(String label, String hint, String fieldName,
-      List<PopupDropdownItem<String>> items) {
+  Widget buildDropdownSection(
+      String label, String hint, String fieldName, List<PopupDropdownItem<String>> items) {
     return DropdownField(
       fieldName: fieldName,
       label: label,
@@ -97,17 +95,13 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                 widget.provider.updateValue(fieldName, value! ? '1' : '');
               });
             }),
-        Expanded(
-            child: Text(label,
-                maxLines: 2, overflow: TextOverflow.visible, softWrap: true))
+        Expanded(child: Text(label, maxLines: 2, overflow: TextOverflow.visible, softWrap: true))
       ],
     );
   }
 
   Widget buildAddButton(
-      {required void Function() onPressed,
-      required bool enabled,
-      bool isNew = false}) {
+      {required void Function() onPressed, required bool enabled, bool isNew = false}) {
     return ElevatedButton(
       child: Text(isNew ? "Добавить" : "Сохранить"),
       onPressed: enabled ? onPressed : null,
@@ -120,51 +114,54 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     );
   }
 
-  Widget buildRemoveButton(
-      {required void Function() onPressed, required bool enabled}) {
+  Widget buildRemoveButton({required void Function() onPressed, required bool enabled}) {
     return ElevatedButton(
       child: const Text("Удалить"),
       onPressed: enabled ? onPressed : null,
       style: ElevatedButton.styleFrom(
-        backgroundColor:
-            enabled ? cardEditButtonBackColor : cardDisabledButtonBackColor,
+        backgroundColor: enabled ? cardEditButtonBackColor : cardDisabledButtonBackColor,
         foregroundColor: Colors.white,
       ),
     );
   }
 
-  Widget listCard(BoxConstraints constraints,
-      List<Map<String, String>> dutyList, _onSelect, cardItem) {
+  Widget listCard(
+      BoxConstraints constraints, title, List<Map<String, String>> dutyList, _onSelect, cardItem) {
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
       onTap: () => _onSelect(null),
-      child: Wrap(
-        spacing: cardSpace10,
-        runSpacing: cardSpace10,
-        children: List.generate(dutyList.length, (index) {
-          return MouseRegion(
-            cursor: MaterialStateMouseCursor.clickable,
-            child: GestureDetector(
-              onTap: () => _onSelect(index),
-              child: SizedBox(
-                width: constraints.maxWidth > screenSide600
-                    ? (constraints.maxWidth - 2 * cardSpace10) / 2
-                    : constraints.maxWidth,
-                child: cardItem(dutyList[index], index, () {
-                  setState(() {
-                    dutyList.removeAt(index);
-                  });
-                }),
-              ),
-            ),
-          );
-        }),
+      child: Column(
+        children: [
+          Text('${title}:', style: headerStyle),
+          SizedBox(height: cardSpace10),
+          Wrap(
+            spacing: cardSpace10,
+            runSpacing: cardSpace10,
+            children: List.generate(dutyList.length, (index) {
+              return MouseRegion(
+                cursor: MaterialStateMouseCursor.clickable,
+                child: GestureDetector(
+                  onTap: () => _onSelect(index),
+                  child: SizedBox(
+                    width: constraints.maxWidth > screenSide600
+                        ? (constraints.maxWidth - 2 * cardSpace10) / 2
+                        : constraints.maxWidth,
+                    child: cardItem(dutyList[index], index, () {
+                      setState(() {
+                        dutyList.removeAt(index);
+                      });
+                    }),
+                  ),
+                ),
+              );
+            }),
+          ),
+        ],
       ),
     );
   }
 
-  Widget buildLayout(BuildContext context, List<Widget> formRows,
-      [Widget? listCard]) {
+  Widget buildLayout(BuildContext context, List<Widget> formRows, [Widget? listCard]) {
     formRows.add(ActionBar()); // buttons
     List<Widget> rows = List.generate(
       formRows.length - 5,
@@ -235,9 +232,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                             ? 'Для сохранения прогресса заполнения'
                             : 'Для сохранения',
                         style: TextStyle(
-                            fontSize: 19,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white),
+                            fontSize: 19, fontWeight: FontWeight.bold, color: Colors.white),
                       ),
                     ),
                     // register button
@@ -296,8 +291,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                             maxWidth: baseScreenWidth,
                           ),
                           child: Container(
-                              padding: EdgeInsets.only(
-                                  left: 0, top: 2 * formColPadding),
+                              padding: EdgeInsets.only(left: 0, top: 2 * formColPadding),
                               child: listCard ?? Container()),
                         ),
                       ],
@@ -326,8 +320,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                           ),
                           child: Container(
                               padding: EdgeInsets.only(
-                                  left: 2 * formColPadding,
-                                  top: 2 * formColPadding),
+                                  left: 2 * formColPadding, top: 2 * formColPadding),
                               child: listCard ?? Container()),
                         ),
                       ],
@@ -530,16 +523,13 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
           style: TextStyle(color: Colors.red),
         ),
       SizedBox(height: 20),
-      authProvider.isLoading
-          ? CircularProgressIndicator()
-          : SizedBox(height: 20),
+      authProvider.isLoading ? CircularProgressIndicator() : SizedBox(height: 20),
     ]);
 
     textFields.add(ElevatedButton(
       onPressed: () async {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        final wizardProvider =
-            Provider.of<ProviderExamplePageProvider>(context, listen: false);
+        final wizardProvider = Provider.of<ProviderExamplePageProvider>(context, listen: false);
 
         bool success = false;
         final userData = wizardProvider.cv!.data;
@@ -553,8 +543,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
         }
 
         if (success) {
-          print(
-              '${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
+          print('${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
           Navigator.of(context).pop();
         } else {
           print('Error register');
@@ -614,8 +603,7 @@ abstract class MyWizardStep with WizardStep {
   }
 
   TextEditingController controllerByName(String field) {
-    if (!_controller.containsKey(field))
-      throw Exception('Empty controller with name $field');
+    if (!_controller.containsKey(field)) throw Exception('Empty controller with name $field');
     return _controller[field]!;
   }
 
@@ -632,8 +620,7 @@ abstract class MyWizardStep with WizardStep {
       String name = item.key;
       _field[name]!.add(cv.getValue(name) ?? '');
       if (_controller[name] != null) {
-        if (cv.getValue(name) != null)
-          _controller[name]!.text = cv.getValue(name)!;
+        if (cv.getValue(name) != null) _controller[name]!.text = cv.getValue(name)!;
       }
     }
   }
