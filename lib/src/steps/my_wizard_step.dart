@@ -207,7 +207,6 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
     // rows.add(_borderBottom());
     return LayoutBuilder(builder: (context, constraints) {
-      print('Whole page width = ${constraints.maxWidth}');
       const double formColPadding = 10;
       final narrow = constraints.maxWidth <= baseScreenWidth; // 820 1060
       double maxColWidth = baseScreenWidth / 2 - formColPadding;
@@ -264,7 +263,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                 minHeight: constraints.maxHeight -
                     registerContainerHeight -
                     bottomHeight -
-                    2 * formColPadding, // @FIXME if bottom in two rows should be - 2 * bottomHeight
+                    2 * formColPadding,
                 maxWidth: baseScreenWidth,
               ),
               child: narrow

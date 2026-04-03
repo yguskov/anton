@@ -1,6 +1,7 @@
 import 'dart:html';
 
 import 'package:example/providers/auth_provider.dart';
+import 'package:example/src/utils.dart';
 import 'package:example/src/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -106,75 +107,64 @@ class ProviderExamplePage extends StatelessWidget {
         ),
       ],
       // Wrapping with a builder so the context contains the [WizardController]
-      child: Container(
-        color: Color.fromARGB(255, 225, 229, 233),
-        child: Align(
-          alignment: Alignment.topCenter,
-          child: Container(
-              constraints: BoxConstraints(
-                maxWidth: 1366,
-              ),
-              child: OrientationBuilder(builder: (context, orientation) {
-                return Scaffold(
-                  appBar: AppBar(
-                    title: StreamBuilder<int>(
-                      stream: context.wizardController.indexStream,
-                      initialData: context.wizardController.index,
-                      builder: (context, snapshot) {
-                        return Text("Анкета - шаг ${snapshot.data! + 1}");
-                      },
-                    ),
-                    elevation: 3,
+      child: AntLayout(OrientationBuilder(builder: (context, orientation) {
+        return Scaffold(
+          appBar: AppBar(
+            title: StreamBuilder<int>(
+              stream: context.wizardController.indexStream,
+              initialData: context.wizardController.index,
+              builder: (context, snapshot) {
+                return Text("Анкета - шаг ${snapshot.data! + 1}");
+              },
+            ),
+            elevation: antBarElevation,
+          ),
+          body: WizardEventListener(
+            listener: (context, event) {
+              debugPrint('### ${event.runtimeType} received');
+              if (event is WizardForcedGoBackToEvent) {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text(
+                    'Step ${event.toIndex + 2} got disabled so the wizard is moving back to step ${event.toIndex + 1}.',
                   ),
-                  body: WizardEventListener(
-                    listener: (context, event) {
-                      debugPrint('### ${event.runtimeType} received');
-                      if (event is WizardForcedGoBackToEvent) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                            'Step ${event.toIndex + 2} got disabled so the wizard is moving back to step ${event.toIndex + 1}.',
-                          ),
-                          dismissDirection: DismissDirection.horizontal,
-                        ));
-                      } else if (event is WizardGoBackEvent) {
-                        // print('!!! ${context.wizardController.index}');
-                        // context.wizardController.goTo(index: 0);
-                        // context.wizardController.goBack();
-                      }
-                    },
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        final narrow =
-                            constraints.maxWidth <= baseScreenWidth + wizardOverviewWidth;
+                  dismissDirection: DismissDirection.horizontal,
+                ));
+              } else if (event is WizardGoBackEvent) {
+                // print('!!! ${context.wizardController.index}');
+                // context.wizardController.goTo(index: 0);
+                // context.wizardController.goBack();
+              }
+            },
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final narrow = constraints.maxWidth <= baseScreenWidth + wizardOverviewWidth;
 
-                        return Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            narrow
-                                ? Container()
-                                : Container(
-                                    color: const Color(0xff202938),
-                                    width: wizardOverviewWidth,
-                                    child: StepsOverview(),
-                                  ),
-                            Expanded(
-                              child: _buildWizard(
-                                context,
-                                provider: provider,
-                                constraints: constraints,
-                                orientation: orientation,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
+                return Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    narrow
+                        ? Container()
+                        : Container(
+                            color: const Color(0xff202938),
+                            width: wizardOverviewWidth,
+                            child: StepsOverview(),
+                          ),
+                    Expanded(
+                      child: _buildWizard(
+                        context,
+                        provider: provider,
+                        constraints: constraints,
+                        orientation: orientation,
+                      ),
                     ),
-                  ),
+                  ],
                 );
-              })),
-        ),
-      ),
+              },
+            ),
+          ),
+        );
+      })),
 
       onStepChanged: (prev, next) {
         // @todo save step data to CV

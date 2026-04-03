@@ -1,5 +1,8 @@
 import 'package:example/providers/auth_provider.dart';
 import 'package:example/src/app_bar_with_menu.dart';
+import 'package:example/src/constants.dart';
+import 'package:example/src/utils.dart';
+import 'package:example/src/widgets/bottom_bar.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:example/styles.dart';
 import 'package:flutter/material.dart';
@@ -51,193 +54,192 @@ class _ProfilePageState extends State<ProfilePage> {
 
     final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
 
-    return Scaffold(
-      appBar: AntAppBar(
-        title: "Профиль пользователя ${authProvider.currentUser?.email}",
-      ),
-      body: Theme(
-        data: Theme.of(context).copyWith(
-          elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 15,
-                vertical: 15,
+    return AntLayout(
+      Scaffold(
+        appBar: AntAppBar(
+          title: "Профиль пользователя ${authProvider.currentUser?.email}",
+        ),
+        body: Theme(
+          data: Theme.of(context).copyWith(
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 15,
+                  vertical: 15,
+                ),
+                // backgroundColor: Colors.green,
+                // foregroundColor: Colors.white,
               ),
-              // backgroundColor: Colors.green,
-              // foregroundColor: Colors.white,
             ),
           ),
-        ),
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            return Column(
-              children: [
-                Expanded(
-                  child: Center(
-                    child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 640),
-                      child: Container(
-                        // color: Colors.grey[300],
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
-                          child: ListView(
-                            children: [
-                              SizedBox(height: 20),
-                              Center(
-                                child: ElevatedButton(
-                                  onPressed: edit,
-                                  child: Text('Редактировать данные'),
-                                ),
-                              ),
-                              SizedBox(height: h20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  ElevatedButton(onPressed: view, child: Text('Предпросмотр')),
-                                  SizedBox(width: h20),
-                                  ElevatedButton(
-                                      onPressed: copyLink,
-                                      child: Text('Получить ссылку'),
-                                      style: redButtonStyle),
-                                ],
-                              ),
-                              SizedBox(height: h20),
-                              Text(
-                                'Сообщите нам о результате общения о достижении вашей цели, получилось ли? или добились каких-то альтернатив?',
-                                textAlign: TextAlign.center,
-                                style: header2Style,
-                              ),
-                              SizedBox(height: h20),
-                              Center(
-                                child: ElevatedButton(
-                                  onPressed: edit,
-                                  style: redButtonStyle,
-                                  child: Padding(
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 17, vertical: 1),
-                                    child: Text('Сообщить о \nрезультате'),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              return Container(
+                color: groundColor,
+                child: ListView(
+                  children: [
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: ConstrainedBox(
+                        constraints: BoxConstraints(
+                            minHeight: constraints.maxHeight - bottomHeight, maxWidth: 640),
+                        child: Container(
+                          color: Colors.white,
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
+                            child: Column(
+                              children: [
+                                SizedBox(height: 20),
+                                Center(
+                                  child: ElevatedButton(
+                                    onPressed: edit,
+                                    child: Text('Редактировать данные'),
                                   ),
                                 ),
-                              ),
-                              SizedBox(height: h20),
-                              Text(
-                                'Если затея провалится, то мы можем через наших партнеров подобрать вам, как выдающемуся специалисту, новую работу',
-                                textAlign: TextAlign.left,
-                              ),
-                              SizedBox(height: h20),
-                              TextBar('Оставьте ссылку на ваше резюме'),
-                              SizedBox(height: h20),
-                              TextFormField(
-                                controller: _resumeController,
-                                decoration: inputDecorattion('http://'),
-                                validator: (value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'Укажите ссылку';
-                                  }
-                                  return null;
-                                },
-                              ),
-                              SizedBox(height: h20),
-                              TextBar('Сменить пароль'),
-                              SizedBox(height: h20),
-                              authProvider.isLoading
-                                  ? Center(
-                                      child: Padding(
-                                        padding: EdgeInsets.all(50),
-                                        child: SizedBox(
-                                          width: 100,
-                                          height: 100,
-                                          child: CircularProgressIndicator(
-                                            backgroundColor: Colors.white,
-                                            strokeWidth: 6,
+                                SizedBox(height: h20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    ElevatedButton(onPressed: view, child: Text('Предпросмотр')),
+                                    SizedBox(width: h20),
+                                    ElevatedButton(
+                                        onPressed: copyLink,
+                                        child: Text('Получить ссылку'),
+                                        style: redButtonStyle),
+                                  ],
+                                ),
+                                SizedBox(height: h20),
+                                Text(
+                                  'Сообщите нам о результате общения о достижении вашей цели, получилось ли? или добились каких-то альтернатив?',
+                                  textAlign: TextAlign.center,
+                                  style: header2Style,
+                                ),
+                                SizedBox(height: h20),
+                                Center(
+                                  child: ElevatedButton(
+                                    onPressed: edit,
+                                    style: redButtonStyle,
+                                    child: Padding(
+                                      padding:
+                                          const EdgeInsets.symmetric(horizontal: 17, vertical: 1),
+                                      child: Text('Сообщить о \nрезультате'),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(height: h20),
+                                Text(
+                                  'Если затея провалится, то мы можем через наших партнеров подобрать вам, как выдающемуся специалисту, новую работу',
+                                  textAlign: TextAlign.left,
+                                ),
+                                SizedBox(height: h20),
+                                TextBar('Оставьте ссылку на ваше резюме'),
+                                SizedBox(height: h20),
+                                TextFormField(
+                                  controller: _resumeController,
+                                  decoration: inputDecorattion('http://'),
+                                  validator: (value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'Укажите ссылку';
+                                    }
+                                    return null;
+                                  },
+                                ),
+                                SizedBox(height: h20),
+                                TextBar('Сменить пароль'),
+                                SizedBox(height: h20),
+                                authProvider.isLoading
+                                    ? Center(
+                                        child: Padding(
+                                          padding: EdgeInsets.all(50),
+                                          child: SizedBox(
+                                            width: 100,
+                                            height: 100,
+                                            child: CircularProgressIndicator(
+                                              backgroundColor: Colors.white,
+                                              strokeWidth: 6,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                    )
-                                  : Form(
-                                      key: _formKey,
-                                      onChanged: () => setState(() {}),
-                                      child: Column(
-                                        children: [
-                                          TextFormField(
-                                            controller: _oldPasswordController,
-                                            decoration: inputDecorattion('Старый пароль'),
-                                            obscureText: true,
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Укажите пароль';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                          SizedBox(height: 16),
-                                          TextFormField(
-                                            controller: _passwordController,
-                                            decoration: inputDecorattion('Новый пароль'),
-                                            obscureText: true,
-                                            validator: (value) {
-                                              if (value == null || value.isEmpty) {
-                                                return 'Укажите пароль';
-                                              }
-                                              if (value.length < 3) {
-                                                return 'Пароль не может быть меньше 3 символов';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                          SizedBox(height: 20),
-                                          TextFormField(
-                                            controller: _password2Controller,
-                                            decoration: inputDecorattion('Подтвердите пароль'),
-                                            obscureText: true,
-                                            validator: (value) {
-                                              if (value != _passwordController.text) {
-                                                return 'Пароль не совпадает';
-                                              }
-                                              return null;
-                                            },
-                                          ),
-                                          if (authProvider.error != null)
-                                            Padding(
-                                              padding: const EdgeInsets.all(10.0),
-                                              child: Text(
-                                                authProvider.error!,
-                                                style: TextStyle(color: Colors.red),
-                                              ),
+                                      )
+                                    : Form(
+                                        key: _formKey,
+                                        onChanged: () => setState(() {}),
+                                        child: Column(
+                                          children: [
+                                            TextFormField(
+                                              controller: _oldPasswordController,
+                                              decoration: inputDecorattion('Старый пароль'),
+                                              obscureText: true,
+                                              validator: (value) {
+                                                if (value == null || value.isEmpty) {
+                                                  return 'Укажите пароль';
+                                                }
+                                                return null;
+                                              },
                                             ),
-                                          authProvider.isLoading
-                                              ? CircularProgressIndicator()
-                                              : SizedBox(height: 20),
-                                        ],
-                                      )),
-                              Align(
-                                alignment: Alignment.centerRight,
-                                child: ElevatedButton(
-                                  onPressed: changePassword,
-                                  style: _passwordChangeEnabled ? redButtonStyle : grayButtonStyle,
-                                  child: Text('Сохранить'),
+                                            SizedBox(height: 16),
+                                            TextFormField(
+                                              controller: _passwordController,
+                                              decoration: inputDecorattion('Новый пароль'),
+                                              obscureText: true,
+                                              validator: (value) {
+                                                if (value == null || value.isEmpty) {
+                                                  return 'Укажите пароль';
+                                                }
+                                                if (value.length < 3) {
+                                                  return 'Пароль не может быть меньше 3 символов';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            SizedBox(height: 20),
+                                            TextFormField(
+                                              controller: _password2Controller,
+                                              decoration: inputDecorattion('Подтвердите пароль'),
+                                              obscureText: true,
+                                              validator: (value) {
+                                                if (value != _passwordController.text) {
+                                                  return 'Пароль не совпадает';
+                                                }
+                                                return null;
+                                              },
+                                            ),
+                                            if (authProvider.error != null)
+                                              Padding(
+                                                padding: const EdgeInsets.all(10.0),
+                                                child: Text(
+                                                  authProvider.error!,
+                                                  style: TextStyle(color: Colors.red),
+                                                ),
+                                              ),
+                                            authProvider.isLoading
+                                                ? CircularProgressIndicator()
+                                                : SizedBox(height: 20),
+                                          ],
+                                        )),
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: ElevatedButton(
+                                    onPressed: changePassword,
+                                    style:
+                                        _passwordChangeEnabled ? redButtonStyle : grayButtonStyle,
+                                    child: Text('Сохранить'),
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                'Создан: ${authProvider.currentUser?.createdAt}',
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
 
-                // Нижняя панель
-                Container(
-                  height: 10,
-                  color: Colors.white,
+                    // Нижняя панель
+                    BottomBar(),
+                  ],
                 ),
-              ],
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );

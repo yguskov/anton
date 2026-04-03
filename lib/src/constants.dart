@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+const antBarElevation = 3.0;
+
 const double kSmallPadding = 8.0;
 const double kRegularPadding = 16.0;
 // screen width if > show custrom cars in two cols
