@@ -64,9 +64,10 @@ class StepOneState extends StateStep<StepOne> {
       const SizedBox(height: 16),
       buildTextFieldWithLabel('В какой [индустрии] работаете?', 'ИТ', 'sector', _sectorOptions),
       const SizedBox(height: 16),
-      TextBar('Как вы обращаетесь к начальнику? Какая у него почта?'),
+      TextBar('Как вы обращаетесь к начальнику?'),
       buildJustTextField('Петров Михаил', 'boss_fio'),
       const SizedBox(height: 16),
+      TextBar('Электронная почта начальника'),
       buildJustTextField('petrovWork@mail.com', 'boss_email')
       // _buildDropdownSection('Как вы обращаетесь к начальнику?', 'Петров Михаил', 'boss_fio', categories),
       // const SizedBox(height: 16),

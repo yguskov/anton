@@ -41,8 +41,8 @@ class StepOneProvider extends MyWizardStep {
   }
 
   bool verifyData() {
-    if (getValue('fio') == '') addError('fio');
-    if (!checkEmail(getValue('boss_email'))) addError('boss_email');
+    // if (getValue('fio') == '') addError('fio');
+    // if (!checkEmail(getValue('boss_email'))) addError('boss_email');
 
     return !hasAnyError;
   }

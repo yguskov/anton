@@ -44,7 +44,7 @@ class StepTwoState extends StateStep<StepTwo> {
       // after head (head always 3 items)
       buildRadioList('Я хочу:', 'aim', aimList, 30.0, 1.3, 'Другое'),
       const SizedBox(height: 16),
-      buildRadioList('Я этого заслуживаю (Цель) потому, что я:', 'why', whyList, 30, 1.3, 'Другое'),
+      buildRadioList('Я этого заслуживаю (Цель) потому, что я:', 'why', whyList, 40, 1.3, 'Другое'),
       const SizedBox(height: 16),
     ];
 

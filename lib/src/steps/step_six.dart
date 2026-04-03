@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 
+import 'package:example/src/constants.dart';
 import 'package:example/src/steps/steps.dart';
 import 'package:flutter/material.dart';
 
@@ -227,13 +228,11 @@ class StepSixState extends StateStep<StepSix> {
 
   Widget _cardWidget(item, index, onDelete) {
     return CustomSquareCard(
-      title: '${item['name'] ?? ''} (Навык: ${item['skill'] ?? ''})',
+      title: '${item['name'] ?? ''}  \n**Навык: ${item['skill'] ?? ''}**',
       bottomText:
           (item['result']?.trim().isNotEmpty ?? false) ? 'Результат: ${item['result']}' : null,
-      leftText: '',
-      // leftColor: resultColor(item['result']!),
-      rightText: get_period_by_value(item['when']),
-      rightColor: Colors.green.shade800,
+      leftColor: cardColorOk,
+      leftText: get_period_by_value(item['when']),
       selected: _selectedKnow == index,
       onDelete: onDelete,
     );

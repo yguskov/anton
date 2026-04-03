@@ -123,15 +123,15 @@ class StepFourState extends StateStep<StepFour> {
       ['каждый день', '2 раза в неделю', 'раз в неделю', 'раз в две недели', 'раз в месяц'];
 
   List<PopupDropdownItem<String>> get attitudes => [
-        PopupDropdownItem(value: '1', label: 'Предпочитаю выполнять'),
-        PopupDropdownItem(value: '-1', label: 'Нежелательно выполнять'),
-        PopupDropdownItem(value: '0', label: 'Нейтрально'),
+        PopupDropdownItem(value: '1', label: 'Нравится'),
+        PopupDropdownItem(value: '-1', label: 'Не нравится'),
+        PopupDropdownItem(value: '0', label: 'Не знаю'),
       ];
 
   List<PopupDropdownItem<String>> get types => [
         PopupDropdownItem(value: 'base', label: 'Основная'),
         PopupDropdownItem(value: 'extra', label: 'Дополнительная'),
-        PopupDropdownItem(value: 'new', label: 'Новая(Готов взять на себя)'),
+        PopupDropdownItem(value: 'new', label: 'Новая (Готов взять на себя)'),
       ];
 
   bool get saveEnabled =>
@@ -184,10 +184,10 @@ class StepFourState extends StateStep<StepFour> {
         buildTextFieldWithLabel('Как часто?', '2 раза в неделю', 'duty_period', periods),
         const SizedBox(height: 16),
         buildDropdownSection('Как вы относитесь к этой обязанности?',
-            'Нравится выполнять|Не нравится выполнять|Нейтрально', 'duty_attitude', attitudes),
+            'Нравится | Не нравится | Не знаю', 'duty_attitude', attitudes),
         const SizedBox(height: 16),
-        buildDropdownSection('Эта обязанность является',
-            'Основной|Дополнительной|Новой(Готов взять на себя)', 'duty_type', types),
+        buildDropdownSection(
+            'Эта обязанность является', 'Основной | Дополнительной | Новой', 'duty_type', types),
         const SizedBox(height: 16),
         Row(
           children: [
@@ -225,7 +225,7 @@ class StepFourState extends StateStep<StepFour> {
 
   Widget _cardWidget(item, index, onDelete) {
     return CustomSquareCard(
-      title: '${item['name'] ?? ''}\n${ucfirst(item['period']) ?? ''}',
+      title: '${item['name'] ?? ''}  \n**${ucfirst(item['period']) ?? ''}**',
       leftText: attitudeShortText(item['attitude']!),
       leftColor: attitudeColor(item['attitude']!),
       rightText:
@@ -259,7 +259,7 @@ class StepFourState extends StateStep<StepFour> {
       case '-1':
         return 'Не нравится';
       case '0':
-        return 'Нейтрально';
+        return 'Не знаю';
       case '1':
         return 'Нравится';
     }

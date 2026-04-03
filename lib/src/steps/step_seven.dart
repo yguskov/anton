@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 
+import 'package:example/src/constants.dart';
 import 'package:example/src/steps/steps.dart';
 import 'package:flutter/material.dart';
 
@@ -183,10 +184,6 @@ class StepSevenState extends StateStep<StepSeven> {
       ];
 
       return buildLayout(context, textFields, _buildAchieveList(constraints));
-      return ListView(
-        controller: _scrollController,
-        children: textFields,
-      );
     });
   }
 
@@ -198,10 +195,8 @@ class StepSevenState extends StateStep<StepSeven> {
     return CustomSquareCard(
       title: item['name'] ?? '',
       bottomText: (item['result']?.trim().isNotEmpty ?? false) ? 'Польза: ${item['result']}' : null,
-      leftText: '',
-      // leftColor: resultColor(item['result']!),
-      rightText: get_period_by_value(item['when']),
-      rightColor: Colors.green.shade800,
+      leftColor: cardColorOk,
+      leftText: get_period_by_value(item['when']),
       selected: _selectedAchieve == index,
       onDelete: onDelete,
     );

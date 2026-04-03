@@ -168,6 +168,10 @@ class StepFiveState extends StateStep<StepFive> {
         .any((item) => item['skill'] == widget.myProvider.skillList[_selectedSkill!]['name']);
   }
 
+  bool get isNew {
+    return _selectedSkill == null;
+  }
+
   final ScrollController _scrollController = ScrollController();
 
   void _scrollToBottom() {
@@ -193,13 +197,13 @@ class StepFiveState extends StateStep<StepFive> {
         buildTextFieldWithLabel('Мои навыки', 'Управление метлой', 'skill_name', skills),
         const SizedBox(height: 16),
         buildDropdownSection(
-            'Какой у вас уровень мастерства навыка', '1-5| не знаю', 'skill_level', levels),
+            'Какой у вас уровень мастерства навыка', '1-5 | не знаю', 'skill_level', levels),
         const SizedBox(height: 16),
         // power
         buildRadioList('Я считаю это своим:', 'skill_power',
             ['Сильным навыком', 'Слабым навыком', 'Не знаю'], null, 1.3),
         const SizedBox(height: 16),
-        buildTextFieldWithLabel('К какому типу относится навык?', 'hard|soft|другое|не знаю',
+        buildTextFieldWithLabel('К какому типу относится навык?', 'hard | soft | другое | не знаю',
             'skill_type', ['hard', 'soft']),
         const SizedBox(height: 12),
         Row(
@@ -213,7 +217,7 @@ class StepFiveState extends StateStep<StepFive> {
             ),
             Expanded(
               flex: 2,
-              child: buildAddButton(onPressed: _save, enabled: saveEnabled, isNew: !removeEnabled),
+              child: buildAddButton(onPressed: _save, enabled: saveEnabled, isNew: isNew),
             ),
           ],
         ),
@@ -234,7 +238,7 @@ class StepFiveState extends StateStep<StepFive> {
 
   Widget _cardWidget(item, index, onDelete) {
     return CustomSquareCard(
-      title: '${item['name'] ?? ''}, Тип навыка: ${item['type'] ?? ''}',
+      title: '${item['name'] ?? ''}  \n**Тип навыка: ${item['type'] ?? ''}**',
       leftText: powerShortText(item['power']!),
       leftColor: powerColor(item['power']!),
       rightText:

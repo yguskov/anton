@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:example/example.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 
 enum CardMode {
   preview,
@@ -52,9 +53,7 @@ class CustomSquareCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: leftColor ?? cardColorOk,
             border: Border.all(
-              color: (leftColor != cardColorOk)
-                  ? Colors.transparent
-                  : cardColorOkBorder,
+              color: (leftColor != cardColorOk) ? Colors.transparent : cardColorOkBorder,
               width: 2,
             ),
             borderRadius: BorderRadius.circular(6),
@@ -64,9 +63,7 @@ class CustomSquareCard extends StatelessWidget {
               leftText!,
               style: TextStyle(
                   fontSize: 12,
-                  color: (leftColor != cardColorOk)
-                      ? Colors.white
-                      : cardColorOkBorder),
+                  color: (leftColor != cardColorOk) ? Colors.white : cardColorOkBorder),
             ),
           ),
         ),
@@ -77,23 +74,20 @@ class CustomSquareCard extends StatelessWidget {
       children.add(
         Positioned(
           top: -10,
-          right:
-              (mode == CardMode.edition ? 1 : 0) * cardRemoveButtonWidth + 10,
+          right: (mode == CardMode.edition ? 1 : 0) * cardRemoveButtonWidth + 10,
           child: Container(
             height: 25,
             padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
             decoration: BoxDecoration(
-              color: cardBackColorLevel[max(
-                  0, cardColorLevel.indexOf(rightColor ?? cardColorLevel[0]))],
+              color: cardBackColorLevel[
+                  max(0, cardColorLevel.indexOf(rightColor ?? cardColorLevel[0]))],
               borderRadius: BorderRadius.circular(6),
             ),
             child: Center(
               child: Text(' $rightText ',
                   style: TextStyle(
                       fontSize: 12,
-                      color: (rightColor != cardColorLevel[0])
-                          ? rightColor
-                          : cardColorLevel[0])),
+                      color: (rightColor != cardColorLevel[0]) ? rightColor : cardColorLevel[0])),
             ),
           ),
         ),
@@ -127,8 +121,7 @@ class CustomSquareCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color:
-                  selected ? Color(0xffc7e4f0) : Colors.white.withOpacity(1.0),
+              color: selected ? Color(0xffc7e4f0) : Colors.white.withOpacity(1.0),
               spreadRadius: 1,
               blurRadius: 3,
               offset: const Offset(0, 1),
@@ -161,14 +154,11 @@ class CustomSquareCard extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 10, horizontal: 10),
-                          child: Text(
-                            title,
-                            style: const TextStyle(
-                              fontSize: 15,
-                              // fontWeight: FontWeight.bold,
-                              // color: Colors.blue,
+                          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                          child: MarkdownBody(
+                            data: title,
+                            styleSheet: MarkdownStyleSheet(
+                              p: TextStyle(fontSize: 15), // Базовый размер шрифта
                             ),
                           ),
                         ),
@@ -206,8 +196,7 @@ class CustomSquareCard extends StatelessWidget {
                       child: Align(
                         alignment: Alignment.topLeft,
                         child: Padding(
-                          padding: EdgeInsets.only(
-                              top: 10, left: 10, right: 10, bottom: 12),
+                          padding: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 12),
                           child: Text(
                             bottomText!,
                             style: const TextStyle(
@@ -240,8 +229,8 @@ class CustomSquareCard extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           // title: Text(''),
-          content: Padding(padding: EdgeInsets.only(top: 10),
-          child: Text('Пожалуйста, подтвердите удаление')),
+          content: Padding(
+              padding: EdgeInsets.only(top: 10), child: Text('Пожалуйста, подтвердите удаление')),
           actions: [
             Row(children: [
               SizedBox(width: 20),
@@ -260,8 +249,7 @@ class CustomSquareCard extends StatelessWidget {
               SizedBox(width: 20),
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () =>
-                      Navigator.of(context).pop(true), // Подтверждение
+                  onPressed: () => Navigator.of(context).pop(true), // Подтверждение
                   style: ElevatedButton.styleFrom(
                     backgroundColor: secondaryColor,
                     foregroundColor: Colors.white,

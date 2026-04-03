@@ -31,6 +31,7 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
   late List<String> _options;
   String? _selectedValue;
   late final TextEditingController _otherController;
+  late final TextEditingController _controller;
 
   void _onChanged() {
     setState(() {
@@ -57,8 +58,12 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
     _initValue(widget.provider.getValue(widget.fieldName));
     widget.provider.controllerByName(widget.fieldName).addListener(_onChanged);
 
-    // _controller = widget.provider.controllerByName(widget.fieldName);
-    // _controller.addListener(_onTextChanged);
+    _controller = widget.provider.controllerByName(widget.fieldName);
+    _controller.addListener(() {
+      setState(() {
+        _selectedValue = widget.provider.controllerByName(widget.fieldName).text;
+      });
+    });
     // onValueChanged = (_) {
     //   print(_controller.text);
     //   widget.provider.updateDescription(_controller.text);
