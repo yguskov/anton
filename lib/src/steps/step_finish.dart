@@ -1,3 +1,4 @@
+import 'package:example/src/constants.dart';
 import 'package:example/src/steps/steps.dart';
 import 'package:example/src/utils.dart';
 import 'package:example/src/widgets/text_bar.dart';
@@ -138,29 +139,17 @@ class StepFinishState extends StateStep<StepFinish> {
       ]);
 
       return buildLayout(context, [
-        Text('Регистрация', style: headerStyle),
-        const SizedBox(height: 6),
-        const SizedBox(height: 0),
-        const SizedBox(height: 0),
-        const SizedBox(height: 0),
+        Text('Поздравляю!', style: headerStyle),
+        const SizedBox(height: kRegularPadding),
+        Text('Вы завершили заполнение данных для создания презентации для начальства.', style: headerStyle2),
+        !authProvider.isAuth ? Text('\nДля её сохранения требуется зарегистрироваться', style: headerStyle2) : const SizedBox(height: 0),
+        const SizedBox(height: 2 * kRegularPadding),
         Form(
             key: _formKey,
             child: Column(
               children: textFields,
             )),
       ]);
-
-      return ListView(
-        controller: _scrollController,
-        children: [
-          Form(
-              key: _formKey,
-              child: Column(
-                children: textFields,
-              )),
-          ActionBar(),
-        ],
-      );
     });
   }
 

@@ -3,6 +3,7 @@ import 'dart:js_interop';
 
 import 'package:example/models/cv.dart';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart';
 import '../models/user.dart';
 import '../services/api_service.dart';
 
@@ -40,7 +41,18 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      _error = e.toString();
+      print('api registration exception -----${e.runtimeType}-----');
+
+      if(e.toString().contains('Duplicate')) {
+        _error = 'Ошибка создания пользователя';
+      }
+      else if(e is ClientException) {
+        _error = 'Сервер не отвечает';
+      }
+      else {
+        _error = 'Возникла ошибка при регистрации';
+      }
+
       _isLoading = false;
       notifyListeners();
       return false;
