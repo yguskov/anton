@@ -26,8 +26,30 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
         actions: [
           SizedBox(width: 20),
           PopupMenuButton<String>(
-            icon: const Icon(Icons.menu),
-            iconSize: 30,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.shade300),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.person_outline, size: 25),
+                    SizedBox(width: 8),
+                    Text(
+                      authProvider.isAuth ? authProvider.currentUser!.email : '',
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    SizedBox(width: 8),
+                    Icon(Icons.arrow_drop_down, size: 20),
+                  ],
+                ),
+              ),
+            ),
+            // iconSize: 30,
             onSelected: (String value) {
               switch (value) {
                 case 'login':

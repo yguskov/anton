@@ -1,6 +1,7 @@
 import 'dart:html';
 
 import 'package:example/providers/auth_provider.dart';
+import 'package:example/src/app_bar_with_menu.dart';
 import 'package:example/src/utils.dart';
 import 'package:example/src/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
@@ -109,15 +110,9 @@ class ProviderExamplePage extends StatelessWidget {
       // Wrapping with a builder so the context contains the [WizardController]
       child: AntLayout(OrientationBuilder(builder: (context, orientation) {
         return Scaffold(
-          appBar: AppBar(
-            title: StreamBuilder<int>(
-              stream: context.wizardController.indexStream,
-              initialData: context.wizardController.index,
-              builder: (context, snapshot) {
-                return Text("Анкета - шаг ${snapshot.data! + 1}");
-              },
-            ),
-            elevation: antBarElevation,
+          appBar: AntAppBar(
+            title: "Анкета работника",
+            // elevation: antBarElevation,
           ),
           body: WizardEventListener(
             listener: (context, event) {
