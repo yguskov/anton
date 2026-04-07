@@ -140,6 +140,7 @@ class _RawAutocompleteExampleState extends State<RawAutocompleteExample> {
             elevation: 4.0,
             child: SizedBox(
               height: 200.0,
+              width: 420.0,
               child: ListView.builder(
                 padding: EdgeInsets.zero,
                 itemCount: options.length,
