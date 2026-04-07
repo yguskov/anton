@@ -57,7 +57,7 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
                   break;
                 case 'logout':
                   authProvider.logout();
-                  Navigator.pushNamed(context, '/login');
+                  // Navigator.pushNamed(context, '/login');
                   break;
                 case 'profile':
                   Navigator.pushNamed(context, '/profile');
@@ -70,36 +70,39 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
               }
             },
             itemBuilder: (context) => [
-              const PopupMenuItem<String>(
-                value: 'login',
-                child: Row(
-                  children: [
-                    Icon(Icons.login, size: 18),
-                    SizedBox(width: 8),
-                    Text('Логин'),
-                  ],
+              if (!authProvider.isAuth)
+                const PopupMenuItem<String>(
+                  value: 'login',
+                  child: Row(
+                    children: [
+                      Icon(Icons.login, size: 18),
+                      SizedBox(width: 8),
+                      Text('Логин'),
+                    ],
+                  ),
                 ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'logout',
-                child: Row(
-                  children: [
-                    Icon(Icons.logout, size: 18),
-                    SizedBox(width: 8),
-                    Text('Выход'),
-                  ],
+              if (authProvider.isAuth)
+                const PopupMenuItem<String>(
+                  value: 'logout',
+                  child: Row(
+                    children: [
+                      Icon(Icons.logout, size: 18),
+                      SizedBox(width: 8),
+                      Text('Выход'),
+                    ],
+                  ),
                 ),
-              ),
-              const PopupMenuItem<String>(
-                value: 'profile',
-                child: Row(
-                  children: [
-                    Icon(Icons.person, size: 18),
-                    SizedBox(width: 8),
-                    Text('Профиль'),
-                  ],
+              if (authProvider.isAuth)
+                const PopupMenuItem<String>(
+                  value: 'profile',
+                  child: Row(
+                    children: [
+                      Icon(Icons.person, size: 18),
+                      SizedBox(width: 8),
+                      Text('Профиль'),
+                    ],
+                  ),
                 ),
-              ),
             ],
           ),
           SizedBox(width: 20),

@@ -45,6 +45,7 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
       _selectedValue = value ?? '';
     } else {
       _otherController.text = value ?? '';
+      _selectedValue = null;
     }
   }
 
@@ -56,14 +57,9 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
     _options = widget.items;
 
     _initValue(widget.provider.getValue(widget.fieldName));
-    widget.provider.controllerByName(widget.fieldName).addListener(_onChanged);
-
     _controller = widget.provider.controllerByName(widget.fieldName);
-    _controller.addListener(() {
-      setState(() {
-        _selectedValue = widget.provider.controllerByName(widget.fieldName).text;
-      });
-    });
+    _controller.addListener(_onChanged);
+
     // onValueChanged = (_) {
     //   print(_controller.text);
     //   widget.provider.updateDescription(_controller.text);
@@ -73,7 +69,7 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
   @override
   Widget build(BuildContext context) {
     const leftPadding = 20.0;
-
+    print('---build-radio--${_selectedValue}--');
     Widget radioList = ListView.builder(
       padding: EdgeInsets.only(left: leftPadding, top: 0, bottom: 0),
       shrinkWrap: true,
@@ -97,11 +93,10 @@ class _DynamicRadioListState extends State<DynamicRadioList> {
             groupValue: _selectedValue,
             selected: _findSelectedOption(_selectedValue) == index,
             onChanged: (value) {
-              setState(() {
-                _otherController.text = '';
-                _selectedValue = value;
-                widget.provider.updateValue(widget.fieldName, value);
-              });
+              _otherController.text = '';
+              _selectedValue = value;
+              widget.provider.updateValue(widget.fieldName, value);
+              _controller.text = value!;
             },
           ),
         );
