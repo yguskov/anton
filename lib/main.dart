@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:example/profile.dart';
 import 'package:example/show.dart';
 import 'package:example/src/app_bar_with_menu.dart';
+import 'package:example/src/widgets/login_dialog.dart';
 import 'package:example/users.dart';
 import 'login.dart';
 import 'package:provider/provider.dart';
@@ -75,47 +76,58 @@ class MyApp extends StatelessWidget {
         },
         title: 'HR',
         theme: ThemeData(
-          primarySwatch: Colors.blue,
-          colorScheme: ColorScheme(
-            brightness: Brightness.light,
-            primary: Colors.white,
-            onPrimary: Colors.black54,
-            secondary: secondaryColor,
-            onSecondary: Colors.black54,
-            surface: Colors.grey.shade100,
-            onSurface: Colors.grey.shade700,
-            background: Colors.white,
-            onBackground: Colors.grey.shade700,
-            error: Colors.redAccent,
-            onError: Colors.white,
-          ),
-          appBarTheme: AppBarTheme(
-            backgroundColor: Color(0xFFF9FAFB),
-            // You can also set other properties
-            elevation: 0, // Removes shadow
-            foregroundColor: Colors.black, // Text/icon color
-          ),
-          progressIndicatorTheme: ProgressIndicatorThemeData(
-            linearTrackColor: Colors.orange.shade100,
-            color: Colors.orange,
-          ),
-          popupMenuTheme: PopupMenuThemeData(
-            textStyle: TextStyle(color: Colors.black87, fontSize: 16),
-            color: Colors.white,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
+            primarySwatch: Colors.blue,
+            colorScheme: ColorScheme(
+              brightness: Brightness.light,
+              primary: Colors.white,
+              onPrimary: Colors.black54,
+              secondary: secondaryColor,
+              onSecondary: Colors.black54,
+              surface: Colors.grey.shade100,
+              onSurface: Colors.grey.shade700,
+              background: Colors.white,
+              onBackground: Colors.grey.shade700,
+              error: Colors.redAccent,
+              onError: Colors.white,
             ),
-          ),
-          textSelectionTheme: TextSelectionThemeData(
-            cursorColor: Colors.black, // Global cursor color for all TextFields
-            selectionColor: Colors.grey.shade400,
-            selectionHandleColor: Colors.grey.shade400,
-          ),
-          inputDecorationTheme: InputDecorationTheme(
-            filled: true, // Обязательно включите filled
-            fillColor: Colors.white, // Цвет фона для всех TextField
-          ),
-        ),
+            appBarTheme: AppBarTheme(
+              backgroundColor: Color(0xFFF9FAFB),
+              // You can also set other properties
+              elevation: 0, // Removes shadow
+              foregroundColor: Colors.black, // Text/icon color
+            ),
+            progressIndicatorTheme: ProgressIndicatorThemeData(
+              linearTrackColor: Colors.orange.shade100,
+              color: Colors.orange,
+            ),
+            popupMenuTheme: PopupMenuThemeData(
+              textStyle: TextStyle(color: Colors.black87, fontSize: 16),
+              color: Colors.white,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+            ),
+            textSelectionTheme: TextSelectionThemeData(
+              cursorColor: Colors.black, // Global cursor color for all TextFields
+              selectionColor: Colors.grey.shade400,
+              selectionHandleColor: Colors.grey.shade400,
+            ),
+            inputDecorationTheme: InputDecorationTheme(
+              filled: true, // Обязательно включите filled
+              fillColor: Colors.white, // Цвет фона для всех TextField
+            ),
+            elevatedButtonTheme: ElevatedButtonThemeData(
+              style: ElevatedButton.styleFrom(
+                elevation: 0.5,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 19,
+                ),
+                // backgroundColor: Colors.green,
+
+                foregroundColor: Colors.black54,
+              ),
+            )),
       ),
     );
   }
@@ -131,6 +143,8 @@ class NotFoundPage extends StatelessWidget {
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final authProvider = Provider.of<AuthProvider>(context, listen: true);
+
     double h20 = 20; // vertical indent
     return Scaffold(
       appBar: AntAppBar(
@@ -146,19 +160,17 @@ class HomePage extends StatelessWidget {
                   alignment: Alignment.topRight,
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
-                    child: ElevatedButton(
-                      onPressed: () => Navigator.pushNamed(context, '/login'),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10.0),
-                        child: Text('Авторизуйся'),
-                      ),
-                      style: grayButtonStyle,
-                    ),
+                    child: authProvider.isAuth
+                        ? SizedBox(height: 40)
+                        : ElevatedButton(
+                            onPressed: () => showLoginDialog(context),
+                            child: Text('Авторизуйся'),
+                            style: grayButtonStyle,
+                          ),
                   )),
             ),
           ),
 
-          // Верхний фиксированный элемент
           SliverToBoxAdapter(
             child: Container(
               color: Color.fromARGB(255, 2, 83, 36),
@@ -262,29 +274,6 @@ class HomePage extends StatelessWidget {
         child: Text('Создать презентацию'),
       ),
       style: redButtonStyle,
-    );
-  }
-
-  _showLoginDialog(context) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Авторизация'),
-              LoginPage(),
-              const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Close'),
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 }

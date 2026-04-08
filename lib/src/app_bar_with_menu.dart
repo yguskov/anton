@@ -1,5 +1,6 @@
 // lib/widgets/custom_app_bar.dart
 import 'package:example/src/constants.dart';
+import 'package:example/src/widgets/login_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -53,7 +54,8 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
             onSelected: (String value) {
               switch (value) {
                 case 'login':
-                  Navigator.pushNamed(context, '/login');
+                  showLoginDialog(context);
+                  // Navigator.pushNamed(context, '/login');
                   break;
                 case 'logout':
                   authProvider.logout();
