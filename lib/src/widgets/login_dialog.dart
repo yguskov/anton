@@ -24,104 +24,129 @@ void showLoginDialog(BuildContext context) {
         title: const Text('Авторизация'),
         content: Builder(
           builder: (_) {
-            return Container(
-              padding: EdgeInsets.all(10),
-              width: 400,
-              child: Form(
-                key: formKey,
-                child: AutofillGroup(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      TextFormField(
-                        controller: emailController,
-                        autofillHints: const [AutofillHints.email],
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          labelText: 'Почта',
-                          hintText: 'user@mail.com',
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
-                            borderRadius: const BorderRadius.all(Radius.circular(4)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(6),
-                              bottomRight: Radius.circular(6),
+            return Focus(
+              autofocus: true,
+              child: Container(
+                padding: EdgeInsets.all(10),
+                width: 400,
+                child: Form(
+                  key: formKey,
+                  child: AutofillGroup(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        TextFormField(
+                          controller: emailController,
+                          autofillHints: const [AutofillHints.email],
+                          keyboardType: TextInputType.emailAddress,
+                          textInputAction: TextInputAction.next,
+                          onEditingComplete: () {
+                            FocusScope.of(context).nextFocus();
+                          },
+                          decoration: InputDecoration(
+                            labelText: 'Почта',
+                            hintText: 'user@mail.com',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+                              borderRadius: const BorderRadius.all(Radius.circular(4)),
                             ),
-                          ),
-                          contentPadding: const EdgeInsets.all(16),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Укажите почту';
-                          }
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 16),
-                      TextFormField(
-                        controller: passwordController,
-                        autofillHints: const [AutofillHints.password],
-                        obscureText: true,
-                        decoration: InputDecoration(
-                          labelText: 'Пароль',
-                          filled: true,
-                          fillColor: Colors.grey[200],
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
-                            borderRadius: const BorderRadius.all(Radius.circular(4)),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
-                            borderRadius: const BorderRadius.only(
-                              bottomLeft: Radius.circular(6),
-                              bottomRight: Radius.circular(6),
-                            ),
-                          ),
-                          contentPadding: const EdgeInsets.all(16),
-                        ),
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Укажите пароль';
-                          }
-                          if (value.length < 3) {
-                            return 'Пароль не может быть меньше 3 символов';
-                          }
-                          return null;
-                        },
-                      ),
-                      // Error
-                      Consumer<AuthProvider>(
-                        builder: (context, authProvider, _) {
-                          if (authProvider.error != null) {
-                            return Padding(
-                              padding: const EdgeInsets.only(top: 20, bottom: 0),
-                              child: Text(
-                                authProvider.error!,
-                                style: const TextStyle(color: Colors.red),
-                                textAlign: TextAlign.center,
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(6),
+                                bottomRight: Radius.circular(6),
                               ),
-                            );
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                      // loader
-                      Consumer<AuthProvider>(
-                        builder: (context, authProvider, _) {
-                          return authProvider.isLoading
-                              ? const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: CircularProgressIndicator(),
-                                )
-                              : const SizedBox(height: 0);
-                        },
-                      ),
-                    ],
+                            ),
+                            contentPadding: const EdgeInsets.all(16),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Укажите почту';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: passwordController,
+                          autofillHints: const [AutofillHints.password],
+                          obscureText: true,
+                          textInputAction: TextInputAction.done,
+                          onEditingComplete: authProvider.isLoading
+                              ? null
+                              : () async {
+                                  if (formKey.currentState?.validate() ?? false) {
+                                    await authProvider.login(
+                                      emailController.text.trim(),
+                                      passwordController.text,
+                                    );
+
+                                    if (authProvider.error == null && authProvider.isAuth) {
+                                      TextInput.finishAutofillContext();
+                                      if (context.mounted) {
+                                        Navigator.of(dialogContext).pop(true);
+                                      }
+                                    }
+                                  }
+                                },
+                          decoration: InputDecoration(
+                            labelText: 'Пароль',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+                              borderRadius: const BorderRadius.all(Radius.circular(4)),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+                              borderRadius: const BorderRadius.only(
+                                bottomLeft: Radius.circular(6),
+                                bottomRight: Radius.circular(6),
+                              ),
+                            ),
+                            contentPadding: const EdgeInsets.all(16),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Укажите пароль';
+                            }
+                            if (value.length < 3) {
+                              return 'Пароль не может быть меньше 3 символов';
+                            }
+                            return null;
+                          },
+                        ),
+                        // Error
+                        Consumer<AuthProvider>(
+                          builder: (context, authProvider, _) {
+                            if (authProvider.error != null) {
+                              return Padding(
+                                padding: const EdgeInsets.only(top: 20, bottom: 0),
+                                child: Text(
+                                  authProvider.error!,
+                                  style: const TextStyle(color: Colors.red),
+                                  textAlign: TextAlign.center,
+                                ),
+                              );
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
+                        // loader
+                        Consumer<AuthProvider>(
+                          builder: (context, authProvider, _) {
+                            return authProvider.isLoading
+                                ? const Padding(
+                                    padding: EdgeInsets.all(8.0),
+                                    child: CircularProgressIndicator(),
+                                  )
+                                : const SizedBox(height: 0);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

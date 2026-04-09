@@ -41,15 +41,11 @@ class AuthProvider with ChangeNotifier {
       notifyListeners();
       return true;
     } catch (e) {
-      print('api registration exception -----${e.runtimeType}-----');
-
-      if(e.toString().contains('Duplicate')) {
-        _error = 'Ошибка создания пользователя';
-      }
-      else if(e is ClientException) {
+      if (e.toString().contains('Duplicate')) {
+        _error = 'Такой пользователь уже есть';
+      } else if (e is ClientException) {
         _error = 'Сервер не отвечает';
-      }
-      else {
+      } else {
         _error = 'Возникла ошибка при регистрации';
       }
 
@@ -78,7 +74,14 @@ class AuthProvider with ChangeNotifier {
       return true;
     } catch (e) {
       _error = e.toString();
-      print(e);
+      print(_error);
+      if (e.toString().contains('Invalid credentials')) {
+        _error = 'Неизвестный e-mail адрес или неверный пароль';
+      } else if (e is ClientException) {
+        _error = 'Сервер не отвечает';
+      } else {
+        _error = 'Ошибка авторизации';
+      }
       _isLoading = false;
       notifyListeners();
       return false;
@@ -166,7 +169,6 @@ class AuthProvider with ChangeNotifier {
       print('--------get-cv---------------- ${json}');
       notifyListeners();
       _userCV = CV.fromJson(jsonEncode(json));
-
     } catch (e) {
       _error = e.toString();
       _isLoading = false;
