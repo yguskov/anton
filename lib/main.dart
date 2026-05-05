@@ -115,6 +115,8 @@ class MyApp extends StatelessWidget {
             inputDecorationTheme: InputDecorationTheme(
               filled: true, // Обязательно включите filled
               fillColor: Colors.white, // Цвет фона для всех TextField
+              floatingLabelStyle:
+                  TextStyle(color: Colors.grey[800]), // labelText color in focus for TextFormField
             ),
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
