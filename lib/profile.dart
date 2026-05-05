@@ -63,12 +63,13 @@ class _ProfilePageState extends State<ProfilePage> {
           data: Theme.of(context).copyWith(
             elevatedButtonTheme: ElevatedButtonThemeData(
               style: ElevatedButton.styleFrom(
+                elevation: 0.5,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 15,
-                  vertical: 15,
+                  horizontal: 10,
+                  vertical: 19,
                 ),
-                // backgroundColor: Colors.green,
-                // foregroundColor: Colors.white,
+                backgroundColor: secondaryColor,
+                foregroundColor: Colors.white,
               ),
             ),
           ),
@@ -92,20 +93,20 @@ class _ProfilePageState extends State<ProfilePage> {
                                 SizedBox(height: 20),
                                 Center(
                                   child: ElevatedButton(
-                                    onPressed: edit,
-                                    child: Text('Редактировать данные'),
-                                  ),
+                                      onPressed: edit, child: Text('Редактировать данные')),
                                 ),
                                 SizedBox(height: h20),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    ElevatedButton(onPressed: view, child: Text('Предпросмотр')),
+                                    ElevatedButton(
+                                      onPressed: view,
+                                      child: Text('Предпросмотр'),
+                                      style: whiteButtonStyle,
+                                    ),
                                     SizedBox(width: h20),
                                     ElevatedButton(
-                                        onPressed: copyLink,
-                                        child: Text('Получить ссылку'),
-                                        style: redButtonStyle),
+                                        onPressed: copyLink, child: Text('Получить ссылку')),
                                   ],
                                 ),
                                 SizedBox(height: h20),
@@ -118,12 +119,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 Center(
                                   child: ElevatedButton(
                                     onPressed: edit,
-                                    style: redButtonStyle,
-                                    child: Padding(
-                                      padding:
-                                          const EdgeInsets.symmetric(horizontal: 17, vertical: 1),
-                                      child: Text('Сообщить о \nрезультате'),
-                                    ),
+                                    child: Text('Сообщить о результате'),
                                   ),
                                 ),
                                 SizedBox(height: h20),
@@ -296,8 +292,10 @@ class _ProfilePageState extends State<ProfilePage> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Text('\nПароль изменен!\n', textAlign: TextAlign.center),
-              backgroundColor: Theme.of(context).colorScheme.primary),
+            content: Text('\nПароль изменен!\n',
+                textAlign:
+                    TextAlign.center), /* backgroundColor: Theme.of(context).colorScheme.primary */
+          ),
         );
 
         // Navigator.pushNamed(context, '/profile');

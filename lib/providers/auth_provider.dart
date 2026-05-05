@@ -42,7 +42,7 @@ class AuthProvider with ChangeNotifier {
       return true;
     } catch (e) {
       if (e.toString().contains('Duplicate')) {
-        _error = 'Такой пользователь уже есть';
+        _error = 'Такой пользователь уже существует';
       } else if (e is ClientException) {
         _error = 'Сервер не отвечает';
       } else {
@@ -125,13 +125,17 @@ class AuthProvider with ChangeNotifier {
 
     try {
       dynamic response = await _apiService.changePassword({'old': oldPassword, 'new': newPassword});
-      print(response);
       _isLoading = false;
       notifyListeners();
       return true;
     } catch (e) {
-      _error = e.toString();
-      print(e);
+      if (e.toString().contains('Invalid old password')) {
+        _error = 'Текущий пароль указан неверно';
+      } else if (e is ClientException) {
+        _error = 'Сервер не отвечает';
+      } else {
+        _error = 'Возникла ошибка при смене пароля';
+      }
       _isLoading = false;
       notifyListeners();
       return false;

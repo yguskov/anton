@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:example/src/utils.dart';
 import 'package:example/src/widgets/cv_widget.dart';
+import 'package:example/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
 import 'package:provider/provider.dart';
@@ -69,15 +70,9 @@ class ActionBar extends StatelessWidget {
       builder: (context, snapshot) {
         final index = snapshot.data!;
         return ElevatedButton(
-          child: const Text("Предпросмотр"),
-          onPressed: () => _onPreview(context, provider),
-          style: OutlinedButton.styleFrom(
-            // backgroundColor: Color(0xFF5801fd),
-            foregroundColor: Colors.black54,
-            // foregroundColor: Colors.white,
-            side: BorderSide(color: Colors.black12),
-          ),
-        );
+            child: const Text("Предпросмотр"),
+            onPressed: () => _onPreview(context, provider),
+            style: whiteButtonStyle);
       },
     );
   }
@@ -97,6 +92,4 @@ class ActionBar extends StatelessWidget {
       openFullScreenDialog(context, cvWidget, 820);
     }
   }
-
-  
 }
