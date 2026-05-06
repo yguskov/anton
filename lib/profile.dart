@@ -83,31 +83,64 @@ class _ProfilePageState extends State<ProfilePage> {
                       alignment: Alignment.topCenter,
                       child: ConstrainedBox(
                         constraints: BoxConstraints(
-                            minHeight: constraints.maxHeight - bottomHeight, maxWidth: 640),
+                            minHeight: constraints.maxHeight - bottomHeight, maxWidth: 820),
                         child: Container(
-                          color: Colors.white,
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
                             child: Column(
                               children: [
                                 SizedBox(height: 20),
-                                Center(
-                                  child: ElevatedButton(
-                                      onPressed: edit, child: Text('Редактировать данные')),
-                                ),
-                                SizedBox(height: h20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    ElevatedButton(
-                                      onPressed: view,
-                                      child: Text('Предпросмотр'),
-                                      style: whiteButtonStyle,
+                                Card(
+                                  elevation: 0, // убираем тень
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(16),
+                                    side: BorderSide(
+                                      color: Colors.grey.shade300,
+                                      width: 1,
                                     ),
-                                    SizedBox(width: h20),
-                                    ElevatedButton(
-                                        onPressed: copyLink, child: Text('Получить ссылку')),
-                                  ],
+                                  ),
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(h20),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                                      children: [
+                                        Text(
+                                          'Ваш профиль:',
+                                          style: header2Style,
+                                        ),
+                                        SizedBox(height: h20),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                  onPressed: edit,
+                                                  child: Text('Редактировать данные')),
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: h20),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: view,
+                                                child: Text('Предпросмотр'),
+                                                style: whiteButtonStyle,
+                                              ),
+                                            ),
+                                            SizedBox(width: h20),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                  onPressed: copyLink,
+                                                  child: Text('Получить ссылку')),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                                 SizedBox(height: h20),
                                 Text(
