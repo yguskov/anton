@@ -3,11 +3,13 @@ import 'package:flutter/material.dart';
 import '../../example.dart';
 
 class StepsProgressIndicator extends StatelessWidget {
-  const StepsProgressIndicator({
+  StepsProgressIndicator({
     Key? key,
     this.duration = const Duration(milliseconds: 150),
     required this.count,
     required this.index,
+    this.size = 20.0,
+    this.padding = 2.5,
   })  : assert(index >= 0),
         assert(index < count),
         super(key: key);
@@ -15,13 +17,15 @@ class StepsProgressIndicator extends StatelessWidget {
   final Duration duration;
   final int count;
   final int index;
+  final double size;
+  final double padding;
 
   @override
   Widget build(
     BuildContext context,
   ) {
     return Container(
-      height: 25,
+      height: size + 5,
       // width: 100,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -31,22 +35,22 @@ class StepsProgressIndicator extends StatelessWidget {
         itemBuilder: (itemContext, itemIndex) {
           String iconFile = stepMenuIconFiles[itemIndex];
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 2.5, vertical: 2.5),
+            padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding),
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
                   backgroundColor: itemIndex > index ? Colors.white : cardColorOkBorder,
                   foregroundColor: wizardProgressIconColor,
                   shape: CircleBorder(),
                   // padding: EdgeInsets.all(3),
-                  minimumSize: Size(20, 20), // Минимальный размер
-                  fixedSize: Size(20, 20),
+                  minimumSize: Size(size, size), // Минимальный размер
+                  fixedSize: Size(size, size),
                   padding: EdgeInsets.zero, // Фиксированный размер (Flutter 3.0+)
                   elevation: 0.5),
               onPressed: () {},
               child: ImageIcon(
                 color: itemIndex > index ? wizardProgressIconColor : Colors.white,
                 AssetImage('image/icons/${iconFile}'),
-                size: 10,
+                size: size / 2,
               ),
               // IconButton автоматически круглый с радиусом 20
             ),

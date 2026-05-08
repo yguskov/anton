@@ -394,7 +394,7 @@ func SaveCVHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 
     if err != nil {
         log.Printf("Check user error: %v", err)
-        http.Error(w, "Database error", http.StatusInternalServerError)
+        http.Error(w, "Database error", http.StatusUnauthorized)
         return
     }
 
@@ -417,11 +417,10 @@ func SaveCVHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
     )
 
     if err != nil {
-        // Обработка ошибки SQL (например, сбой подключения, синтаксис и т.д.)
-        http.Error(w, "Database error", http.StatusUnauthorized)
+        log.Printf("Update user error: %v", err)
+        http.Error(w, "Database error", http.StatusInternalServerError)
         return
     }
-
 
     _, err = saveHints(database.DB, req)
     if err != nil {

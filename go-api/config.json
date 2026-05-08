@@ -4,7 +4,7 @@
         "port": "3306",
         "user": "anton",
         "password": "ant",
-        "name": "anton"
+        "name": "anketa"
     },
     "server": {
         "port": "8993"
