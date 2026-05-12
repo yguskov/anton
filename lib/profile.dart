@@ -230,9 +230,27 @@ class _ProfilePageState extends State<ProfilePage> {
                                           },
                                         ),
                                         SizedBox(height: h20 / 2),
-                                        ElevatedButton(
-                                          onPressed: saveResume,
-                                          child: Text('Сохранить'),
+                                        Row(
+                                          children: [
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: saveJob,
+                                                child: Text((authProvider
+                                                            .currentUser?.userData['need_job'] ??
+                                                        false)
+                                                    ? 'Отменить поиск работы'
+                                                    : 'Найдите мне новую работу!'),
+                                                style: whiteButtonStyle,
+                                              ),
+                                            ),
+                                            SizedBox(width: h20),
+                                            Expanded(
+                                              child: ElevatedButton(
+                                                onPressed: saveResume,
+                                                child: Text('Сохранить ссылку'),
+                                              ),
+                                            ),
+                                          ],
                                         )
                                       ],
                                     ),
@@ -513,5 +531,17 @@ class _ProfilePageState extends State<ProfilePage> {
           SnackBar(content: Text('Ok'), backgroundColor: Theme.of(context).colorScheme.primary));
     }
     Navigator.pop(context);
+  }
+
+  // toggle need_job flag
+  Future<void> saveJob() async {
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+    authProvider.currentUser!.userData['need_job'] =
+        !(authProvider.currentUser?.userData['need_job'] ?? false);
+    if (await authProvider.saveCV(authProvider.currentUser!.userData)) {
+      // показать уведомление
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Ok'), backgroundColor: Theme.of(context).colorScheme.primary));
+    }
   }
 }
