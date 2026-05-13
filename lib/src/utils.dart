@@ -84,3 +84,8 @@ Widget AntLayout(Widget child) {
               ),
               child: child)));
 }
+
+String? ucfirst(String? str) {
+  if (str == null) return null;
+  return str[0].toUpperCase() + str.substring(1);
+}

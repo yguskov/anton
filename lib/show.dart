@@ -2,6 +2,7 @@ import 'dart:js_interop';
 
 import 'package:example/providers/auth_provider.dart';
 import 'package:example/src/app_bar_with_menu.dart';
+import 'package:example/src/constants.dart';
 import 'package:example/src/widgets/cv_widget.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:example/styles.dart';
@@ -94,7 +95,7 @@ class _ShowPageState extends State<ShowPage> {
                 Expanded(
                   child: Center(
                     child: ConstrainedBox(
-                      constraints: BoxConstraints(maxWidth: 640),
+                      constraints: BoxConstraints(maxWidth: baseScreenWidth),
                       child: Container(
                         // color: Colors.grey[300],
                         child: Padding(

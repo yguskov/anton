@@ -15,8 +15,9 @@ class CustomSquareCard extends StatelessWidget {
   final String? rightText;
   final String? bottomTitle;
   final String? bottomText;
-  // final double width;
+
   final double height;
+  final double width;
   final Color? leftColor;
   final Color? rightColor;
   final bool selected;
@@ -26,7 +27,7 @@ class CustomSquareCard extends StatelessWidget {
   const CustomSquareCard(
       {Key? key,
       required this.title,
-      width = 250,
+      this.width = 250,
       this.height = 60,
       this.leftText,
       this.rightText,
@@ -106,8 +107,9 @@ class CustomSquareCard extends StatelessWidget {
     // card container
     return ConstrainedBox(
       // Минимальная высота блока
-      constraints: const BoxConstraints(
+      constraints: BoxConstraints(
         minHeight: 60,
+        maxWidth: width,
       ),
       child: Container(
         // padding: const EdgeInsets.all(16.0),
@@ -267,5 +269,117 @@ class CustomSquareCard extends StatelessWidget {
         onDelete!();
       }
     });
+  }
+}
+
+/// Виджет для двух колонок с одинаковой высотой ячеек в строке
+class TwoColumnTable extends StatelessWidget {
+  final List<CustomSquareCard> cards;
+  final double spacing;
+
+  const TwoColumnTable({
+    Key? key,
+    required this.cards,
+    this.spacing = 16,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // Группируем карточки в строки по 2 штуки
+    final rows = <List<CustomSquareCard>>[];
+    for (int i = 0; i < cards.length; i += 2) {
+      final row = [cards[i]];
+      if (i + 1 < cards.length) {
+        row.add(cards[i + 1]);
+      }
+      rows.add(row);
+    }
+
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemCount: rows.length,
+      itemBuilder: (context, index) {
+        return Padding(
+          padding: EdgeInsets.only(bottom: spacing),
+          child: EqualHeightRow(
+            spacing: spacing,
+            children: rows[index].map((card) => Expanded(child: card)).toList(),
+          ),
+        );
+      },
+    );
+  }
+}
+
+/// Виджет, который делает все дочерние элементы одинаковой высоты
+class EqualHeightRow extends StatelessWidget {
+  final List<Widget> children;
+  final double spacing;
+
+  const EqualHeightRow({
+    Key? key,
+    required this.children,
+    this.spacing = 16,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: _buildChildrenWithSpacing(),
+      ),
+    );
+  }
+
+  List<Widget> _buildChildrenWithSpacing() {
+    final List<Widget> result = [];
+    for (int i = 0; i < children.length; i++) {
+      result.add(children[i]);
+      if (i < children.length - 1) {
+        result.add(SizedBox(width: spacing));
+      }
+    }
+    return result;
+  }
+}
+
+/// Адаптивная версия (1 или 2 колонки в зависимости от ширины)
+class AdaptiveCardTable extends StatelessWidget {
+  final List<CustomSquareCard> cards;
+  final double spacing;
+
+  const AdaptiveCardTable({
+    Key? key,
+    required this.cards,
+    this.spacing = 16,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isTwoColumns = constraints.maxWidth > 600;
+
+        if (!isTwoColumns) {
+          // Одна колонка
+          return ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: cards.length,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: spacing),
+                child: cards[index],
+              );
+            },
+          );
+        } else {
+          // Две колонки
+          return TwoColumnTable(cards: cards, spacing: spacing);
+        }
+      },
+    );
   }
 }

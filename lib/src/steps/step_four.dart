@@ -3,6 +3,7 @@ import 'dart:js_interop';
 import 'package:example/services/api_service.dart';
 import 'package:example/src/constants.dart';
 import 'package:example/src/steps/step_four_provider.dart';
+import 'package:example/src/utils.dart';
 import 'package:example/src/widgets/dropdown_field.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -149,11 +150,6 @@ class StepFourState extends StateStep<StepFour> {
       duration: Duration(milliseconds: 300),
       curve: Curves.easeOut,
     );
-  }
-
-  String? ucfirst(String? str) {
-    if (str == null) return null;
-    return str[0].toUpperCase() + str.substring(1);
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'package:example/src/src.dart';
+import 'package:example/src/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:markup_text/markup_text.dart';
 
@@ -31,7 +33,7 @@ class CVWidget extends StatelessWidget {
         title: 'Мои текущие обязанности:',
         list: cv.duty,
         centerTextCallBack: (item) {
-          return '${item['name'] ?? ''} , ${item['period'] ?? ''}';
+          return '${item['name'] ?? ''}  \n**${ucfirst(item['period']) ?? ''}**';
         },
         leftTextCallBack: (item) {
           switch (item['attitude'] ?? '') {
@@ -44,24 +46,21 @@ class CVWidget extends StatelessWidget {
           }
           return '';
         },
-        rightTextCallBack: (item) => item['type'] == 'new'
-            ? 'Новая'
-            : item['type'] == 'extra'
-                ? 'Дополнительная'
-                : 'Основная',
+        rightTextCallBack: (item) =>
+            item['type'] == 'new' ? 'Новая' : (item['type'] == 'extra' ? 'Дополнительная' : ''),
         leftColorCallBack: (item) {
-          switch (item['attitude'] ?? '') {
+          switch (item['attitude']!) {
             case '-1':
-              return Colors.orange;
+              return cardColorDislike;
             case '0':
-              return Colors.grey;
+              return cardColorOk;
             case '1':
-              return Colors.green.shade800;
+              return cardColorLike;
           }
-          return Colors.grey;
+          return cardColorOk;
         },
         rightColorCallBack: (item) {
-          return (item['type'] ?? '') == 'new' ? Colors.green.shade800 : Color(0xFF5801fd);
+          return item['type'] == 'new' ? cardColorLevel[3] : cardColorLevel[1];
         },
       ),
       const SizedBox(height: h1),
@@ -142,12 +141,10 @@ class CVWidget extends StatelessWidget {
     const headerStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 19.0);
 
     return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
-      double boxWidth;
-      if (constraints.maxWidth < 600) {
+      double boxWidth = 250;
+      if (constraints.maxWidth < screenSide600) {
         boxWidth = constraints.maxWidth;
-      } else {
-        boxWidth = constraints.maxWidth / 2 - 5;
-      }
+      } else {}
 
       return Column(
         children: [
@@ -158,22 +155,21 @@ class CVWidget extends StatelessWidget {
               style: headerStyle,
             ),
           ),
-          SizedBox(height: h1), 
-          Wrap(spacing: 10, runSpacing: 10, children: [
+          SizedBox(height: h1),
+          AdaptiveCardTable(cards: [
             for (var item in list)
               CustomSquareCard(
-                width: boxWidth,
-                height: 60,
-                title: centerTextCallBack(item),
-                leftText: leftTextCallBack?.call(item),
-                leftColor: leftColorCallBack != null ? leftColorCallBack(item) : null,
-                rightText: rightTextCallBack != null ? rightTextCallBack(item) : null,
-                rightColor: rightColorCallBack!(item),
-                bottomTitle: bottomTitleCallBack != null ? bottomTitleCallBack(item) : null,
-                bottomText: bottomTextCallBack != null ? bottomTextCallBack(item) : null,
-                selected: false,
-                mode: CardMode.preview
-              )
+                  width: boxWidth,
+                  height: 60,
+                  title: centerTextCallBack(item),
+                  leftText: leftTextCallBack?.call(item),
+                  leftColor: leftColorCallBack != null ? leftColorCallBack(item) : null,
+                  rightText: rightTextCallBack != null ? rightTextCallBack(item) : null,
+                  rightColor: rightColorCallBack!(item),
+                  bottomTitle: bottomTitleCallBack != null ? bottomTitleCallBack(item) : null,
+                  bottomText: bottomTextCallBack != null ? bottomTextCallBack(item) : null,
+                  selected: false,
+                  mode: CardMode.preview)
           ]),
         ],
       );
