@@ -6,7 +6,7 @@ import 'package:markup_text/markup_text.dart';
 import '../../models/cv.dart';
 import 'custom_card.dart';
 
-class CVWidget extends StatelessWidget {
+class CVWidget extends StatefulWidget {
   final CV cv;
 
   const CVWidget({
@@ -14,10 +14,59 @@ class CVWidget extends StatelessWidget {
     required this.cv,
   });
 
+// http://localhost:44374/#/review/d59rh3pams3u9gk3eto0
+
+  // show list of cards
+
+  @override
+  State<StatefulWidget> createState() {
+    return CVWidgetState();
+  }
+}
+
+class CVWidgetState extends State<CVWidget> {
+  Map<String, Map<String, String>> categories = {
+    'duty': {'1': 'Предпочитаемые', '-1': 'Нежелательные', '0': 'Дополнительные'},
+    'achieve': {'1': 'Месяц назад', '3': '3 мес. назад', '6': 'Полгода', '12': 'Год и более'},
+  };
+
+  Map<String, Set<String>> selectedCategories = {
+    'duty': {},
+    'skill': {},
+    'know': {},
+    'achieve': {}
+  };
+
+  List<Map<String, String>> filterCards(category) {
+    print('----- ${category} -----: ${selectedCategories['duty']} ');
+    if (selectedCategories[category] == null) {
+      return widget.cv.getList(category);
+    }
+
+    return widget.cv.getList(category).where((item) {
+      print('----- ${selectedCategories[category]} -----: ${item} ');
+      return selectedCategories[category]!.isEmpty ||
+          (category == 'duty' && selectedCategories[category]!.contains(item['attitude'])) ||
+          (category == 'achieve' && selectedCategories[category]!.contains(item['when']));
+    }).toList();
+  }
+
+  void toggleCategory(String category, String value) {
+    setState(() {
+      if (selectedCategories[category]!.contains(value)) {
+        selectedCategories[category]!.remove(value);
+      } else {
+        selectedCategories[category]!.add(value);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    final CV cv = widget.cv;
+
     print('------------- BUILD-CV------------------');
-    print(cv.toJson());
+    print(widget.cv.toJson());
     const h1 = 20.0;
 
     return Column(children: [
@@ -32,6 +81,7 @@ class CVWidget extends StatelessWidget {
       listCard(
         title: 'Мои текущие обязанности:',
         list: cv.duty,
+        category: 'duty',
         centerTextCallBack: (item) {
           return '${item['name'] ?? ''}  \n**${ucfirst(item['period']) ?? ''}**';
         },
@@ -68,6 +118,7 @@ class CVWidget extends StatelessWidget {
       listCard(
         title: 'В данный момент я обладаю навыками:',
         list: cv.skill,
+        category: 'skill',
         centerTextCallBack: (item) => '${item['name'] ?? ''}. ${item['type'] ?? ''}',
         leftTextCallBack: (item) {
           if ((item['power'] ?? '').toLowerCase().contains('сильн')) {
@@ -95,6 +146,7 @@ class CVWidget extends StatelessWidget {
       listCard(
         title: 'Последнее время я развивал свои навыки следующим образом:',
         list: cv.know,
+        category: 'know',
         centerTextCallBack: (item) => item['name'] ?? '',
         leftTextCallBack: (item) => item['skill'] ?? '',
         leftColorCallBack: (item) => Color(0xFF5801fd),
@@ -108,6 +160,7 @@ class CVWidget extends StatelessWidget {
       listCard(
         title: 'Я смог добиться выдающихся результатов:',
         list: cv.achieve,
+        category: 'achieve',
         centerTextCallBack: (item) => item['name'] ?? '',
         rightTextCallBack: (item) => '${item['when']} мес. назад',
         rightColorCallBack: (item) => Color(0xFF5B32332),
@@ -123,10 +176,8 @@ class CVWidget extends StatelessWidget {
     ]);
   }
 
-// http://localhost:44374/#/review/d59rh3pams3u9gk3eto0
-
-  // show list of cards
   listCard({
+    String category = '', // name of list attribute in CV model (duty, ...)
     required title,
     required List<Map<String, String>> list,
     required String Function(Map<String, String>) centerTextCallBack,
@@ -156,8 +207,41 @@ class CVWidget extends StatelessWidget {
             ),
           ),
           SizedBox(height: h1),
+          categories[category] == null
+              ? SizedBox(
+                  height: 0,
+                )
+              : Container(
+                  color: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  child: Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: [
+                      // Кнопка "Все"
+                      CategoryChip(
+                        label: 'Все',
+                        isSelected: selectedCategories[category]!.isEmpty,
+                        onTap: () {
+                          setState(() {
+                            selectedCategories[category]!.clear();
+                          });
+                        },
+                      ),
+                      // Остальные категории
+                      ...categories[category]!.entries.map((entry) => CategoryChip(
+                            label: entry.value,
+                            isSelected: selectedCategories[category]!.contains(entry.key),
+                            onTap: () => toggleCategory(category, entry.key),
+                            // backgroundColor: Colors.grey.shade100,
+                            // selectedColor: Colors.blue.shade100,
+                          )),
+                    ],
+                  ),
+                ),
+          SizedBox(height: h1),
           AdaptiveCardTable(cards: [
-            for (var item in list)
+            for (var item in filterCards(category))
               CustomSquareCard(
                   width: boxWidth,
                   height: 60,
@@ -174,5 +258,44 @@ class CVWidget extends StatelessWidget {
         ],
       );
     });
+  }
+}
+
+class CategoryChip extends StatelessWidget {
+  // final String category;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const CategoryChip({
+    Key? key,
+    // required this.category,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (_) => onTap(),
+      backgroundColor: Colors.grey.shade100,
+      selectedColor: Colors.blue.shade100,
+      checkmarkColor: Colors.blue,
+      labelStyle: TextStyle(
+        color: isSelected ? Colors.blue.shade700 : Colors.grey.shade700,
+        fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+      ),
+      side: BorderSide(
+        color: isSelected ? Colors.blue : Colors.grey.shade300,
+        width: 1,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(6), // Радиус 6
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+    );
   }
 }

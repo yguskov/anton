@@ -25,6 +25,10 @@ class CV {
     return _data[key];
   }
 
+  List<Map<String, String>> getList(name) {
+    return _jsonToMap(_data[name]) ?? [];
+  }
+
   String toJson() {
     print(' ------toJson------- ${jsonEncode(_data)}');
     return jsonEncode(_data);
