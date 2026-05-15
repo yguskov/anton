@@ -39,7 +39,7 @@ class CVWidgetState extends State<CVWidget> {
     'achieve': {}
   };
 
-  get commonTextStyle => TextStyle(fontSize: 20); // common text
+  get commonTextStyle => TextStyle(fontSize: 18); // common text
 
   List<Map<String, String>> filterCards(category) {
     print('----- ${category} -----: ${selectedCategories['duty']} ');
