@@ -97,7 +97,7 @@ class _ShowPageState extends State<ShowPage> {
                     child: ConstrainedBox(
                       constraints: BoxConstraints(maxWidth: baseScreenWidth),
                       child: Container(
-                        // color: Colors.grey[300],
+                        color: Colors.white,
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
                           child: ListView(

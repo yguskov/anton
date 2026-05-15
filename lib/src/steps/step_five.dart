@@ -243,7 +243,7 @@ class StepFiveState extends StateStep<StepFive> {
       leftColor: powerColor(item['power']!),
       rightText:
           'Уровень: ${skillList[index]['level'] != '0' ? skillList[index]['level'] : 'Не знаю'}',
-      rightColor: Color(0xFF5B32332), // Colors.green.shade800
+      rightColor: Color(0xFF5B32332),
       selected: _selectedSkill == index,
       onDelete: onDelete,
     );

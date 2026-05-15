@@ -26,7 +26,9 @@ class CVWidget extends StatefulWidget {
 
 class CVWidgetState extends State<CVWidget> {
   Map<String, Map<String, String>> categories = {
-    'duty': {'1': 'Предпочитаемые', '-1': 'Нежелательные', '0': 'Дополнительные'},
+    'duty': {'1': 'Предпочитаемые', '-1': 'Нежелательные', 'extra': 'Дополнительные'},
+    'skill': {'Сильным навыком': 'Сильный', 'Слабым навыком': 'Слабый'},
+    'know': {'1': 'Месяц назад', '3': '3 мес. назад', '6': 'Полгода', '12': 'Год и более'},
     'achieve': {'1': 'Месяц назад', '3': '3 мес. назад', '6': 'Полгода', '12': 'Год и более'},
   };
 
@@ -37,6 +39,8 @@ class CVWidgetState extends State<CVWidget> {
     'achieve': {}
   };
 
+  get commonTextStyle => TextStyle(fontSize: 20); // common text
+
   List<Map<String, String>> filterCards(category) {
     print('----- ${category} -----: ${selectedCategories['duty']} ');
     if (selectedCategories[category] == null) {
@@ -46,9 +50,20 @@ class CVWidgetState extends State<CVWidget> {
     return widget.cv.getList(category).where((item) {
       print('----- ${selectedCategories[category]} -----: ${item} ');
       return selectedCategories[category]!.isEmpty ||
-          (category == 'duty' && selectedCategories[category]!.contains(item['attitude'])) ||
-          (category == 'achieve' && selectedCategories[category]!.contains(item['when']));
-    }).toList();
+          (category == 'duty' &&
+              (selectedCategories[category]!.contains(item['attitude']) ||
+                  selectedCategories[category]!.contains(item['type']))) ||
+          (category == 'skill' && selectedCategories[category]!.contains(item['power'])) ||
+          ((category == 'achieve' || category == 'know') &&
+              selectedCategories[category]!.contains(item['when']));
+    }).toList()
+      ..sort((a, b) {
+        if ((category == 'duty' || category == 'skill') && a['type'] != null && b['type'] != null)
+          return a['type']!.compareTo(b['type']!);
+        if ((category == 'know' || category == 'achieve') && a['when'] != null && b['when'] != null)
+          return int.parse(a['when']!) - int.parse(b['when']!);
+        return 0;
+      });
   }
 
   void toggleCategory(String category, String value) {
@@ -67,14 +82,18 @@ class CVWidgetState extends State<CVWidget> {
 
     print('------------- BUILD-CV------------------');
     print(widget.cv.toJson());
-    const h1 = 20.0;
+    const h1 = 19.0;
 
-    return Column(children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       // Text(cv.toJson()),
       const SizedBox(height: h1),
-      Text('Кому: ${cv.getValue('boss_fio')}'),
+      MarkupText(
+        'Кому: (i)${cv.getValue('boss_fio')}(/i)',
+        style: commonTextStyle,
+      ),
       const SizedBox(height: h1),
-      MarkupText('От кого: ${cv.getValue('fio')} ((b)${cv.getValue('position')}(/b))'),
+      MarkupText('От кого: (i)${cv.getValue('fio')}(/i) ((b)${cv.getValue('position')}(/b))',
+          style: commonTextStyle),
       // Text('От кого: ${cv.getValue('fio')} (${cv.getValue('position')})'),
       const SizedBox(height: h1),
 
@@ -134,11 +153,11 @@ class CVWidgetState extends State<CVWidget> {
             return Colors.green.shade800;
           }
           if ((item['power'] ?? '').toLowerCase().contains('слаб')) {
-            return Colors.orange;
+            return Color(0xFFF76D12);
           }
           return Colors.grey;
         },
-        rightTextCallBack: (item) => 'Уровень ${item['level']}',
+        rightTextCallBack: (item) => 'Уровень ${item['level'] != '0' ? item['level'] : 'Не знаю'}',
         rightColorCallBack: (item) => Color(0xFF5B32332),
       ),
       const SizedBox(height: h1),
@@ -147,10 +166,10 @@ class CVWidgetState extends State<CVWidget> {
         title: 'Последнее время я развивал свои навыки следующим образом:',
         list: cv.know,
         category: 'know',
-        centerTextCallBack: (item) => item['name'] ?? '',
-        leftTextCallBack: (item) => item['skill'] ?? '',
-        leftColorCallBack: (item) => Color(0xFF5801fd),
-        rightTextCallBack: (item) => '${item['when']} мес. назад',
+        centerTextCallBack: (item) => '${item['name'] ?? ''}  \n**Навык: ${item['skill'] ?? ''}**',
+        leftTextCallBack: (item) => '${item['when']} мес. назад',
+        leftColorCallBack: (item) => cardColorOk,
+        rightTextCallBack: (item) => '',
         rightColorCallBack: (item) => Color(0xFF5B32332),
         bottomTitleCallBack: (item) => 'Польза',
         bottomTextCallBack: (item) => item['result'] ?? '',
@@ -162,17 +181,22 @@ class CVWidgetState extends State<CVWidget> {
         list: cv.achieve,
         category: 'achieve',
         centerTextCallBack: (item) => item['name'] ?? '',
-        rightTextCallBack: (item) => '${item['when']} мес. назад',
+        leftTextCallBack: (item) => '${item['when']} мес. назад',
+        leftColorCallBack: (item) => cardColorOk,
+        rightTextCallBack: (item) => '',
         rightColorCallBack: (item) => Color(0xFF5B32332),
         bottomTitleCallBack: (item) => 'Польза',
         bottomTextCallBack: (item) => item['result'] ?? '',
       ),
       const SizedBox(height: h1),
-      Text('У меня есть Цель, я хочу ${cv.getValue('aim')}'),
+      MarkupText('У меня есть цель, я хочу ${cv.getValue('aim').toLowerCase()}',
+          style: commonTextStyle),
       const SizedBox(height: h1),
-      Text('Я заслуживаю её потому, что я ${cv.getValue('why')}'),
+      Text('Я заслуживаю её потому, что я ${cv.getValue('why').toLowerCase()}',
+          style: commonTextStyle),
       const SizedBox(height: h1),
-      Text('Предлагаю назначить встречу и обсудить возможности или альтернативные варианты.'),
+      Text('Предлагаю назначить встречу и обсудить возможности или альтернативные варианты.',
+          style: commonTextStyle),
     ]);
   }
 
@@ -212,6 +236,7 @@ class CVWidgetState extends State<CVWidget> {
                   height: 0,
                 )
               : Container(
+                  alignment: Alignment.topLeft,
                   color: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   child: Wrap(
@@ -281,15 +306,18 @@ class CategoryChip extends StatelessWidget {
       label: Text(label),
       selected: isSelected,
       onSelected: (_) => onTap(),
-      backgroundColor: Colors.grey.shade100,
-      selectedColor: Colors.blue.shade100,
-      checkmarkColor: Colors.blue,
+      backgroundColor: Colors.white,
+      // selectedColor: Colors.blue.shade100,
+      selectedColor: Colors.white,
+      checkmarkColor: Colors.black,
+      // checkmarkColor: Colors.grey.shade700,
+      // checkmarkColor: Colors.blue,
       labelStyle: TextStyle(
-        color: isSelected ? Colors.blue.shade700 : Colors.grey.shade700,
+        color: isSelected ? Colors.black : Colors.grey.shade700,
         fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
       ),
       side: BorderSide(
-        color: isSelected ? Colors.blue : Colors.grey.shade300,
+        color: isSelected ? Colors.black : Colors.grey.shade300,
         width: 1,
       ),
       shape: RoundedRectangleBorder(

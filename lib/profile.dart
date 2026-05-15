@@ -389,7 +389,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   InputDecoration inputDecoration(String label) {
     return InputDecoration(
-      labelText: label,
+      hintText: label,
       filled: true,
       fillColor: Colors.white,
       floatingLabelStyle: TextStyle(color: Colors.grey[800]),
@@ -453,9 +453,8 @@ class _ProfilePageState extends State<ProfilePage> {
               authProvider.currentUser!.guid));
 
       // показать уведомление
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text('Ссылка скопирована в буфер!'),
-          backgroundColor: Theme.of(context).colorScheme.primary));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Ссылка скопирована в буфер!')));
     }
   }
 
@@ -527,8 +526,8 @@ class _ProfilePageState extends State<ProfilePage> {
     authProvider.currentUser!.userData['result'] = result;
     if (await authProvider.saveCV(authProvider.currentUser!.userData)) {
       // показать уведомление
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ok'), backgroundColor: Theme.of(context).colorScheme.primary));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(result == 'yes' ? 'Поздравляем!' : 'Сожалеем')));
     }
     Navigator.pop(context);
   }
@@ -540,8 +539,7 @@ class _ProfilePageState extends State<ProfilePage> {
         !(authProvider.currentUser?.userData['need_job'] ?? false);
     if (await authProvider.saveCV(authProvider.currentUser!.userData)) {
       // показать уведомление
-      ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Ok'), backgroundColor: Theme.of(context).colorScheme.primary));
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ok')));
     }
   }
 }
