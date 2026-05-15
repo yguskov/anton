@@ -98,7 +98,7 @@ class CVWidgetState extends State<CVWidget> {
       const SizedBox(height: h1),
 
       listCard(
-        title: 'Мои текущие обязанности:',
+        title: 'Моя ответственность:',
         list: cv.duty,
         category: 'duty',
         centerTextCallBack: (item) {
