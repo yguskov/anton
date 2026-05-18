@@ -41,7 +41,7 @@ class CVWidgetState extends State<CVWidget> {
 
   get commonTextStyle => TextStyle(fontSize: 18); // common text
 
-  List<Map<String, String>> filterCards(category) {
+  List<Map<String, String>> filterCards(category, [type]) {
     print('----- ${category} -----: ${selectedCategories['duty']} ');
     if (selectedCategories[category] == null) {
       return widget.cv.getList(category);
@@ -49,6 +49,9 @@ class CVWidgetState extends State<CVWidget> {
 
     return widget.cv.getList(category).where((item) {
       print('----- ${selectedCategories[category]} -----: ${item} ');
+      if (type != null && item['type'] != type) {
+        return false;
+      }
       return selectedCategories[category]!.isEmpty ||
           (category == 'duty' &&
               (selectedCategories[category]!.contains(item['attitude']) ||
@@ -215,11 +218,75 @@ class CVWidgetState extends State<CVWidget> {
     double h1 = 20;
     const headerStyle = TextStyle(fontWeight: FontWeight.bold, fontSize: 19.0);
 
+    Widget sectionCards(sectionData, boxWidth) {
+      return AdaptiveCardTable(
+          cards: sectionData.map<CustomSquareCard>((item) {
+        return CustomSquareCard(
+            width: boxWidth,
+            height: 60,
+            title: centerTextCallBack(item),
+            leftText: leftTextCallBack?.call(item),
+            leftColor: leftColorCallBack != null ? leftColorCallBack(item) : null,
+            rightText: rightTextCallBack != null ? rightTextCallBack(item) : null,
+            rightColor: rightColorCallBack!(item),
+            bottomTitle: bottomTitleCallBack != null ? bottomTitleCallBack(item) : null,
+            bottomText: bottomTextCallBack != null ? bottomTextCallBack(item) : null,
+            selected: false,
+            mode: CardMode.preview);
+      }).toList());
+    }
+
     return LayoutBuilder(builder: (BuildContext context, BoxConstraints constraints) {
       double boxWidth = 250;
       if (constraints.maxWidth < screenSide600) {
         boxWidth = constraints.maxWidth;
-      } else {}
+      }
+
+      Widget cardsContent;
+      if (category == 'duty') {
+        List<Widget> dutySection = [];
+        List<Map<String, String>> sectionData;
+        sectionData = filterCards('duty', 'base');
+        if (sectionData.length > 0) {
+          dutySection
+              .add(Align(alignment: Alignment.topLeft, child: Text('Мои текущие обязанности')));
+          dutySection.add(SizedBox(height: h1));
+          dutySection.add(sectionCards(sectionData, boxWidth));
+        }
+        sectionData = filterCards('duty', 'new');
+        if (sectionData.length > 0) {
+          dutySection.add(Align(
+              alignment: Alignment.topLeft,
+              child: Text('Я уже выполняю дополнительные обязанности')));
+          dutySection.add(SizedBox(height: h1));
+          dutySection.add(sectionCards(sectionData, boxWidth));
+        }
+        sectionData = filterCards('duty', 'extra');
+        if (sectionData.length > 0) {
+          dutySection.add(Align(
+              alignment: Alignment.topLeft,
+              child: Text('Готов взять на себя больше ответственности')));
+          dutySection.add(SizedBox(height: h1));
+          dutySection.add(sectionCards(sectionData, boxWidth));
+        }
+        cardsContent = Column(children: dutySection);
+      } else {
+        cardsContent = AdaptiveCardTable(cards: [
+          for (var item in filterCards(category))
+            CustomSquareCard(
+                width: boxWidth,
+                height: 60,
+                title: centerTextCallBack(item),
+                leftText: leftTextCallBack?.call(item),
+                leftColor: leftColorCallBack != null ? leftColorCallBack(item) : null,
+                rightText: rightTextCallBack != null ? rightTextCallBack(item) : null,
+                rightColor: rightColorCallBack!(item),
+                bottomTitle: bottomTitleCallBack != null ? bottomTitleCallBack(item) : null,
+                bottomText: bottomTextCallBack != null ? bottomTextCallBack(item) : null,
+                selected: false,
+                mode: CardMode.preview)
+        ]);
+      }
 
       return Column(
         children: [
@@ -231,6 +298,7 @@ class CVWidgetState extends State<CVWidget> {
             ),
           ),
           SizedBox(height: h1),
+          // categories
           categories[category] == null
               ? SizedBox(
                   height: 0,
@@ -265,21 +333,8 @@ class CVWidgetState extends State<CVWidget> {
                   ),
                 ),
           SizedBox(height: h1),
-          AdaptiveCardTable(cards: [
-            for (var item in filterCards(category))
-              CustomSquareCard(
-                  width: boxWidth,
-                  height: 60,
-                  title: centerTextCallBack(item),
-                  leftText: leftTextCallBack?.call(item),
-                  leftColor: leftColorCallBack != null ? leftColorCallBack(item) : null,
-                  rightText: rightTextCallBack != null ? rightTextCallBack(item) : null,
-                  rightColor: rightColorCallBack!(item),
-                  bottomTitle: bottomTitleCallBack != null ? bottomTitleCallBack(item) : null,
-                  bottomText: bottomTextCallBack != null ? bottomTextCallBack(item) : null,
-                  selected: false,
-                  mode: CardMode.preview)
-          ]),
+          // cards
+          cardsContent,
         ],
       );
     });
