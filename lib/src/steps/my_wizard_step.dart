@@ -445,6 +445,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
     final _passwordController = TextEditingController();
     final _nameController = TextEditingController();
 
+    authProvider.clearError();
+
     textFields = [
       SizedBox(height: 25),
       TextFormField(
@@ -515,15 +517,25 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
       // ),
     ];
 
-    textFields.addAll([
-      if (authProvider.error != null)
-        Text(
-          authProvider.error!,
-          style: TextStyle(color: Colors.red),
-        ),
-      SizedBox(height: 20),
-      authProvider.isLoading ? CircularProgressIndicator() : SizedBox(height: 20),
-    ]);
+    textFields.add(
+      Consumer<AuthProvider>(
+        builder: (context, authProvider, _) {
+          if (authProvider.error != null) {
+            return Padding(
+              padding: const EdgeInsets.only(top: 10, bottom: 10),
+              child: Text(
+                authProvider.error!,
+                style: const TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+            );
+          } else if (authProvider.isLoading) {
+            return CircularProgressIndicator();
+          }
+          return const SizedBox(height: 20);
+        },
+      ),
+    );
 
     textFields.add(ElevatedButton(
       onPressed: () async {
@@ -532,6 +544,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
         bool success = false;
         final userData = wizardProvider.cv!.data;
+        authProvider.clearError();
 
         if (_formKey.currentState!.validate()) {
           success = await authProvider.register(

@@ -9,6 +9,7 @@ final loginFormGlobalKey = GlobalKey<FormState>();
 void showLoginDialog(BuildContext context) {
   // Получаем провайдер без подписки (только для передачи в диалог)
   final authProvider = Provider.of<AuthProvider>(context, listen: false);
+  authProvider.clearError();
 
   // Локальные переменные для каждого экземпляра диалога
   final formKey = GlobalKey<FormState>();
@@ -41,6 +42,7 @@ void showLoginDialog(BuildContext context) {
                           keyboardType: TextInputType.emailAddress,
                           textInputAction: TextInputAction.next,
                           onEditingComplete: () {
+                            authProvider.clearError();
                             FocusScope.of(context).nextFocus();
                           },
                           decoration: InputDecoration(
@@ -131,7 +133,7 @@ void showLoginDialog(BuildContext context) {
                                 ),
                               );
                             }
-                            return const SizedBox.shrink();
+                            return const SizedBox(height: 20);
                           },
                         ),
                         // loader
@@ -215,4 +217,6 @@ void showLoginDialog(BuildContext context) {
       ),
     ),
   );
+
+  authProvider.clearError();
 }

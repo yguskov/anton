@@ -1,8 +1,10 @@
+import 'package:example/providers/auth_provider.dart';
 import 'package:example/register.dart';
 import 'package:example/src/src.dart';
 import 'package:example/src/steps/my_wizard_step.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_wizard/flutter_wizard.dart';
+import 'package:provider/provider.dart';
 
 class NextButton extends StatelessWidget {
   const NextButton({Key? key}) : super(key: key);
@@ -36,6 +38,8 @@ class NextButton extends StatelessWidget {
                   content: Text('Заполните правильно данные, пожалуйста!'),
                   backgroundColor: Theme.of(context).colorScheme.primary));
             }
+            final authProvider = Provider.of<AuthProvider>(context, listen: false);
+            authProvider.clearError();
           },
           style: ElevatedButton.styleFrom(
             backgroundColor: secondaryColor,

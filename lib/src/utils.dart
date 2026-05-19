@@ -1,20 +1,24 @@
 import 'dart:math';
 
 import 'package:email_validator/email_validator.dart';
+import 'package:example/providers/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 bool checkEmail(String email) {
   return EmailValidator.validate(email);
 }
 
-void openFullScreenDialog(BuildContext context, Widget content, double maxWidth) {
-  showGeneralDialog(
+Future<void> openFullScreenDialog(BuildContext context, Widget content, double maxWidth) async {
+  await showGeneralDialog(
     context: context,
-    barrierDismissible: true,
+    barrierDismissible: false,
     barrierLabel: "Close",
     barrierColor: Colors.black54, // Полупрозрачный фон
     transitionDuration: const Duration(milliseconds: 300),
     pageBuilder: (context, animation, secondaryAnimation) {
+      final authProvider = Provider.of<AuthProvider>(context);
+
       return Material(
         color: Colors.transparent,
         child: SafeArea(
@@ -47,7 +51,10 @@ void openFullScreenDialog(BuildContext context, Widget content, double maxWidth)
                     right: 10,
                     child: IconButton(
                       icon: Icon(Icons.close, size: 28),
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () {
+                        authProvider.clearError();
+                        Navigator.of(context).pop();
+                      },
                       splashRadius: 24,
                     ),
                   ),

@@ -81,6 +81,7 @@ class StepFinishState extends StateStep<StepFinish> {
               contentPadding: const EdgeInsets.all(16),
             ),
             validator: (value) {
+              authProvider.clearError();
               if (value == null || value.isEmpty) {
                 return 'Укажите почту';
               } else if (!checkEmail(value)) return 'Не похоже на почту';
@@ -128,21 +129,26 @@ class StepFinishState extends StateStep<StepFinish> {
         ];
       }
 
-      textFields.addAll([
-        if (authProvider.error != null)
-          Text(
+      textFields.add(Consumer<AuthProvider>(builder: (context, authProvider, _) {
+        if (authProvider.error != null) {
+          return Text(
             authProvider.error!,
             style: TextStyle(color: Colors.red),
-          ),
-        SizedBox(height: 20),
-        authProvider.isLoading ? CircularProgressIndicator() : SizedBox(height: 20),
-      ]);
+          );
+        } else if (authProvider.isLoading) {
+          return CircularProgressIndicator();
+        }
+        return SizedBox(height: 20);
+      }));
 
       return buildLayout(context, [
         Text('Поздравляю!', style: headerStyle),
         const SizedBox(height: kRegularPadding),
-        Text('Вы завершили заполнение данных для создания презентации для начальства.', style: headerStyle2),
-        !authProvider.isAuth ? Text('\nДля её сохранения требуется зарегистрироваться', style: headerStyle2) : const SizedBox(height: 0),
+        Text('Вы завершили заполнение данных для создания презентации для начальства.',
+            style: headerStyle2),
+        !authProvider.isAuth
+            ? Text('\nДля её сохранения требуется зарегистрироваться', style: headerStyle2)
+            : const SizedBox(height: 0),
         const SizedBox(height: 2 * kRegularPadding),
         Form(
             key: _formKey,
