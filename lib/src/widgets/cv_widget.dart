@@ -39,7 +39,7 @@ class CVWidgetState extends State<CVWidget> {
     'achieve': {}
   };
 
-  get commonTextStyle => TextStyle(fontSize: 18); // common text
+  get commonTextStyle => TextStyle(fontSize: 20); // common text
 
   List<Map<String, String>> filterCards(category, [type]) {
     print('----- ${category} -----: ${selectedCategories['duty']} ');
@@ -91,11 +91,11 @@ class CVWidgetState extends State<CVWidget> {
       // Text(cv.toJson()),
       const SizedBox(height: h1),
       MarkupText(
-        'Кому: (i)${cv.getValue('boss_fio')}(/i)',
+        'Кому: (b)${cv.getValue('boss_fio')}(/b)',
         style: commonTextStyle,
       ),
       const SizedBox(height: h1),
-      MarkupText('От кого: (i)${cv.getValue('fio')}(/i) ((b)${cv.getValue('position')}(/b))',
+      MarkupText('От кого: (b)${cv.getValue('fio')} (${cv.getValue('position')}(/b))',
           style: commonTextStyle),
       // Text('От кого: ${cv.getValue('fio')} (${cv.getValue('position')})'),
       const SizedBox(height: h1),
@@ -192,14 +192,66 @@ class CVWidgetState extends State<CVWidget> {
         bottomTextCallBack: (item) => item['result'] ?? '',
       ),
       const SizedBox(height: h1),
-      MarkupText('У меня есть цель, я хочу ${cv.getValue('aim').toLowerCase()}',
-          style: commonTextStyle),
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11),
+                side: BorderSide(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              color: Colors.white,
+              child: Padding(
+                padding: EdgeInsets.all(h1),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    MarkupText('У меня есть цель, я хочу:', style: commonTextStyle),
+                    SizedBox(height: h1),
+                    MarkupText('(b)${cv.getValue('aim')}(/b)', style: commonTextStyle),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(width: h1),
+          Expanded(
+            child: Card(
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(11),
+                side: BorderSide(
+                  color: Colors.grey.shade300,
+                  width: 1,
+                ),
+              ),
+              color: Colors.white,
+              child: Padding(
+                padding: EdgeInsets.all(h1),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    MarkupText('Я заслуживаю её потому, что я', style: commonTextStyle),
+                    SizedBox(height: h1),
+                    MarkupText('(b)${cv.getValue('why')}(/b)', style: commonTextStyle),
+                  ],
+                ),
+              ),
+            ),
+          )
+        ],
+      ),
       const SizedBox(height: h1),
-      Text('Я заслуживаю её потому, что я ${cv.getValue('why').toLowerCase()}',
-          style: commonTextStyle),
-      const SizedBox(height: h1),
-      Text('Предлагаю назначить встречу и обсудить возможности или альтернативные варианты.',
-          style: commonTextStyle),
+      // Text('Я заслуживаю её потому, что я ${cv.getValue('why').toLowerCase()}',
+      //     style: commonTextStyle),
+      // const SizedBox(height: h1),
+      // Text('Предлагаю назначить встречу и обсудить возможности или альтернативные варианты.',
+      //     style: commonTextStyle),
     ]);
   }
 
