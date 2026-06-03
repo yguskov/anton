@@ -13,6 +13,7 @@ import (
     "golang.org/x/crypto/bcrypt"
     "github.com/rs/xid"
     "fmt"
+    "errors"
     // "strconv"
 )
 
@@ -262,15 +263,6 @@ func CVHandler(w http.ResponseWriter, r *http.Request) {
         http.Error(w, "Error scanning user", http.StatusInternalServerError)
         return
     }
-    // user.UserData = userData
-
-    // response := models.UserResponse{
-    //     ID:        user.ID,
-    //     Email:     user.Email,
-    //     UserData:  user.UserData,
-    //     CreatedAt: user.CreatedAt.Format(time.RFC3339),
-    // }
-    //  eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxMSwiZW1haWwiOiJyckByci5yciIsImlzcyI6ImdvLWFwaSIsInN1YiI6InJyQHJyLnJyIiwiZXhwIjoxNzY1NTMwNzg5LCJuYmYiOjE3NjU0NDQzODksImlhdCI6MTc2NTQ0NDM4OX0.TgUUXzVPUjagJHJRgSdMdstqUyb85-_xzj8SOaexBug
 
     writeResponse(w, http.StatusOK, Response{
         Success: true,
@@ -445,6 +437,136 @@ func SaveCVHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
     }) */
 }
 
+func SaveUserResultHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+
+    var req models.ResultRequest
+    err := json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+    userResult := models.UserResult{
+        Assign:  req.Assign,
+        Comment: req.Comment,
+    }
+    
+    resultJSON, err := json.Marshal(userResult)
+    if err != nil {
+        http.Error(w, "Error when parse result", http.StatusInternalServerError)
+    }
+
+    var updatedResult string
+    err = database.DB.QueryRow(
+        "UPDATE user SET result = ? WHERE guid = ? RETURNING result",
+        resultJSON, req.Guid,
+    ).Scan(&updatedResult)
+
+    if err != nil {
+        if errors.Is(err, sql.ErrNoRows) {
+            http.Error(w, " User not found", http.StatusNotFound);
+        }
+        http.Error(w, "Error when parse result", http.StatusInternalServerError);
+    }
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "Result saved",
+    })
+}
+
+/*
+func updateUser(db *sql.DB, userData models.UserData) (int, error) {
+    totalInserted := 0
+    
+    // Извлекаем данные
+    position := getString(userData, "position")
+    sector := getString(userData, "sector")
+    officeCountry := getString(userData, "office_country")
+    officeLocation := getString(userData, "office_location")
+    dutyData := getSlice(userData, "duty")
+    skillData := getSlice(userData, "skill")
+    
+    // Начинаем транзакцию
+    tx, err := db.Begin()
+    if err != nil {
+        return 0, fmt.Errorf("failed to begin transaction: %w", err)
+    }
+    
+    // Откатываем транзакцию в случае ошибки
+    defer func() {
+        if err != nil {
+            tx.Rollback()
+        }
+    }()
+    
+    // 1. Сохраняем position
+    if position != "" {
+        inserted, err := insertIfNotExists(tx, position, "position")
+        if err != nil {
+            return 0, fmt.Errorf("failed to insert position: %w", err)
+        }
+        totalInserted += inserted
+    }
+    
+    // 2. Сохраняем duties
+    for _, duty := range dutyData {
+        if name := getStringFromMap(duty, "name"); name != "" {
+            inserted, err := insertIfNotExists(tx, name, "duty")
+            if err != nil {
+                return 0, fmt.Errorf("failed to insert duty: %w", err)
+            }
+            totalInserted += inserted
+        }
+    }
+    
+    // 3. Сохраняем skills
+    for _, skill := range skillData {
+        if name := getStringFromMap(skill, "name"); name != "" {
+            inserted, err := insertIfNotExists(tx, name, "skill")
+            if err != nil {
+                return 0, fmt.Errorf("failed to insert skill: %w", err)
+            }
+            totalInserted += inserted
+        }
+    }
+    
+    // 4. Сохраняем sector
+    if sector != "" {
+        inserted, err := insertIfNotExists(tx, sector, "sector")
+        if err != nil {
+            return 0, fmt.Errorf("failed to insert sector: %w", err)
+        }
+        totalInserted += inserted
+    }
+    
+    // 5. Сохраняем office_country
+    if officeCountry != "" {
+        inserted, err := insertIfNotExists(tx, officeCountry, "office_country")
+        if err != nil {
+            return 0, fmt.Errorf("failed to insert office_country: %w", err)
+        }
+        totalInserted += inserted
+    }
+    
+    // 6. Сохраняем office_location
+    if officeLocation != "" {
+        inserted, err := insertIfNotExists(tx, officeLocation, "office_location")
+        if err != nil {
+            return 0, fmt.Errorf("failed to insert office_location: %w", err)
+        }
+        totalInserted += inserted
+    }
+    
+    // Фиксируем транзакцию
+    if err := tx.Commit(); err != nil {
+        return 0, fmt.Errorf("failed to commit transaction: %w", err)
+    }
+    
+    return totalInserted, nil
+}
+*/
+
 func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
     userID, ok := middleware.GetUserIDFromContext(r.Context())
     if !ok {
@@ -585,4 +707,25 @@ func writeResponse(w http.ResponseWriter, status int, response Response) {
     w.Header().Set("Content-Type", "application/json; charset=utf-8")
     w.WriteHeader(status)
     json.NewEncoder(w).Encode(response)
+}
+
+func mergeJSONData(base, extra []byte) ([]byte, error) {
+    var baseMap map[string]interface{}
+    var extraMap map[string]interface{}
+    
+    // Парсим оба JSON
+    if err := json.Unmarshal(base, &baseMap); err != nil {
+        return nil, err
+    }
+    if err := json.Unmarshal(extra, &extraMap); err != nil {
+        return nil, err
+    }
+    
+    // Сливаем (extra перезаписывает base)
+    for k, v := range extraMap {
+        baseMap[k] = v
+    }
+    
+    // Возвращаем обратно в JSON
+    return json.Marshal(baseMap)
 }

@@ -17,6 +17,22 @@ type User struct {
     Guid      string         `json:"guid"`
 }
 
+type UserResult struct {
+    Assign    int            `json:"assign"`
+    Comment   string         `json:"comment"`
+}
+
+type ResultRequest struct {
+    Guid      string          `json:"user"`     
+    Assign    int            `json:"assign"`
+    Comment   string         `json:"comment"`
+}
+
+type ResultResponse struct {
+    Success   int      `json:"success"`
+    Comment   string   `json:"comment"`
+}
+
 type UserData map[string]interface{}
 
 // Value преобразует UserData в JSON для хранения в БД
