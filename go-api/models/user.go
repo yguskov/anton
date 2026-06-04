@@ -23,7 +23,7 @@ type UserResult struct {
 }
 
 type ResultRequest struct {
-    Guid      string          `json:"user"`     
+    Guid      string         `json:"user"`     
     Assign    int            `json:"assign"`
     Comment   string         `json:"comment"`
 }

@@ -60,6 +60,9 @@ func main() {
     public.HandleFunc("/cv", func(w http.ResponseWriter, r *http.Request) {
         handlers.CVHandler(w, r)
     }).Methods("POST")
+    public.HandleFunc("/save_result", func(w http.ResponseWriter, r *http.Request) {
+        handlers.SaveUserResultHandler(w, r, cfg)
+    }).Methods("POST")	
 
 	public.HandleFunc("/health", healthHandler).Methods("GET")
 	public.HandleFunc("/hint", hintHandler).Methods("GET")

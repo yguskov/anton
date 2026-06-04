@@ -162,6 +162,27 @@ class AuthProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> saveResult(String guid, int assign, String comment) async {
+    _isLoading = true;
+    _error = null;
+    notifyListeners();
+
+    try {
+      dynamic response =
+          await _apiService.saveResult(ResultRequest(user: guid, assign: assign, comment: comment));
+      print(response);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString();
+      print(e);
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
   Future<void> loadUserCV(String id) async {
     _isLoading = true;
     _error = null;

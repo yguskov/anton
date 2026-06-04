@@ -78,8 +78,10 @@ curl -X POST http://5.187.2.205:8993/api/register \
   }
 }'
 
+curl -X POST http://127.0.0.1:8993/api/save_result -H "Content-Type: application/json" -d '{ "guid": "d7us1c9ams3vhd478qe0", "assign": 1, "comment": "You" }'
+
 # Логин
-curl -X POST http://localhost:8080/api/login \
+curl -X POST http://localhost:8993/api/login \
   -H "Content-Type: application/json" \
   -d '{
     "email": "test@example.com",
@@ -87,7 +89,7 @@ curl -X POST http://localhost:8080/api/login \
   }'
 
 # Проверка токена
-curl -X GET http://localhost:8080/api/users \
+curl -X GET http://localhost:8993/api/users \
 -H "Authorization: Bearer YOUR_JWT_TOKEN_HERE"
 
 version of flutter 3.10.2

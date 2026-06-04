@@ -13,7 +13,6 @@ import (
     "golang.org/x/crypto/bcrypt"
     "github.com/rs/xid"
     "fmt"
-    "errors"
     // "strconv"
 )
 
@@ -446,6 +445,22 @@ func SaveUserResultHandler(w http.ResponseWriter, r *http.Request, cfg *config.C
         return
     }
 
+    var exists bool
+    err = database.DB.QueryRow(
+        "SELECT EXISTS(SELECT 1 FROM user WHERE guid = ?)",
+        req.Guid,
+    ).Scan(&exists)
+    
+    if err != nil {
+        http.Error(w, "Database error", http.StatusInternalServerError)
+        return
+    }
+    
+    if !exists {
+        http.Error(w, "User not found", http.StatusNotFound);
+        return
+    }
+    
     userResult := models.UserResult{
         Assign:  req.Assign,
         Comment: req.Comment,
@@ -454,19 +469,18 @@ func SaveUserResultHandler(w http.ResponseWriter, r *http.Request, cfg *config.C
     resultJSON, err := json.Marshal(userResult)
     if err != nil {
         http.Error(w, "Error when parse result", http.StatusInternalServerError)
+        return
     }
 
-    var updatedResult string
-    err = database.DB.QueryRow(
-        "UPDATE user SET result = ? WHERE guid = ? RETURNING result",
+    _, err = database.DB.Exec(
+        "UPDATE user SET result = ? WHERE guid = ?",
         resultJSON, req.Guid,
-    ).Scan(&updatedResult)
+    )
 
     if err != nil {
-        if errors.Is(err, sql.ErrNoRows) {
-            http.Error(w, " User not found", http.StatusNotFound);
-        }
-        http.Error(w, "Error when parse result", http.StatusInternalServerError);
+        log.Printf("Error: %v", err)
+        http.Error(w, " Database error", http.StatusInternalServerError);
+        return
     }
 
     writeResponse(w, http.StatusOK, Response{

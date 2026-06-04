@@ -202,6 +202,27 @@ class ApiService {
     }
   }
 
+  Future<Map<String, dynamic>> saveResult(ResultRequest request) async {
+    final response = await client.post(
+      Uri.parse('$baseUrl/save_result'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(request.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        return {
+          'success': true,
+        };
+      } else {
+        throw Exception(data['error'] ?? 'Ошибка');
+      }
+    } else {
+      throw Exception('Ошибка');
+    }
+  }
+
   Future<Map<String, dynamic>> getUserCV(String id) async {
     final response = await client.post(
       Uri.parse('$baseUrl/cv'),

@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 class User {
   final int id;
   final String email;
@@ -66,6 +68,26 @@ class LoginRequest {
     return {
       'email': email,
       'password': password,
+    };
+  }
+}
+
+class ResultRequest {
+  final String user;
+  final int assign;
+  final String comment;
+
+  ResultRequest({
+    required this.user,
+    required this.assign,
+    required this.comment,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'user': user,
+      'assign': assign,
+      'comment': comment,
     };
   }
 }
