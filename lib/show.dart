@@ -52,7 +52,7 @@ class _ShowPageState extends State<ShowPage> {
     CV? cv = authProvider.userCV;
     Widget cvWidget;
     if (cv != null) {
-      cvWidget = CVWidget(cv: cv);
+      cvWidget = CVWidget(cv: cv, guid: widget.id);
     } else {
       cvWidget = Center(
         child: Padding(
