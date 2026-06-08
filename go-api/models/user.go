@@ -54,6 +54,20 @@ func (ud *UserData) Scan(value interface{}) error {
     
     return json.Unmarshal(bytes, ud)
 }
+// Scan преобразует JSON из БД в UserResult
+func (ur *UserResult) Scan(value interface{}) error {
+    if value == nil {
+        *ur = UserResult{}
+        return nil
+    }
+    
+    bytes, ok := value.([]byte)
+    if !ok {
+        return errors.New("type assertion to []byte failed")
+    }
+    
+    return json.Unmarshal(bytes, ur)
+}
 
 type RegisterRequest struct {
     Email    string   `json:"email"`

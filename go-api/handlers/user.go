@@ -253,15 +253,20 @@ func CVHandler(w http.ResponseWriter, r *http.Request) {
 
 
     var user models.User
+    var userResult models.UserResult
     err = database.DB.QueryRow(
-        "SELECT id, email, password, user_data, created_at, guid FROM user WHERE guid = ?",
+        "SELECT id, email, password, user_data, created_at, guid, result FROM user WHERE guid = ?",
         req.ID,
-    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt, &user.Guid)
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt, &user.Guid, &userResult)
 
     if err != nil {
+        log.Printf("Error when scan: %v", err);
         http.Error(w, "Error scanning user", http.StatusInternalServerError)
         return
     }
+
+    user.UserData["assign"] = userResult.Assign;
+    user.UserData["comment"] = userResult.Comment;    
 
     writeResponse(w, http.StatusOK, Response{
         Success: true,

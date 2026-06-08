@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 class User {
   final int id;
   final String email;
