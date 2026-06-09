@@ -8,6 +8,7 @@ import 'package:example/src/widgets/text_bar.dart';
 import 'package:example/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:markup_text/markup_text.dart';
 import 'package:provider/provider.dart';
 import 'dart:html' if (dart.library.io) 'dart:io' as html;
 
@@ -28,6 +29,9 @@ class _ShowPageState extends State<ShowPage> {
   final _passwordController = TextEditingController();
   final _password2Controller = TextEditingController();
   final _resumeController = TextEditingController();
+  final TextEditingController _resultDescController = TextEditingController();
+
+  get commonTextStyle => TextStyle(fontSize: 20);
 
   @override
   void initState() {
@@ -105,13 +109,82 @@ class _ShowPageState extends State<ShowPage> {
                               // TextBar('Презентация намерений'),
                               SizedBox(height: h20),
                               cvWidget,
-                              SizedBox(height: 2 * h20),
-                              Center(
-                                child: ElevatedButton(
-                                  onPressed: edit,
-                                  child: Text('Можно обсудить'),
+                              SizedBox(height: h20),
+
+                              // set assign result buttons
+                              if (authProvider.currentUser == null)
+                                Padding(
+                                  padding: EdgeInsets.symmetric(vertical: h20, horizontal: h20),
+                                  child: Row(
+                                    children: [
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () => _openManagerReactDialog(context, false),
+                                          child: Text('Разьяснить отказ'),
+                                          style: ElevatedButton.styleFrom(
+                                            elevation: 0.5,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 19,
+                                            ),
+                                            backgroundColor: cardColorDislike,
+                                            foregroundColor: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: h20),
+                                      Expanded(
+                                        child: ElevatedButton(
+                                          onPressed: () => _openManagerReactDialog(context, true),
+                                          child: Text('Можно обсудить'),
+                                          style: ElevatedButton.styleFrom(
+                                            elevation: 0.5,
+                                            padding: const EdgeInsets.symmetric(
+                                              horizontal: 10,
+                                              vertical: 19,
+                                            ),
+                                            backgroundColor: secondaryColor,
+                                            foregroundColor: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
+                              // view assign result
+                              if (cv != null && cv.getValue('assign') != null)
+                                Card(
+                                  elevation: 0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(11),
+                                    side: BorderSide(
+                                      color: cv.getValue('assign') == 1
+                                          ? cardColorLike
+                                          : cardColorDislike,
+                                      width: 1,
+                                    ),
+                                  ),
+                                  color: Colors.white,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(h20),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        cv.getValue('assign') == 1
+                                            ? MarkupText(
+                                                '(b)Результат:(/b) (c #47b33d)Положительный(/c)',
+                                                style: commonTextStyle)
+                                            : MarkupText(
+                                                '(b)Результат:(/b) (c #cd3735)Отрицательный(/c)',
+                                                style: commonTextStyle),
+                                        SizedBox(height: h20),
+                                        MarkupText('${cv.getValue('comment')}',
+                                            style: commonTextStyle),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+
                               SizedBox(height: h20),
                               authProvider.isLoading
                                   ? Center(
@@ -267,6 +340,94 @@ class _ShowPageState extends State<ShowPage> {
           content: Text('Ссылка скопирована в буфер!'),
           backgroundColor: Theme.of(context).colorScheme.primary));
     }
+  }
+
+  Future<void> _openManagerReactDialog(BuildContext context, bool assign) async {
+    double h20 = 20;
+
+    return await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(assign ? 'Можно обсудить наши возможности' : 'Разъяснение'),
+          contentPadding: EdgeInsets.all(h20),
+          // insetPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+          content: ConstrainedBox(
+            constraints: BoxConstraints(
+              minWidth: baseScreenWidth / 2,
+              maxWidth: baseScreenWidth,
+            ),
+            child: TextFormField(
+              controller: _resultDescController,
+              decoration: inputDecoration(
+                assign
+                    ? 'Можете оставить комментарий, либо назначить встречу'
+                    : 'Можете оставить комментарий',
+              ),
+              autofocus: true,
+              minLines: 3,
+              maxLines: 3,
+            ),
+          ),
+          actions: [
+            Padding(
+              padding: EdgeInsets.all(h20),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: Text('Отмена'),
+                      // style: ElevatedButton.styleFrom(backgroundColor: cardAddButtonBackColor)
+                    ),
+                  ),
+                  SizedBox(width: h20),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => sendManagerResult(context, assign),
+                      child: Text('Сохранить'),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+          actionsPadding: EdgeInsets.zero,
+          actionsAlignment: MainAxisAlignment.center,
+        );
+      },
+    );
+  }
+
+  sendManagerResult(BuildContext context, bool assign) async {
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+    if (await authProvider.saveResult(widget.id, assign ? 1 : -1, _resultDescController.text)) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Ok')));
+    }
+    Navigator.pop(context);
+  }
+
+  InputDecoration inputDecoration(String label) {
+    return InputDecoration(
+      hintText: label,
+      filled: true,
+      fillColor: Colors.white,
+      floatingLabelStyle: TextStyle(color: Colors.grey[800]),
+      enabledBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey[600]!, width: 1.5),
+        borderRadius: const BorderRadius.all(
+          Radius.circular(4),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderSide: BorderSide(color: Colors.grey[800]!, width: 2.0),
+        borderRadius: const BorderRadius.only(
+          bottomLeft: Radius.circular(6),
+          bottomRight: Radius.circular(6),
+        ),
+      ),
+      contentPadding: const EdgeInsets.all(16),
+    );
   }
 }
 
