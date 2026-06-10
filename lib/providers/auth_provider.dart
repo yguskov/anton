@@ -172,6 +172,8 @@ class AuthProvider with ChangeNotifier {
           await _apiService.saveResult(ResultRequest(user: guid, assign: assign, comment: comment));
       print(response);
       _isLoading = false;
+      _userCV!.setValue('assign', assign);
+      _userCV!.setValue('comment', comment);
       notifyListeners();
       return true;
     } catch (e) {

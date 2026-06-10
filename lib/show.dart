@@ -152,7 +152,9 @@ class _ShowPageState extends State<ShowPage> {
                                   ),
                                 ),
                               // view assign result
-                              if (cv != null && cv.getValue('assign') != null)
+                              if (cv != null &&
+                                  cv.getValue('assign') != null &&
+                                  authProvider.userCV!.getValue('assign') != 0)
                                 Card(
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
@@ -384,9 +386,12 @@ class _ShowPageState extends State<ShowPage> {
                   SizedBox(width: h20),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () => sendManagerResult(context, assign),
-                      child: Text('Сохранить'),
-                    ),
+                        onPressed: () => sendManagerResult(context, assign),
+                        child: Text('Сохранить'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: secondaryColor,
+                          foregroundColor: Colors.white,
+                        )),
                   ),
                 ],
               ),

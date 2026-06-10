@@ -8,6 +8,7 @@ import 'package:example/src/widgets/text_bar.dart';
 import 'package:example/styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:markup_text/markup_text.dart';
 import 'package:provider/provider.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -29,6 +30,8 @@ class _ProfilePageState extends State<ProfilePage> {
       _oldPasswordController.text.isNotEmpty &&
       _password2Controller.text.isNotEmpty;
 
+  get commonTextStyle => TextStyle(fontSize: 20);
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +40,7 @@ class _ProfilePageState extends State<ProfilePage> {
     if (authProvider.currentUser == null) {
       authProvider.fetchCurrentUser();
     }
+    authProvider.loadUserCV(authProvider.currentUser!.guid);
     // final sccess = await authProvider.register();
     //       dynamic response = await _apiService.login(request);
     // _currentUser = response.User;
@@ -166,6 +170,41 @@ class _ProfilePageState extends State<ProfilePage> {
                                     ),
                                   ),
                                 ),
+                                SizedBox(height: h20),
+                                if (authProvider.userCV != null &&
+                                    authProvider.userCV!.getValue('assign') != null &&
+                                    authProvider.userCV!.getValue('assign') != 0)
+                                  Card(
+                                    elevation: 0,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(11),
+                                      side: BorderSide(
+                                        color: authProvider.userCV!.getValue('assign') == 1
+                                            ? cardColorLike
+                                            : cardColorDislike,
+                                        width: 1,
+                                      ),
+                                    ),
+                                    color: Colors.white,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(h20),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          authProvider.userCV!.getValue('assign') == 1
+                                              ? MarkupText(
+                                                  '(b)Результат:(/b) (c #47b33d)Положительный(/c)',
+                                                  style: commonTextStyle)
+                                              : MarkupText(
+                                                  '(b)Результат:(/b) (c #cd3735)Отрицательный(/c)',
+                                                  style: commonTextStyle),
+                                          SizedBox(height: h20),
+                                          MarkupText('${authProvider.userCV!.getValue('comment')}',
+                                              style: commonTextStyle),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                                 SizedBox(height: h20),
                                 Card(
                                   elevation: 0,

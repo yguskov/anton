@@ -30,6 +30,7 @@ func InitDB(dataSourceName string) error {
         guid VARCHAR(20) NOT NULL,
         user_data JSON,
         is_hr TINYINT(1) DEFAULT 0,
+        result json default NULL,
         fio_virtual VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.fio'))) VIRTUAL,
         position_virtual VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.position'))) VIRTUAL,
         sector_virtual VARCHAR(255) GENERATED ALWAYS AS (JSON_UNQUOTE(JSON_EXTRACT(user_data, '$.sector'))) VIRTUAL,
