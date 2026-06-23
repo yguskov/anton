@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:example/profile.dart';
+import 'package:example/services/navigation.dart';
 import 'package:example/show.dart';
 import 'package:example/src/app_bar_with_menu.dart';
 import 'package:example/src/widgets/login_dialog.dart';
@@ -15,8 +16,21 @@ import 'example.dart';
 
 import 'package:example/register.dart';
 import 'package:example/styles.dart';
+import 'dart:html' as html;
+import 'package:flutter_web_plugins/flutter_web_plugins.dart';
+
+final NavigationService navigationService = NavigationService();
 
 void main() {
+  setUrlStrategy(PathUrlStrategy());
+
+  final currentPath = html.window.location.pathname;
+  print(
+      '================ Current path: $currentPath --Base Url =${navigationService.baseUrl}----------');
+  if (currentPath == '/') {
+    html.window.location.href = '${navigationService.baseUrl}html/index.html';
+  }
+
   runApp(const MyApp());
 }
 
@@ -26,6 +40,7 @@ class MyApp extends StatelessWidget {
   Route<dynamic>? generateRoute(RouteSettings settings) {
     final String? path = settings.name;
     print('------------- $path');
+
     // Роут /page/:id
     if (path != null && path.startsWith('/review/')) {
       final idStr = path.substring('/review/'.length);
@@ -68,12 +83,18 @@ class MyApp extends StatelessWidget {
           create: (context) => AuthProvider(apiService: ApiService()),
           update: (context, apiService, authProvider) => AuthProvider(apiService: apiService),
         ),
+        // Провайдер для навигации
+        Provider<NavigationService>(
+          create: (_) => navigationService,
+        ),
       ],
       child: MaterialApp(
         onGenerateRoute: (settings) {
           // settings.name содержит путь, например: '/page/123'
           return generateRoute(settings);
         },
+        initialRoute: '/',
+        navigatorKey: navigationService.navigatorKey,
         title: 'HR',
         theme: ThemeData(
             primarySwatch: Colors.blue,

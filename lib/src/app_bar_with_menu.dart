@@ -1,4 +1,5 @@
 // lib/widgets/custom_app_bar.dart
+import 'package:example/services/navigation.dart';
 import 'package:example/src/constants.dart';
 import 'package:example/src/widgets/login_dialog.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,7 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
+    final navigationService = Provider.of<NavigationService>(context);
 
     return AppBar(
         title: Text(title),
@@ -62,7 +64,8 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
                   // Navigator.pushNamed(context, '/login');
                   break;
                 case 'profile':
-                  Navigator.pushNamed(context, '/profile');
+                  navigationService.navigateTo('/profile');
+                  // Navigator.pushNamed(context, '/profile');
                   break;
                 case 'help':
                   ScaffoldMessenger.of(context).showSnackBar(

@@ -83,7 +83,7 @@ class _LoginPageState extends State<LoginPage> {
       body: LayoutBuilder(builder: (context, constraints) {
         List<Widget> textFields = [];
         if (authProvider.isAuth) {
-          textFields = [TextBar('Вы уже авторизованы как ${authProvider.currentUser!.email}')];
+          textFields = [TextBar('Вы авторизованы как ${authProvider.currentUser!.email}')];
         } else {
           textFields = [
             TextFormField(

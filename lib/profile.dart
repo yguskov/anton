@@ -1,4 +1,6 @@
 import 'package:example/providers/auth_provider.dart';
+import 'package:example/services/navigation.dart';
+
 import 'package:example/src/app_bar_with_menu.dart';
 import 'package:example/src/constants.dart';
 import 'package:example/src/utils.dart';
@@ -10,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:markup_text/markup_text.dart';
 import 'package:provider/provider.dart';
+import 'dart:html' as html;
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -37,10 +40,16 @@ class _ProfilePageState extends State<ProfilePage> {
     super.initState();
     final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-    if (authProvider.currentUser == null) {
-      authProvider.fetchCurrentUser();
-    }
-    authProvider.loadUserCV(authProvider.currentUser!.guid);
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (authProvider.currentUser == null) {
+        await authProvider.fetchCurrentUser();
+      }
+      if (authProvider.currentUser != null) {
+        authProvider.loadUserCV(authProvider.currentUser!.guid);
+      } else {
+        html.window.location.href = '/login';
+      }
+    });
     // final sccess = await authProvider.register();
     //       dynamic response = await _apiService.login(request);
     // _currentUser = response.User;
@@ -60,6 +69,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
     final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
     if (authProvider.isAuth) {
+      print('--------is-auth---not null:${authProvider.currentUser != null}-- ');
       _resumeController.text = authProvider.currentUser!.userData['resume'] ?? '';
       _resultDescController.text = authProvider.currentUser!.userData['result_description'] ?? '';
     }
@@ -487,7 +497,7 @@ class _ProfilePageState extends State<ProfilePage> {
       String path = Uri.base.toString();
       // Копируем текст в буфер
       Clipboard.setData(ClipboardData(
-          text: path.substring(0, path.lastIndexOf('#') + 1) +
+          text: path.substring(0, path.lastIndexOf('/')) +
               '/review/' +
               authProvider.currentUser!.guid));
 

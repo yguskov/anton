@@ -84,7 +84,7 @@ sleep 2
 echo -e "${GREEN}Запуск Flutter-приложения...${NC}"
 cd ..
 
-flutter run -d chrome --web-renderer html --verbose 2>&1 | log_with_color "$BLUE" "FL" &
+flutter run -d chrome --web-renderer html --web-port 33602 --verbose 2>&1 | log_with_color "$BLUE" "FL" &
 FLUTTER_PID=$!
 
 echo -e "${GREEN}Оба приложения запущены!${NC}"
