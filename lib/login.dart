@@ -1,5 +1,7 @@
 import 'package:example/providers/auth_provider.dart';
+import 'package:example/services/navigation.dart';
 import 'package:example/src/app_bar_with_menu.dart';
+import 'package:example/src/constants.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,10 +15,22 @@ class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  NavigationService? navigationService;
 
   @override
   void initState() {
     super.initState();
+    navigationService = Provider.of<NavigationService>(context, listen: false);
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (authProvider.hasToken) {
+        if (!authProvider.isAuth) await authProvider.fetchCurrentUser();
+        if (authProvider.error == null) {
+          navigationService!.navigateTo('/profile');
+        }
+      }
+    });
   }
 
   final ScrollController _scrollController = ScrollController();
@@ -184,6 +198,17 @@ class _LoginPageState extends State<LoginPage> {
                                     child: Column(
                                       children: textFields,
                                     )),
+                                SizedBox(
+                                  height: 30,
+                                ),
+                                Center(
+                                    child: ElevatedButton(
+                                        onPressed: login,
+                                        child: Text('Авторизоваться '),
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: secondaryColor,
+                                          foregroundColor: Colors.white,
+                                        ))),
                               ],
                             )),
                 ),
@@ -192,10 +217,9 @@ class _LoginPageState extends State<LoginPage> {
 
             // Нижняя панель
             Container(
-                height: 190,
-                color: Colors.white,
-                child: Center(
-                    child: ElevatedButton(onPressed: login, child: Text('Авторизоваться ')))),
+              height: 190,
+              color: Colors.white,
+            ),
           ],
         );
       }),
@@ -221,8 +245,7 @@ class _LoginPageState extends State<LoginPage> {
 
       if (success) {
         print('---- email : ${authProvider.currentUser?.email}');
-        Navigator.pushReplacementNamed(context, '/profile');
-        Navigator.pushNamed(context, '/profile');
+        navigationService!.navigateTo('/profile');
       } else {
         print('Ошибка авторизации');
       }

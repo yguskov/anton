@@ -23,6 +23,8 @@ class AuthProvider with ChangeNotifier {
 
   CV? get userCV => _userCV;
 
+  bool get hasToken => _apiService.hasToken;
+
   Future<bool> register(String email, String password, Map<String, dynamic> userData) async {
     _isLoading = true;
     _error = null;

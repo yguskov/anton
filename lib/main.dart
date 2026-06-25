@@ -27,7 +27,7 @@ void main() {
   final currentPath = html.window.location.pathname;
   print(
       '================ Current path: $currentPath --Base Url =${navigationService.baseUrl}----------');
-  if (currentPath == '/') {
+  if (currentPath == navigationService.baseUrl) {
     html.window.location.href = '${navigationService.baseUrl}html/index.html';
   }
 
@@ -187,66 +187,10 @@ class HomePage extends StatelessWidget {
                         ? SizedBox(height: 40)
                         : ElevatedButton(
                             onPressed: () => showLoginDialog(context),
-                            child: Text('Авторизуйся'),
+                            child: Text('Авторизуйтесь'),
                             style: grayButtonStyle,
                           ),
                   )),
-            ),
-          ),
-
-          SliverToBoxAdapter(
-            child: Container(
-              color: Color.fromARGB(255, 2, 83, 36),
-              child: Center(
-                  child: Stack(
-                      // padding: const EdgeInsets.only(top: 0.0),
-                      children: [
-                    Image.asset(
-                      'image/office_schema.jpeg',
-                      // width: 200,
-                      width: double.infinity,
-                      height: 360,
-                      fit: BoxFit.cover,
-                    ),
-                    // Размытый фон + текст
-                    Positioned(
-                      top: 0,
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: ClipRect(
-                        child: BackdropFilter(
-                          filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-                          child: Container(
-                            padding: EdgeInsets.only(top: 100),
-                            color: Colors.black.withOpacity(0.3),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Здесь должна быть какая-то графика',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 33,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(height: 8),
-                                Text(
-                                  'Тексты о проекте и описание',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white.withOpacity(0.9),
-                                    fontSize: 24,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ])),
             ),
           ),
 

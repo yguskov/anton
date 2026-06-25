@@ -12,6 +12,7 @@ class NavigationService {
   final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
   void navigateTo(String route, {Object? arguments}) {
+    print('url updated to $route');
     _updateUrl(route);
     navigatorKey.currentState?.pushNamed(route, arguments: arguments);
   }
@@ -27,8 +28,9 @@ class NavigationService {
 
   void _updateUrl(String route) {
     final currentUrl = html.window.location.href;
-    final baseUrl = currentUrl.split('/').first;
-    final newUrl = '${baseUrl}${route}';
+    // final baseUrl = currentUrl.split('/').first;
+    print('base-url=$baseUrl / route=$route');
+    final newUrl = '${baseUrl}${route.substring(1)}';
     html.window.history.pushState(null, '', newUrl);
   }
 

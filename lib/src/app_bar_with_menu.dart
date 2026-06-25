@@ -21,7 +21,7 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context);
     final navigationService = Provider.of<NavigationService>(context);
 
     return AppBar(
@@ -61,6 +61,7 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
                   break;
                 case 'logout':
                   authProvider.logout();
+                  navigationService.navigateTo('/login');
                   // Navigator.pushNamed(context, '/login');
                   break;
                 case 'profile':

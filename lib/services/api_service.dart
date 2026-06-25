@@ -19,6 +19,8 @@ class ApiService {
     if (window.localStorage['token'] != null) _token = window.localStorage['token']!;
   }
 
+  get hasToken => _token != null || window.localStorage.remove('token') != null;
+
   // Сохраняем токен
   void set token(String token) {
     _token = token;
