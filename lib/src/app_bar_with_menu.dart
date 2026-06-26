@@ -26,6 +26,7 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
 
     return AppBar(
         title: Text(title),
+        automaticallyImplyLeading: false,
         actions: [
           SizedBox(width: 20),
           PopupMenuButton<String>(
