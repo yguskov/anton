@@ -190,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                               backgroundColor: Colors.white,
                             )
                           : ListView(
-                              padding: EdgeInsets.all(100),
+                              padding: EdgeInsets.only(top: 30, left: 50, right: 50),
                               controller: _scrollController,
                               children: [
                                 Form(
@@ -198,9 +198,6 @@ class _LoginPageState extends State<LoginPage> {
                                     child: Column(
                                       children: textFields,
                                     )),
-                                SizedBox(
-                                  height: 30,
-                                ),
                                 Center(
                                     child: ElevatedButton(
                                         onPressed: login,
@@ -213,12 +210,6 @@ class _LoginPageState extends State<LoginPage> {
                             )),
                 ),
               ),
-            ),
-
-            // Нижняя панель
-            Container(
-              height: 190,
-              color: Colors.white,
             ),
           ],
         );

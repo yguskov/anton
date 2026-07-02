@@ -556,6 +556,7 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
 
         if (success) {
           print('${authProvider.currentUser?.id} : ${authProvider.currentUser?.email}');
+          authProvider.clearError();
           Navigator.of(context).pop();
         } else {
           print('Error register');

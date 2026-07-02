@@ -48,6 +48,10 @@ class ProviderExamplePage extends StatelessWidget {
     BuildContext context,
   ) {
     AuthProvider authProvider = Provider.of<AuthProvider>(context);
+    final provider = Provider.of<ProviderExamplePageProvider>(
+      context,
+    );
+
     if (first) {
       print('----first load user-----');
       if (authProvider.currentUser?.guid != null) {
@@ -58,23 +62,17 @@ class ProviderExamplePage extends StatelessWidget {
           // }
           await authProvider.loadUserCV(authProvider.currentUser!.guid);
           cv = authProvider.userCV ?? CV.instance;
-          ProviderExamplePageProvider pageProvider =
-              Provider.of<ProviderExamplePageProvider>(context, listen: false);
-          pageProvider.reloadDataFromCV(cv);
+          provider.reloadDataFromCV(cv);
           print('----load cv with ${CV.instance.getValue('fio')}-----'); // @book load CV
         });
         first = false;
-        return CircularProgressIndicator();
+        // return CircularProgressIndicator();
       } else {
         // try to load from local storage
         if (window.localStorage['cv'] != null) cv = CV.fromJson(window.localStorage['cv']!);
         print('----got  cv from LS ${CV.instance.getValue('fio')}-----');
       }
     }
-
-    final provider = Provider.of<ProviderExamplePageProvider>(
-      context,
-    );
 
     provider.cv = cv;
 
@@ -129,6 +127,7 @@ class ProviderExamplePage extends StatelessWidget {
                 // context.wizardController.goTo(index: 0);
                 // context.wizardController.goBack();
               }
+              print('### step index=${context.wizardController.index}');
             },
             child: LayoutBuilder(
               builder: (context, constraints) {
@@ -323,6 +322,7 @@ class ProviderExamplePageProvider {
   }
 
   Future<void> dispose() async {
+    print('--- dispose all steps ----');
     stepOneProvider.dispose();
     stepTwoProvider.dispose();
     stepThreeProvider.dispose();
