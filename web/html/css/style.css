@@ -188,7 +188,6 @@ textarea {
       }
     }
     .btn-success {
-      width: 215px;
       color: #fff;
       background-color: #48b33d;
       &:hover {
