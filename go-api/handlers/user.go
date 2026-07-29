@@ -119,9 +119,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 
     var user models.User
     err = database.DB.QueryRow(
-        "SELECT id, email, password, user_data, created_at, guid FROM user WHERE email = ?",
+        "SELECT id, email, password, new_password, user_data, created_at, guid FROM user WHERE email = ?",
         req.Email,
-    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt, &user.Guid)
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.NewPassword, &user.UserData, &user.CreatedAt, &user.Guid)
     
     if err == sql.ErrNoRows {
         http.Error(w, "Invalid credentials", http.StatusUnauthorized)
@@ -132,13 +132,12 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
     }
 
     // Проверяем пароль
-    err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
-    if err != nil {
+    if !checkPassword(&user, req.Password) {
         http.Error(w, "Invalid credentials", http.StatusUnauthorized)
         return
     }
 
- // Генерируем JWT токен
+    // Генерируем JWT токен
     token, err := middleware.GenerateJWTToken(user.ID, user.Email, cfg)
     if err != nil {
         writeResponse(w, http.StatusInternalServerError, Response{
@@ -305,9 +304,9 @@ func PasswordHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
 
     var user models.User
     err = database.DB.QueryRow(
-        "SELECT id, email, password, user_data, created_at FROM user WHERE id = ?",
+        "SELECT id, email, password, new_password, user_data, created_at FROM user WHERE id = ?",
         userID, 
-    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt)
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.NewPassword, &user.UserData, &user.CreatedAt)
     
     if err == sql.ErrNoRows {
         http.Error(w, "Invalid credentials", http.StatusUnauthorized)
@@ -318,15 +317,15 @@ func PasswordHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
     }
 
     // Проверяем пароль
-    err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Old))
-    if err != nil {
+
+    if !checkPassword(&user, req.Password) {
         http.Error(w, "Invalid old password", http.StatusUnauthorized)
         return
     }
 
     // Меняем пароль
     result, err := database.DB.Exec(
-        "UPDATE user SET password = ? WHERE id = ?",
+        "UPDATE user SET password = ?, new_password = '' WHERE id = ?",
         string(hashedPassword), userID, 
     )
 
@@ -747,4 +746,20 @@ func mergeJSONData(base, extra []byte) ([]byte, error) {
     
     // Возвращаем обратно в JSON
     return json.Marshal(baseMap)
+}
+
+func checkPassword(user *User, password string) bool {
+    // Проверяем основной пароль
+    err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
+    if err == nil {
+        return true
+    }
+    
+    // Если есть NewPassword, проверяем его
+    if user.NewPassword != "" {
+        err = bcrypt.CompareHashAndPassword([]byte(user.NewPassword), []byte(password))
+        return err == nil
+    }
+    
+    return false
 }

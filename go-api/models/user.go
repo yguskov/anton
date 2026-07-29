@@ -8,13 +8,14 @@ import (
 )
 
 type User struct {
-    ID        int            `json:"id"`
-    Email     string         `json:"email"`
-    Password  string         `json:"-"`
-    UserData  UserData       `json:"user_data"`
-    CreatedAt time.Time      `json:"created_at"`
-    UpdatedAt time.Time      `json:"updated_at"`
-    Guid      string         `json:"guid"`
+    ID           int            `json:"id"`
+    Email        string         `json:"email"`
+    Password     string         `json:"-"`
+    NewPassword  string         `json:"-"`
+    UserData     UserData       `json:"user_data"`
+    CreatedAt    time.Time      `json:"created_at"`
+    UpdatedAt    time.Time      `json:"updated_at"`
+    Guid         string         `json:"guid"`
 }
 
 type UserResult struct {
