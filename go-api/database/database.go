@@ -25,7 +25,7 @@ func InitDB(dataSourceName string) error {
         id INT AUTO_INCREMENT PRIMARY KEY,
         email VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(255) NOT NULL,
-        new_password VARCHAR(255) NOT NULL,
+        new_password VARCHAR(255) DEFAULT '',
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
         guid VARCHAR(20) NOT NULL,
@@ -74,7 +74,7 @@ func InitDB(dataSourceName string) error {
     if err != nil {
         return fmt.Errorf("error creating process: %v", err)
     }
-    fmt.Println("Database connected and table ensured")
+    fmt.Println("Database connected and table ensured?")
     return nil
 }
 

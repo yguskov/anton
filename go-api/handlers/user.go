@@ -293,7 +293,7 @@ func PasswordHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         return
     }
 
-    // Хешируем старый пароль
+    // Хешируем новый пароль
     hashedPassword, err := bcrypt.GenerateFromPassword([]byte(req.New), bcrypt.DefaultCost)
     if err != nil {
         http.Error(w, "Error processing new password", http.StatusInternalServerError)
@@ -317,8 +317,7 @@ func PasswordHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
     }
 
     // Проверяем пароль
-
-    if !checkPassword(&user, req.Password) {
+    if !checkPassword(&user, req.Old) {
         http.Error(w, "Invalid old password", http.StatusUnauthorized)
         return
     }
@@ -748,7 +747,7 @@ func mergeJSONData(base, extra []byte) ([]byte, error) {
     return json.Marshal(baseMap)
 }
 
-func checkPassword(user *User, password string) bool {
+func checkPassword(user *models.User, password string) bool {
     // Проверяем основной пароль
     err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
     if err == nil {
