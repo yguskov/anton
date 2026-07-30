@@ -74,7 +74,7 @@ func InitDB(dataSourceName string) error {
     if err != nil {
         return fmt.Errorf("error creating process: %v", err)
     }
-    fmt.Println("Database connected and table ensured?")
+    fmt.Println("Database connected and table ensured")
     return nil
 }
 

@@ -7,7 +7,10 @@
         "name": "anketa"
     },
     "server": {
-        "port": "8993"
+        "port": "8993",
+        "ssl":  false,
+        "cert": "/etc/letsencrypt/live/statuswindow.ru/fullchain.pem",
+        "key":  "/etc/letsencrypt/live/statuswindow.ru/privkey.pem"
     },
     "JWT": {
         "SecretKey": "anton-jwt-very-secret-api-key",

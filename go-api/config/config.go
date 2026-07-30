@@ -17,6 +17,9 @@ type Config struct {
     } `json:"database"`
     Server struct {
         Port string `json:"port"`
+        Ssl  bool
+        Cert string `json:"cert"`
+        Key  string `json:"key"`
     } `json:"server"`
 	JWT struct {
         SecretKey   string

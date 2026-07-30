@@ -84,7 +84,7 @@ func main() {
     
     // Настраиваем CORS для Flutter Web
     c := cors.New(cors.Options{
-        AllowedOrigins:   []string{"http://statuswindow.ru", "http://5.42.120.212", "http://5.187.2.205", "http://localhost:*"},
+        AllowedOrigins:   []string{"https://statuswindow.ru", "http://5.42.120.212", "http://5.187.2.205", "http://localhost:*"},
         AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
         AllowedHeaders:   []string{"*"},
         AllowCredentials: true,
@@ -100,7 +100,7 @@ func main() {
     server := &http.Server{
         Addr:    "0.0.0.0:" + port,
         Handler: handler,
-    }	
+    }
 
     // Graceful shutdown
     go gracefulShutdown(server)	
@@ -114,10 +114,14 @@ func main() {
     log.Printf("   GET  http://localhost:%s/api/users (protected)", port)
     log.Printf("   GET  http://localhost:%s/api/profile (protected)", port)
     log.Printf("   GET  http://localhost:%s/api/health (public)", port)
-    
-    if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-        log.Fatalf("❌ Server failed to start: %v", err)
-    }
+
+    if cfg.Server.Ssl {
+        log.Fatal(server.ListenAndServeTLS(cfg.Server.Cert, cfg.Server.Key))        
+    } else {
+        if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+            log.Fatalf("❌ Server failed to start: %v", err)
+        }
+    }    
     // log.Fatal(http.ListenAndServe(":"+port, handler))
 }
 
