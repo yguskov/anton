@@ -27,8 +27,13 @@ void main() {
   final currentPath = html.window.location.pathname;
   print(
       '================ Current path: $currentPath --Base Url =${navigationService.baseUrl}----------');
+
+  const htmlUrl = String.fromEnvironment('HTML_URL', defaultValue: '/html/index.html');
+  print('-html=${htmlUrl}---');
   if (currentPath == navigationService.baseUrl) {
-    html.window.location.href = '${navigationService.baseUrl}html/index.html';
+    print('================ htmlUrl: $htmlUrl ----------');
+
+    html.window.location.href = htmlUrl;
   }
 
   runApp(const MyApp());
