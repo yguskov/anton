@@ -27,8 +27,8 @@ echo "✅ Go deployment completed!"
 echo "🔨 Building WEB ..."
 
 cd $BUILD_DIR
-# flutter build web --release --base-href /app/ --dart-define=API_URL=http://5.42.120.212:8993/api --dart-define=HTML_URL=/
-flutter build web --profile --base-href /app/ --dart-define="HTML_URL=/" --dart-define="API_URL=https://statuswindow.ru:8993/api"
+# flutter build web --profile --base-href /app/ --dart-define=API_URL=http://5.42.120.212:8993/api --dart-define=HTML_URL=/
+flutter build web --release --base-href /app/ --dart-define="HTML_URL=/" --dart-define="API_URL=https://statuswindow.ru:8993/api"
 rsync -avz --delete web/html/ $SERVER:$WEB_DIR
 rsync -az --delete --progress --exclude=html build/web/ $SERVER:$WEB_DIR/app
 # sudo find /var/www/html/hr -type d -exec chmod 750 {} \;
