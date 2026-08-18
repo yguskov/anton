@@ -2,6 +2,7 @@ import 'package:example/providers/auth_provider.dart';
 import 'package:example/services/navigation.dart';
 import 'package:example/src/app_bar_with_menu.dart';
 import 'package:example/src/constants.dart';
+import 'package:example/src/widgets/password_reset.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -206,6 +207,11 @@ class _LoginPageState extends State<LoginPage> {
                                           backgroundColor: secondaryColor,
                                           foregroundColor: Colors.white,
                                         ))),
+                                Center(
+                                    child: Padding(
+                                  padding: const EdgeInsets.all(28.0),
+                                  child: PasswordResetLinkWidget(),
+                                )),
                               ],
                             )),
                 ),

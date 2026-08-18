@@ -70,6 +70,20 @@ class LoginRequest {
   }
 }
 
+class ClearRequest {
+  final String email;
+
+  ClearRequest({
+    required this.email,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'email': email,
+    };
+  }
+}
+
 class ResultRequest {
   final String user;
   final int assign;

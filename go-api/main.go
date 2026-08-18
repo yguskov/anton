@@ -57,6 +57,9 @@ func main() {
     public.HandleFunc("/login", func(w http.ResponseWriter, r *http.Request) {
         handlers.LoginHandler(w, r, cfg)
     }).Methods("POST")
+    public.HandleFunc("/clear", func(w http.ResponseWriter, r *http.Request) {
+        handlers.ClearHandler(w, r, cfg)
+    }).Methods("POST")
     public.HandleFunc("/cv", func(w http.ResponseWriter, r *http.Request) {
         handlers.CVHandler(w, r)
     }).Methods("POST")

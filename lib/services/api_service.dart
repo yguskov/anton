@@ -102,6 +102,25 @@ class ApiService {
     clearToken();
   }
 
+  Future<bool> clear(ClearRequest request) async {
+    final response = await client.post(
+      Uri.parse('$baseUrl/clear'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(request.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        return true;
+      } else {
+        throw Exception(data['error'] ?? 'Ошибка регистрации');
+      }
+    } else {
+      throw Exception('Failed to register: ${response.body}');
+    }
+  }
+
   Future<UsersResponse> getUsers(
       {int page = 0,
       int limit = 20,

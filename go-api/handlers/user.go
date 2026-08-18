@@ -13,6 +13,9 @@ import (
     "golang.org/x/crypto/bcrypt"
     "github.com/rs/xid"
     "fmt"
+    "os/exec"
+    "crypto/rand"
+    "encoding/base64"
     // "strconv"
 )
 
@@ -175,6 +178,114 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 
     // w.Header().Set("Content-Type", "application/json")
     // json.NewEncoder(w).Encode(response)
+}
+func ClearHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+    var req models.ClearRequest
+    err := json.NewDecoder(r.Body).Decode(&req)
+    
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+    var user models.User
+    err = database.DB.QueryRow(
+        "SELECT id, email, password, new_password, user_data, created_at, guid FROM user WHERE email = ?",
+        req.Email,
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.NewPassword, &user.UserData, &user.CreatedAt, &user.Guid)
+    
+    if err == sql.ErrNoRows {
+        http.Error(w, "Invalid request", http.StatusUnauthorized)
+        return
+    } else if err != nil {
+        http.Error(w, "Database error "+err.Error(), http.StatusInternalServerError)
+        return
+    }
+
+    password, _ := GeneratePasswordBase64(8)
+
+    // Хешируем новый пароль
+    hashedPassword, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+    if err != nil {
+        http.Error(w, "Error processing new password", http.StatusInternalServerError)
+        return
+    }
+
+    log.Printf(" Create new password for id=%d =%s", user.ID, string(hashedPassword))
+
+    // Меняем пароль
+    result, err := database.DB.Exec(
+        "UPDATE user SET new_password = ? WHERE id = ?",
+        string(hashedPassword), user.ID, 
+    )
+
+    if err != nil {
+        // Обработка ошибки SQL (например, сбой подключения, синтаксис и т.д.)
+        http.Error(w, "Database error", http.StatusUnauthorized)
+        return
+    }
+
+    rowsAffected, err := result.RowsAffected()
+    if err != nil {
+        // Ошибка при получении количества затронутых строк (редко, но возможно)
+        http.Error(w, "Get updated rows error", http.StatusUnauthorized)
+        return
+    }
+
+    if rowsAffected == 0 {
+        // ❌ Ни одна строка не обновлена:
+        http.Error(w, "User not found or old password is incorrect", http.StatusUnauthorized)
+        return 
+    }
+
+    // send mail via php script
+    email := req.Email
+    newPassword, err := SendMailViaPHP(email, password)
+    
+    if err != nil {
+        fmt.Printf("Ошибка: %v\n", err)
+        return
+    }
+    
+    fmt.Printf("Пароль отправлен: %s\n", newPassword)
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "Change password successfull",
+    })
+}
+
+// SendMailViaPHP отправляет письмо через PHP CLI
+func SendMailViaPHP(email, password string) (string, error) {
+    // Путь к PHP-скрипту
+    scriptPath := "/mailsend/test.php"
+    
+    // Формируем команду
+    cmd := exec.Command("php", scriptPath, email, password)
+    
+    // Выполняем
+    output, err := cmd.CombinedOutput()
+    if err != nil {
+        return "", fmt.Errorf("ошибка выполнения: %w, вывод: %s", err, string(output))
+    }
+    
+    // Парсим JSON ответ
+    var result struct {
+        Success bool   `json:"success"`
+        Password string `json:"password"`
+        Error   string `json:"error"`
+    }
+    
+    if err := json.Unmarshal(output, &result); err != nil {
+        return "", fmt.Errorf("ошибка парсинга: %w, вывод: %s", err, string(output))
+    }
+    
+    if !result.Success {
+        return "", fmt.Errorf("ошибка PHP: %s", result.Error)
+    }
+    
+    // return password, nil
+    return result.Password, nil
 }
 
 func GetUsersHandlerOld(w http.ResponseWriter, r *http.Request) {
@@ -761,4 +872,38 @@ func checkPassword(user *models.User, password string) bool {
     }
     
     return false
+}
+
+// GenerateRandomBytes генерирует случайные байты
+func GenerateRandomBytes(n int) ([]byte, error) {
+    b := make([]byte, n)
+    _, err := rand.Read(b)
+    if err != nil {
+        return nil, err
+    }
+    return b, nil
+}
+
+// GeneratePasswordBase64 генерирует пароль в base64
+func GeneratePasswordBase64(length int) (string, error) {
+    // Для base64 нужно больше байт, так как каждый символ кодирует 6 бит
+    bytesNeeded := (length * 3) / 4
+    if bytesNeeded < 1 {
+        bytesNeeded = 1
+    }
+    
+    bytes, err := GenerateRandomBytes(bytesNeeded)
+    if err != nil {
+        return "", err
+    }
+    
+    // Кодируем в base64 без символов = (padding)
+    password := base64.RawURLEncoding.EncodeToString(bytes)
+    
+    // Обрезаем до нужной длины
+    if len(password) > length {
+        password = password[:length]
+    }
+    
+    return password, nil
 }

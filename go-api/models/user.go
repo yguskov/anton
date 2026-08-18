@@ -81,6 +81,10 @@ type LoginRequest struct {
     Password string `json:"password"`
 }
 
+type ClearRequest struct {
+    Email    string `json:"email"`
+}
+
 type PasswordRequest struct {
     Old    string `json:"old"`
     New    string `json:"new"`
