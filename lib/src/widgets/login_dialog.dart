@@ -202,7 +202,7 @@ void showLoginDialog(BuildContext context) {
                                   }
                                 }
                               },
-                        child: const Text('Авторизоваться'),
+                        child: const Text('Войти'),
                         style: ElevatedButton.styleFrom(
                           backgroundColor: secondaryColor,
                           foregroundColor: Colors.white,

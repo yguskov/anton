@@ -202,7 +202,7 @@ class _LoginPageState extends State<LoginPage> {
                                 Center(
                                     child: ElevatedButton(
                                         onPressed: login,
-                                        child: Text('Авторизоваться '),
+                                        child: Text('Войти'),
                                         style: ElevatedButton.styleFrom(
                                           backgroundColor: secondaryColor,
                                           foregroundColor: Colors.white,

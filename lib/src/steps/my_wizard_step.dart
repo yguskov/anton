@@ -225,29 +225,43 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
             child: authProvider.isAuth
                 ? null
                 : Stack(children: [
-                    Center(
-                      child: Text(
-                        constraints.maxWidth > 700
-                            ? 'Для сохранения прогресса заполнения'
-                            : 'Для сохранения',
-                        style: TextStyle(
-                            fontSize: 19, fontWeight: FontWeight.bold, color: Colors.white),
-                      ),
-                    ),
+                    Align(
+                        alignment:
+                            constraints.maxWidth > 411 ? Alignment.center : Alignment.centerLeft,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: constraints.maxWidth > 411 ? 0.0 : 20.0),
+                          child: Text(
+                            constraints.maxWidth > 700
+                                ? 'Для сохранения прогресса заполнения'
+                                : 'Для сохранения',
+                            style: TextStyle(
+                                fontSize: 19, fontWeight: FontWeight.bold, color: Colors.white),
+                          ),
+                        )),
                     // register button
                     Positioned(
                       right: 10,
                       top: 5,
                       bottom: 5,
                       child: Center(
-                        child: ElevatedButton(
+                        child: FilledButton(
                           onPressed: () {
                             openRegistrationForm(context, authProvider);
                           },
-                          child: Text('Зарегистрируйтесь'),
-                          style: ElevatedButton.styleFrom(
+                          child: Text(
+                            'Зарегистрируйтесь',
+                            style: TextStyle(
+                              color: Colors.white, // for mobile
+                            ),
+                          ),
+                          style: FilledButton.styleFrom(
                             backgroundColor: Color(0xFF48B33D),
                             foregroundColor: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 16), // Убираем vertical
+                            minimumSize: Size(0, double.infinity), // Растягиваем по высоте
                           ),
                         ),
                       ),

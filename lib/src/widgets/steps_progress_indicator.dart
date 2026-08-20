@@ -26,36 +26,43 @@ class StepsProgressIndicator extends StatelessWidget {
   ) {
     return Container(
       height: size + 5,
-      // width: 100,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemCount: stepMenuIconFiles.length,
-        itemBuilder: (itemContext, itemIndex) {
-          String iconFile = stepMenuIconFiles[itemIndex];
-          return Padding(
-            padding: EdgeInsets.symmetric(horizontal: padding, vertical: padding),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                  backgroundColor: itemIndex > index ? Colors.white : cardColorOkBorder,
-                  foregroundColor: wizardProgressIconColor,
-                  shape: CircleBorder(),
-                  // padding: EdgeInsets.all(3),
-                  minimumSize: Size(size, size), // Минимальный размер
-                  fixedSize: Size(size, size),
-                  padding: EdgeInsets.zero, // Фиксированный размер (Flutter 3.0+)
-                  elevation: 0.5),
-              onPressed: () {},
-              child: ImageIcon(
-                color: itemIndex > index ? wizardProgressIconColor : Colors.white,
-                AssetImage('image/icons/${iconFile}'),
-                size: size / 2,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: stepMenuIconFiles.asMap().entries.map((entry) {
+          int itemIndex = entry.key;
+          String iconFile = entry.value;
+
+          final isMobile = MediaQuery.of(context).size.width < 711;
+          final buttonSize =
+              isMobile ? (MediaQuery.of(context).size.width < 375 ? 34.0 : 40.0) : 50.0;
+
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (itemIndex > 0) SizedBox(width: 1.0),
+              Container(
+                width: buttonSize - 15,
+                height: buttonSize,
+                decoration: BoxDecoration(
+                  color: itemIndex > index ? Colors.white : cardColorOkBorder,
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: Colors.grey.shade300,
+                    width: 1.0,
+                  ),
+                ),
+                child: Center(
+                  child: ImageIcon(
+                    color: itemIndex > index ? wizardProgressIconColor : Colors.white,
+                    AssetImage('image/icons/${iconFile}'),
+                    size: buttonSize * 0.25,
+                  ),
+                ),
               ),
-              // IconButton автоматически круглый с радиусом 20
-            ),
+            ],
           );
-        },
+        }).toList(),
       ),
     );
   }
