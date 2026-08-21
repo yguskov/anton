@@ -227,9 +227,9 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
                 : Stack(children: [
                     Align(
                         alignment:
-                            constraints.maxWidth > 411 ? Alignment.center : Alignment.centerLeft,
+                            constraints.maxWidth > 420 ? Alignment.center : Alignment.centerLeft,
                         child: Padding(
-                          padding: EdgeInsets.only(left: constraints.maxWidth > 411 ? 0.0 : 20.0),
+                          padding: EdgeInsets.only(left: constraints.maxWidth > 420 ? 0.0 : 20.0),
                           child: Text(
                             constraints.maxWidth > 700
                                 ? 'Для сохранения прогресса заполнения'

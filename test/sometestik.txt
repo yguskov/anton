@@ -1,0 +1,38 @@
+ssh-copy-id -i /home/yguskov/.ssh/vpn_rsa.pub root@5.187.2.205
+sudo -u ваш_пользователь ssh-copy-id -i /home/ваш_пользователь/.ssh/id_ed25519.pub пользователь@сервер2
+
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_anton
+
+ssh -vvv -i /home/yguskov/.ssh/id_rsa  root@5.187.2.205 
+sudo chmod 700 /home/tunneluser/.ssh
+sudo chmod 600 /home/tunneluser/.ssh/authorized_keys
+sudo chown -R tunneluser:tunneluser /home/tunneluser/.ssh
+
+ssh -vvv -i ~/.ssh/id_rsa root@...205
+OpenSSH_7.2p2 Ubuntu-4ubuntu2.10, OpenSSL 1.0.2g  1 Mar 2016
+debug1: Reading configuration data /home/yguskov/.ssh/config
+debug1: Reading configuration data /etc/ssh/ssh_config
+debug1: /etc/ssh/ssh_config line 19: Applying options for *
+debug2: resolving "...205" port 22
+debug2: ssh_connect_direct: needpriv 0
+debug1: Connecting to ...205 [5.187.2.205] port 22.
+debug1: Connection established.
+debug1: identity file /home/yguskov/.ssh/id_rsa type 1
+debug1: key_load_public: No such file or directory
+debug1: identity file /home/yguskov/.ssh/id_rsa-cert type -1
+debug1: Enabling compatibility mode for protocol 2.0
+debug1: Local version string SSH-2.0-OpenSSH_7.2p2 Ubuntu-4ubuntu2.10
+debug1: Remote protocol version 2.0, remote software version OpenSSH_8.9p1
+debug1: match: OpenSSH_8.9p1 pat OpenSSH* compat 0x04000000
+debug2: fd 3 setting O_NONBLOCK
+
+flutter build web --profile --base-href /app/ --dart-define=API_URL=http://my_server:8993/api --dart-define=HTML_URL=/
+
+
+sudo apt update
+sudo apt install mysql-server mysql-client -y
+create database anketa
+create user if not exists 'anton'@'localhost' identified by 'ant';
+GRANT ALL PRIVILEGES ON anketa.* to 'anton'@'localhost';
+FLUSH PRIVILEGES;
