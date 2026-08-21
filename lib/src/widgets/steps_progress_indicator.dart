@@ -42,7 +42,7 @@ class StepsProgressIndicator extends StatelessWidget {
             children: [
               if (itemIndex > 0) SizedBox(width: 1.0),
               Container(
-                width: buttonSize - 15,
+                width: 0.58 * buttonSize,
                 height: buttonSize,
                 decoration: BoxDecoration(
                   color: itemIndex > index ? Colors.white : cardColorOkBorder,
