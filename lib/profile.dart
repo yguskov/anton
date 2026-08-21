@@ -20,7 +20,7 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  final double h20 = 20; // vertical indent
+  double h20 = 20; // vertical indent
   final _formKey = GlobalKey<FormState>(); // for change email
   final _oldPasswordController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -73,11 +73,10 @@ class _ProfilePageState extends State<ProfilePage> {
       _resumeController.text = authProvider.currentUser!.userData['resume'] ?? '';
       _resultDescController.text = authProvider.currentUser!.userData['result_description'] ?? '';
     }
-
     return AntLayout(
       Scaffold(
         appBar: AntAppBar(
-          title: "Профиль пользователя ${authProvider.currentUser?.email}",
+          title: "Профиль",
         ),
         body: Theme(
           data: Theme.of(context).copyWith(
@@ -99,6 +98,9 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           child: LayoutBuilder(
             builder: (context, constraints) {
+              final isMobile = MediaQuery.of(context).size.width < 711;
+              h20 = isMobile ? 5 : 20;
+
               return Container(
                 color: groundColor,
                 child: ListView(
@@ -111,10 +113,11 @@ class _ProfilePageState extends State<ProfilePage> {
                             maxWidth: baseScreenWidth),
                         child: Container(
                           child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20.0),
+                            padding:
+                                EdgeInsets.symmetric(horizontal: isMobile ? 1 : h20, vertical: h20),
                             child: Column(
                               children: [
-                                SizedBox(height: 20),
+                                SizedBox(height: h20),
                                 Card(
                                   elevation: 0,
                                   shape: RoundedRectangleBorder(
@@ -138,7 +141,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         Row(
                                           children: [
                                             Expanded(
-                                              flex: 6,
+                                              flex: isMobile ? 7 : 6,
                                               child: Center(
                                                 child: StepsProgressIndicator(
                                                   count: stepMenuIconFiles.length,
@@ -150,10 +153,9 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ),
                                             SizedBox(width: h20),
                                             Expanded(
-                                              flex: 6,
+                                              flex: isMobile ? 5 : 6,
                                               child: ElevatedButton(
-                                                  onPressed: edit,
-                                                  child: Text('Редактировать данные')),
+                                                  onPressed: edit, child: Text('Редактировать')),
                                             ),
                                           ],
                                         ),
@@ -162,6 +164,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                           mainAxisAlignment: MainAxisAlignment.center,
                                           children: [
                                             Expanded(
+                                              flex: isMobile ? 7 : 6,
                                               child: ElevatedButton(
                                                 onPressed: view,
                                                 child: Text('Предпросмотр'),
@@ -170,6 +173,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ),
                                             SizedBox(width: h20),
                                             Expanded(
+                                              flex: isMobile ? 5 : 6,
                                               child: ElevatedButton(
                                                   onPressed: copyLink,
                                                   child: Text('Получить ссылку')),
@@ -282,6 +286,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                         Row(
                                           children: [
                                             Expanded(
+                                              flex: isMobile ? 7 : 6,
                                               child: ElevatedButton(
                                                 onPressed: saveJob,
                                                 child: Text((authProvider
@@ -294,6 +299,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                             ),
                                             SizedBox(width: h20),
                                             Expanded(
+                                              flex: isMobile ? 5 : 6,
                                               child: ElevatedButton(
                                                 onPressed: saveResume,
                                                 child: Text('Сохранить ссылку'),
