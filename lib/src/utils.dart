@@ -9,7 +9,8 @@ bool checkEmail(String email) {
   return EmailValidator.validate(email);
 }
 
-Future<void> openFullScreenDialog(BuildContext context, Widget content, double maxWidth) async {
+Future<void> openFullScreenDialog(BuildContext context, Widget content, double maxWidth,
+    [String? title]) async {
   await showGeneralDialog(
     context: context,
     barrierDismissible: false,
@@ -38,16 +39,28 @@ Future<void> openFullScreenDialog(BuildContext context, Widget content, double m
                   // Контент с прокруткой
                   Positioned.fill(
                     child: Padding(
-                      padding: const EdgeInsets.only(top: 50, bottom: 20, left: 20, right: 20),
+                      padding: const EdgeInsets.only(top: 60, bottom: 20, left: 20, right: 20),
                       child: SingleChildScrollView(
                         child: content,
                       ),
                     ),
                   ),
 
+                  Positioned(
+                    top: 27,
+                    left: 20,
+                    child: Text(
+                      title ?? '',
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
+
                   // Кнопка закрытия
                   Positioned(
-                    top: 10,
+                    top: 15,
                     right: 10,
                     child: IconButton(
                       icon: Icon(Icons.close, size: 28),

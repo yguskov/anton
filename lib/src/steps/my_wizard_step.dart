@@ -591,7 +591,8 @@ abstract class StateStep<T extends StatefulWidgetStep> extends State<T> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: textFields,
             )),
-        600);
+        600,
+        'Регистрация');
   }
 }
 
