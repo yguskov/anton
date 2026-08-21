@@ -37,6 +37,20 @@ void main() {
   }
 
   runApp(const MyApp());
+
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    _hideLoader();
+  });
+}
+
+void _hideLoader() {
+  final loader = html.document.getElementById('loader-wrapper');
+  if (loader != null) {
+    loader.hidden = true;
+    Future.delayed(Duration(milliseconds: 500), () {
+      loader.remove();
+    });
+  }
 }
 
 class MyApp extends StatelessWidget {
