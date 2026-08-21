@@ -2,6 +2,7 @@ import 'package:example/providers/auth_provider.dart';
 import 'package:example/services/navigation.dart';
 import 'package:example/src/app_bar_with_menu.dart';
 import 'package:example/src/constants.dart';
+import 'package:example/src/utils.dart';
 import 'package:example/src/widgets/password_reset.dart';
 import 'package:example/src/widgets/text_bar.dart';
 import 'package:flutter/material.dart';
@@ -93,7 +94,8 @@ class _LoginPageState extends State<LoginPage> {
 
     return Scaffold(
       appBar: AntAppBar(
-        title: "Авторизация пользователя",
+        title: "Авторизация",
+        showMenu: false,
       ),
       body: LayoutBuilder(builder: (context, constraints) {
         List<Widget> textFields = [];
@@ -103,6 +105,8 @@ class _LoginPageState extends State<LoginPage> {
           textFields = [
             TextFormField(
               controller: _emailController,
+              autofillHints: const [AutofillHints.email],
+              keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
                 labelText: 'Почта',
                 hintText: 'user@mail.com',
@@ -126,6 +130,9 @@ class _LoginPageState extends State<LoginPage> {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Укажите почту';
+                }
+                if (!checkEmail(value)) {
+                  return 'Не похоже на почту';
                 }
                 return null;
               },
@@ -200,13 +207,19 @@ class _LoginPageState extends State<LoginPage> {
                                       children: textFields,
                                     )),
                                 Center(
+                                  child: ConstrainedBox(
+                                    constraints:
+                                        BoxConstraints(minWidth: constraints.maxWidth * 0.5),
                                     child: ElevatedButton(
-                                        onPressed: login,
-                                        child: Text('Войти'),
-                                        style: ElevatedButton.styleFrom(
-                                          backgroundColor: secondaryColor,
-                                          foregroundColor: Colors.white,
-                                        ))),
+                                      onPressed: login,
+                                      child: Text('Войти'),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: secondaryColor,
+                                        foregroundColor: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                                 Center(
                                     child: Padding(
                                   padding: const EdgeInsets.all(28.0),

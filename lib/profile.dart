@@ -39,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
   void initState() {
     super.initState();
     final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final navigationService = Provider.of<NavigationService>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       if (authProvider.currentUser == null) {
@@ -47,7 +48,8 @@ class _ProfilePageState extends State<ProfilePage> {
       if (authProvider.currentUser != null) {
         authProvider.loadUserCV(authProvider.currentUser!.guid);
       } else {
-        html.window.location.href = '/login';
+        authProvider.clearError();
+        navigationService.navigateTo('/login');
       }
     });
     // final sccess = await authProvider.register();
