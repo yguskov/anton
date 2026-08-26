@@ -10,6 +10,7 @@ import (
 type User struct {
     ID           int            `json:"id"`
     Email        string         `json:"email"`
+    Is_hr        bool           `json:"is_hr"`
     Password     string         `json:"-"`
     NewPassword  string         `json:"-"`
     UserData     UserData       `json:"user_data"`
@@ -117,8 +118,15 @@ type UserGridResponse struct {
 }
 
 type UserGridItem struct {
-    ID       int    `json:"id"`
-    Fio      string `json:"fio"`
-    Position string `json:"position"`
-    Sector   string `json:"sector"`
+    ID        int    `json:"id"`
+    Fio       string `json:"fio"`
+    Position  string `json:"position"`
+    Sector    string `json:"sector"`
+    Processed bool   `json:"processed"`
 }
+
+type ProcessRquest struct {
+    ID        int    `json:"id"`
+    Processed bool   `json:"processed"`
+}
+

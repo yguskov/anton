@@ -1,4 +1,5 @@
 import 'package:example/providers/auth_provider.dart';
+import 'package:example/services/navigation.dart';
 import 'package:example/src/app_bar_with_menu.dart';
 import 'package:example/src/widgets/user_grid.dart';
 import 'package:flutter/material.dart';
@@ -8,10 +9,23 @@ class userPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: true);
+    @override
+    final AuthProvider authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final navigationService = Provider.of<NavigationService>(context, listen: false);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      if (authProvider.currentUser == null) {
+        await authProvider.fetchCurrentUser();
+        if (authProvider.currentUser != null && !authProvider.currentUser!.isHr) {
+          authProvider.clearError();
+          navigationService.navigateTo('/login');
+        }
+      }
+    });
 
     return Scaffold(
       appBar: AntAppBar(
-        title: "Список юзеров",
+        title: "Список пользователй",
       ),
       body: Theme(
         data: Theme.of(context).copyWith(

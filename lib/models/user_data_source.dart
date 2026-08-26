@@ -21,8 +21,14 @@ class UserGridItem {
   final String fio;
   final String position;
   final String sector;
+  final bool processed;
 
-  UserGridItem({required this.id, required this.fio, required this.position, required this.sector});
+  UserGridItem(
+      {required this.id,
+      required this.fio,
+      required this.position,
+      required this.sector,
+      required this.processed});
 
   factory UserGridItem.fromJson(Map<String, dynamic> json) {
     return UserGridItem(
@@ -30,6 +36,7 @@ class UserGridItem {
       fio: json['fio'] ?? '',
       position: json['position'] ?? '',
       sector: json['sector'] ?? '',
+      processed: json['processed'],
     );
   }
 }
@@ -50,6 +57,8 @@ class ServerUserDataSource extends DataTableSource {
   String _sortColumn = 'created_at';
   bool _sortAscending = false;
   String error = '';
+
+  final Set<int> _selectedUserIds = {};
 
   ServerUserDataSource(this._api);
 
@@ -87,6 +96,12 @@ class ServerUserDataSource extends DataTableSource {
 
       // print('---- user responce ------ : ${response}');
       _users = response.data;
+      for (var item in _users) {
+        if (item.processed) {
+          _selectedUserIds.add(item.id);
+        }
+      }
+
       _totalUsers = response.total;
       error = '';
     } catch (e) {
@@ -101,6 +116,10 @@ class ServerUserDataSource extends DataTableSource {
   DataRow getRow(int index) {
     final startIndex = (_currentPage - 1) * _rowsPerPage;
     final localIndex = index - startIndex;
+
+    final user = _users[localIndex];
+    final isSelected = _selectedUserIds.contains(user.id);
+
     print(
         '----index=${index}  local=${localIndex} limit = ${_rowsPerPage} current page=${_currentPage}');
     if (localIndex < 0 || localIndex >= _users.length)
@@ -108,13 +127,23 @@ class ServerUserDataSource extends DataTableSource {
         DataCell(Text('')),
         DataCell(Text(localIndex == 0 ? error : '')),
         DataCell(Text('')),
+        DataCell(Text('')),
       ]);
 
-    final user = _users[localIndex];
     return DataRow(cells: [
       DataCell(Text(user.fio)),
       DataCell(Text(user.position)),
       DataCell(Text(user.sector)),
+      DataCell(
+        Checkbox(
+          value: isSelected,
+          onChanged: (bool? value) {
+            if (value != null) {
+              _onUserSelected(user.id, value);
+            }
+          },
+        ),
+      ),
     ]);
   }
 
@@ -126,4 +155,33 @@ class ServerUserDataSource extends DataTableSource {
 
   @override
   int get selectedRowCount => 0;
+
+  void _onUserSelected(int id, bool value) {
+    if (value) {
+      _selectedUserIds.add(id);
+    } else {
+      _selectedUserIds.remove(id);
+    }
+
+    _callApiForUser(id, value);
+
+    print("user $id=$value");
+  }
+
+  // Метод для вызова API
+  Future<void> _callApiForUser(int userId, bool isSelected) async {
+    try {
+      // Замените на ваш реальный вызов API
+      // await _api.markUser(userId, isSelected);
+      print('Calling API for user $userId, selected: $isSelected');
+      _api.process(userId, isSelected);
+      notifyListeners();
+      // Если нужно обновить данные после успешного вызова
+      // await updateParams(page: _currentPage);
+    } catch (e) {
+      print('Error calling API: $e');
+      notifyListeners();
+      // Можно откатить состояние при ошибке
+    }
+  }
 }

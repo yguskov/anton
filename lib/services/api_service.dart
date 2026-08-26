@@ -307,4 +307,26 @@ class ApiService {
       return List<String>.from([]);
     }
   }
+
+  Future<bool> process(int id, bool processed) async {
+    final response = await client.post(
+      Uri.parse('$baseUrl/process'),
+      headers: _getHeaders(),
+      body: json.encode({
+        'id': id,
+        'processed': processed,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data['success'] == true) {
+        return true;
+      } else {
+        throw Exception(data['error'] ?? 'Ошибка регистрации');
+      }
+    } else {
+      throw Exception('Failed to register: ${response.body}');
+    }
+  }
 }

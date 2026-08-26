@@ -329,11 +329,12 @@ func GetProfileHandler(w http.ResponseWriter, r *http.Request) {
     var user models.User
     // var userData models.UserData
     err := database.DB.QueryRow(
-        "SELECT id, email, password, user_data, created_at, guid FROM user WHERE id = ?",
+        "SELECT id, email, password, is_hr, user_data, created_at, guid FROM user WHERE id = ?",
         userID,
-    ).Scan(&user.ID, &user.Email, &user.Password, &user.UserData, &user.CreatedAt, &user.Guid)
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.Is_hr, &user.UserData, &user.CreatedAt, &user.Guid)
 
     if err != nil {
+        log.Printf("Error when scan: %v", err);
         http.Error(w, "Error scanning user", http.StatusInternalServerError)
         return
     }
@@ -696,7 +697,7 @@ func updateUser(db *sql.DB, userData models.UserData) (int, error) {
 */
 
 func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
-    userID, ok := middleware.GetUserIDFromContext(r.Context())
+    managerID, ok := middleware.GetUserIDFromContext(r.Context())
     if !ok {
         writeResponse(w, http.StatusInternalServerError, Response{
             Success: false,
@@ -704,11 +705,11 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         })
         return
     }
-
+    // find HR manager
     var exists bool
     err := database.DB.QueryRow(
         "SELECT EXISTS(SELECT 1 FROM user WHERE id = ? and is_hr = 1)",
-        userID,
+        managerID,
     ).Scan(&exists)
 
     if err != nil {
@@ -772,7 +773,7 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
             SELECT 1 FROM process p 
             WHERE p.hr_id = ? AND p.user_id = u.id
         )`
-        args = append(args, userID)
+        args = append(args, managerID)
     }
 
     queryCount := "SELECT COUNT(*) " + baseQuery
@@ -781,9 +782,10 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         SELECT u.id, 
             JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.fio')) as fio, 
             JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.position')) as position, 
-            JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.sector')) as sector 
+            JSON_UNQUOTE(JSON_EXTRACT(u.user_data, '$.sector')) as sector,
+            EXISTS(SELECT 1 FROM process WHERE user_id = u.id and hr_id = %d) as processed  
         %s
-    `, baseQuery)
+    `,  managerID, baseQuery)
 
     var total int
     database.DB.QueryRow(queryCount, args...).Scan(&total)
@@ -809,7 +811,7 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
 
         // Сканируем колонки в том же порядке, что и в SELECT
         // id, fio, position, sector
-        err := rows.Scan(&item.ID, &fio, &position, &sector)
+        err := rows.Scan(&item.ID, &fio, &position, &sector, &item.Processed)
         if err != nil {
             log.Printf("Error scanning row: %v", err)
             continue // Пропускаем битую строку или возвращаем ошибку, в зависимости от требований
@@ -819,7 +821,6 @@ func GetUsersHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config)
         item.Fio = fio.String
         item.Position = position.String
         item.Sector = sector.String
-
         items = append(items, item)
     }
 
@@ -906,4 +907,94 @@ func GeneratePasswordBase64(length int) (string, error) {
     }
     
     return password, nil
+}
+
+func ProcessUserHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
+    // get hr manager from auth
+    managerID, ok := middleware.GetUserIDFromContext(r.Context())
+    if !ok {
+        writeResponse(w, http.StatusInternalServerError, Response{
+            Success: false,
+            Error:   "Error when define hr manager",
+        })
+        return
+    }
+
+    // find manager
+    var exists bool
+    err := database.DB.QueryRow(
+        "SELECT EXISTS(SELECT 1 FROM user WHERE id = ? and is_hr = 1)",
+        managerID,
+    ).Scan(&exists)
+
+    if err != nil {
+        log.Printf("Check user error: %v", err)
+        http.Error(w, "Database error when define manager", http.StatusUnauthorized)
+        return
+    }
+
+    if !exists {
+        http.Error(w, "Manager not found", http.StatusNotFound)
+        return
+    }    
+
+    // Find User 
+    var req models.ProcessRquest
+    err = json.NewDecoder(r.Body).Decode(&req)
+    if err != nil {
+        http.Error(w, "Invalid request body", http.StatusBadRequest)
+        return
+    }
+
+    err = database.DB.QueryRow(
+        "SELECT EXISTS(SELECT 1 FROM user WHERE id = ?)",
+        req.ID,
+    ).Scan(&exists)
+
+    if err != nil {
+        log.Printf("Check user error: %v", err)
+        http.Error(w, "Database error", http.StatusUnauthorized)
+        return
+    }
+
+    if !exists {
+        http.Error(w, "User not found", http.StatusNotFound)
+        return
+    }    
+
+    err = database.DB.QueryRow(
+        "SELECT EXISTS(SELECT 1 FROM process WHERE user_id = ? and hr_id = ?)",
+        req.ID, managerID,
+    ).Scan(&exists)
+
+    if err != nil {
+        log.Printf("Find process record error: %v", err)
+        http.Error(w, "Database error find process", http.StatusInternalServerError)
+        return
+    }
+
+    if req.Processed && !exists {
+        if !exists {
+            _, err = database.DB.Exec(
+                "INSERT INTO process(hr_id, user_id) VALUES(?, ?)",
+                managerID, req.ID, 
+            )
+        }
+    } else if !req.Processed && exists  {
+            _, err = database.DB.Exec(
+                "DELETE FROM process where hr_id = ? and user_id = ?",
+                managerID, req.ID,
+            )
+    }
+
+    if err != nil {
+        log.Printf("Check uncheck processed error: %v", err)
+        http.Error(w, "Mark processed database error", http.StatusInternalServerError)
+        return
+    }
+
+    writeResponse(w, http.StatusOK, Response{
+        Success: true,
+        Message: "Processed",
+    })
 }

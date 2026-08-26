@@ -1,6 +1,7 @@
 class User {
   final int id;
   final String email;
+  final bool is_hr;
   final Map<String, dynamic> userData;
   final String createdAt;
   final String guid;
@@ -8,6 +9,7 @@ class User {
   User(
       {required this.id,
       required this.email,
+      required this.is_hr,
       required this.userData,
       required this.createdAt,
       this.guid = ''});
@@ -16,11 +18,14 @@ class User {
     return User(
       id: json['id'],
       email: json['email'],
+      is_hr: json['is_hr'] ?? false,
       userData: Map<String, dynamic>.from(json['user_data'] ?? {}),
       createdAt: json['created_at'],
       guid: json['guid'],
     );
   }
+
+  bool get isHr => this.is_hr;
 
   Map<String, dynamic> toJson() {
     return {

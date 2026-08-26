@@ -139,6 +139,15 @@ class _UserGridWidgetState extends State<UserGridWidget> {
                         _loadData(page: 1);
                       },
                     ),
+                    DataColumn(
+                      label: Text('Обработан'),
+                      onSort: (columnIndex, ascending) {
+                        _sortColumnIndex = columnIndex;
+                        _sortAscending = ascending;
+
+                        _loadData(page: 1);
+                      },
+                    ),
                   ],
                 ),
         ),

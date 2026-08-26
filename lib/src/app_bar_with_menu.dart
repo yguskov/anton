@@ -73,6 +73,9 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
                         navigationService.navigateTo('/profile');
                         // Navigator.pushNamed(context, '/profile');
                         break;
+                      case 'users':
+                        navigationService.navigateTo('/users');
+                        break;
                       case 'help':
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Помощь')),
@@ -111,6 +114,17 @@ class AntAppBar extends StatelessWidget implements PreferredSizeWidget {
                             Icon(Icons.person, size: 18),
                             SizedBox(width: 8),
                             Text('Профиль'),
+                          ],
+                        ),
+                      ),
+                    if (authProvider.currentUser?.isHr ?? false)
+                      const PopupMenuItem<String>(
+                        value: 'users',
+                        child: Row(
+                          children: [
+                            Icon(Icons.list, size: 18),
+                            SizedBox(width: 8),
+                            Text('Пользователи'),
                           ],
                         ),
                       ),

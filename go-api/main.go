@@ -84,6 +84,9 @@ func main() {
     protected.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
         handlers.GetUsersHandler(w, r, cfg)
     }).Methods("POST")
+    protected.HandleFunc("/process", func(w http.ResponseWriter, r *http.Request) {
+        handlers.ProcessUserHandler(w, r, cfg)
+    }).Methods("POST")
     
     // Настраиваем CORS для Flutter Web
     c := cors.New(cors.Options{
