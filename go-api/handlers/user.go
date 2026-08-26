@@ -122,9 +122,9 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
 
     var user models.User
     err = database.DB.QueryRow(
-        "SELECT id, email, password, new_password, user_data, created_at, guid FROM user WHERE email = ?",
+        "SELECT id, email, password, new_password, user_data, created_at, guid, is_hr FROM user WHERE email = ?",
         req.Email,
-    ).Scan(&user.ID, &user.Email, &user.Password, &user.NewPassword, &user.UserData, &user.CreatedAt, &user.Guid)
+    ).Scan(&user.ID, &user.Email, &user.Password, &user.NewPassword, &user.UserData, &user.CreatedAt, &user.Guid, &user.Is_hr)
     
     if err == sql.ErrNoRows {
         http.Error(w, "Invalid credentials", http.StatusUnauthorized)
@@ -156,6 +156,7 @@ func LoginHandler(w http.ResponseWriter, r *http.Request, cfg *config.Config) {
         UserData:  user.UserData,
         CreatedAt: user.CreatedAt.Format(time.RFC3339),
         Guid:      user.Guid,
+        Is_hr:     user.Is_hr,
     }
 
     authResponse := AuthResponse{

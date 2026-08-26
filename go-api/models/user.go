@@ -101,6 +101,7 @@ type UserResponse struct {
     UserData  UserData `json:"user_data"`
     CreatedAt string   `json:"created_at"`
     Guid      string   `json:"guid"`
+    Is_hr     bool     `json:"is_hr"`
 }
 
 type UserGridRequest struct {
