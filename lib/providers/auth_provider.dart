@@ -13,6 +13,7 @@ class AuthProvider with ChangeNotifier {
   CV? _userCV;
   bool _isLoading = false;
   String? _error;
+  int _registration_attempt = 0;
 
   AuthProvider({required ApiService apiService}) : _apiService = apiService;
 
@@ -37,6 +38,11 @@ class AuthProvider with ChangeNotifier {
         userData: userData,
       );
 
+      if (_registration_attempt > 4) {
+        _error = 'Сервер не отвечает';
+        _isLoading = false;
+        return false;
+      }
       dynamic response = await _apiService.register(request);
       _currentUser = response['user'];
       _isLoading = false;
@@ -45,6 +51,7 @@ class AuthProvider with ChangeNotifier {
     } catch (e) {
       if (e.toString().contains('Duplicate')) {
         _error = 'Такой пользователь уже существует';
+        _registration_attempt++;
       } else if (e is ClientException) {
         _error = 'Сервер не отвечает';
       } else {
