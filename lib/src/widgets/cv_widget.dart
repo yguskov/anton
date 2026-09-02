@@ -89,6 +89,10 @@ class CVWidgetState extends State<CVWidget> {
     print('------------- BUILD-CV------------------');
     print(widget.cv.toJson());
     const h1 = 19.0;
+    String _position = '';
+    if (cv.getValue('position') != '') {
+      _position = '(${cv.getValue('position')})';
+    }
 
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       // Text(cv.toJson()),
@@ -98,9 +102,7 @@ class CVWidgetState extends State<CVWidget> {
         style: commonTextStyle,
       ),
       const SizedBox(height: h1),
-      MarkupText('От кого: (b)${cv.getValue('fio')} (${cv.getValue('position')}(/b))',
-          style: commonTextStyle),
-      // Text('От кого: ${cv.getValue('fio')} (${cv.getValue('position')})'),
+      MarkupText('От кого: (b)${cv.getValue('fio')} $_position(/b)', style: commonTextStyle),
       const SizedBox(height: h1),
 
       listCard(

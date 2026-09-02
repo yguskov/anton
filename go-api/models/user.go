@@ -126,7 +126,7 @@ type UserGridItem struct {
     Processed bool   `json:"processed"`
 }
 
-type ProcessRquest struct {
+type ProcessRequest struct {
     ID        int    `json:"id"`
     Processed bool   `json:"processed"`
 }

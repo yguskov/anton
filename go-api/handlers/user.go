@@ -940,7 +940,7 @@ func ProcessUserHandler(w http.ResponseWriter, r *http.Request, cfg *config.Conf
     }    
 
     // Find User 
-    var req models.ProcessRquest
+    var req models.ProcessRequest
     err = json.NewDecoder(r.Body).Decode(&req)
     if err != nil {
         http.Error(w, "Invalid request body", http.StatusBadRequest)

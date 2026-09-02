@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 
+import 'package:example/main.dart';
 import 'package:example/providers/auth_provider.dart';
 import 'package:example/src/app_bar_with_menu.dart';
 import 'package:example/src/constants.dart';
@@ -76,8 +77,23 @@ class _ShowPageState extends State<ShowPage> {
     double h20 = 20; // vertical indent
 
     return Scaffold(
-      appBar: AntAppBar(
-        title: "Презентация намерений",
+      appBar: AppBar(
+        title: GestureDetector(
+          onTap: () {
+            html.window.location.href = '/';
+          },
+          child: Text(
+            'StatusWindow.ru',
+            style: TextStyle(
+              color: Colors.blue,
+              fontSize: 19,
+            ),
+          ),
+        ),
+        // Вместо кнопки "Назад" - ссылка
+        leadingWidth: 5,
+        leading: Container(),
+        elevation: antBarElevation,
       ),
       body: Theme(
         data: Theme.of(context).copyWith(
@@ -106,7 +122,10 @@ class _ShowPageState extends State<ShowPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20.0),
                           child: ListView(
                             children: [
-                              // TextBar('Презентация намерений'),
+                              Center(
+                                child: Text('Презентация намерения',
+                                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold)),
+                              ),
                               SizedBox(height: h20),
                               cvWidget,
                               SizedBox(height: h20),
@@ -244,6 +263,39 @@ class _ShowPageState extends State<ShowPage> {
                                   child: Text('Сохранить'),
                                 ),
                               ) */
+
+                              // link to second landing
+                              Container(
+                                height: bottomHeight,
+                                padding: EdgeInsets.only(top: 5),
+                                color: bottomGroundColor,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                  children: [
+                                    Text(
+                                        'У нас в разработке находится Learn & Development B2B система помощи карьерной траектории для непрерывного развития сотрудников.\n' +
+                                            'Она предназначена развивать и удерживать талантливых сотрудников, а также повышать производительность',
+                                        style: bottomTextStyle,
+                                        textAlign: TextAlign.center),
+                                    Center(
+                                      child: ConstrainedBox(
+                                        constraints: BoxConstraints(
+                                          maxWidth: 360,
+                                        ),
+                                        child: ElevatedButton(
+                                          onPressed: () =>
+                                              html.window.location.href = '/landing2.html',
+                                          style: ElevatedButton.styleFrom(
+                                            minimumSize: Size(double.infinity, 36),
+                                          ),
+                                          child: Text('Перейти', style: bottomButtonTextStyle),
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
                             ],
                           ),
                         ),

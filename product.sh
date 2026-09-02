@@ -19,6 +19,7 @@ ssh $SERVER "cd $APP_DIR && chmod +x $BINARY_NAME && sudo systemctl stop hr"
 echo "📤 Copying to server..."
 scp $BINARY_NAME $SERVER:$APP_DIR/
 # scp .env $SERVER:$APP_DIR/ 2>/dev/null || echo "No .env file to copy"
+echo -e "\033[2A📤 Copying to server ✅        "
 
 echo "🚀 Starting service on server..."
 ssh $SERVER "cd $APP_DIR && chmod +x $BINARY_NAME && sudo systemctl restart hr"
@@ -43,7 +44,7 @@ echo "📤 Copying to server..."
 rsync -avz --delete --quiet web/html/ $SERVER:$WEB_DIR
 rsync -az --delete --quiet --exclude=html build/web/ $SERVER:$WEB_DIR/app
 
-echo -e "\033[1A✅ Copying to server        "
+echo -e "\033[1A📤 Copying to server ✅        "
 
 echo "✅ Insert Google Analitycs"
 ssh $SERVER "sed -i '/<!-- INJECT_GA_HERE -->/r $WEB_DIR/app/ga.html' $WEB_DIR/index.html $WEB_DIR/landing2.html $WEB_DIR/app/index.html && sed -i '/<!-- INJECT_GA_HERE -->/d' $WEB_DIR/index.html $WEB_DIR/landing2.html $WEB_DIR/app/index.html && rm -f $WEB_DIR/app/ga.html"

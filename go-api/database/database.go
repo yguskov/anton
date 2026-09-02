@@ -74,6 +74,20 @@ func InitDB(dataSourceName string) error {
     if err != nil {
         return fmt.Errorf("error creating process: %v", err)
     }
+
+    // Создаем таблицу b2b manager
+    createTableSQL = `
+    CREATE TABLE IF NOT EXISTS manager (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        email VARCHAR(255) UNIQUE NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci`
+
+    _, err = DB.Exec(createTableSQL)
+    if err != nil {
+        return fmt.Errorf("error creating user table: %v", err)
+    }
+
     fmt.Println("Database connected and table ensured")
     return nil
 }
